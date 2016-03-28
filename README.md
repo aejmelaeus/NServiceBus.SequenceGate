@@ -6,15 +6,13 @@ A Sequence Gate where older revisions or status of messages containing a certain
 
 Usually message driven systems are designed in such a way that message order does not matter.
 
-However this might not always be possible and this Sequence Gate tries to solve that problem. One way to correlate message order in NServiceBus is to use Sagas. We could have two events "CompanyCreated" and "CompanyUpdated". We could have a Saga to handle when the "CompanyUpdated" event is arriving before the "CompanyCreated".
+If it is not possible to do that, Sagas in NServiceBus is a good way to correlate message ordering. This works when the message semantics has a distinct flow. When something for example is `Initialized` then `Activated` and last `Terminated`. Then the Saga can pick up `Activated` and store some intermidiate result until the `Initialized` event is received.
 
-The scenario that the Sequence Gate is solving is when there are states that takes out each other and the last stat is the one that we are intrested in.
-
-Examples of this might be `UserEmailUpdated` or `PermissionGrantedForUser` and `PermissionDeniedForUser`. These types of events are important to get in the right order in downstream systems.
+However, this is not possible in all scenarios. Examples of this might be `UserEmailUpdated` or `PermissionGrantedForUser` and `PermissionDeniedForUser`. These types of events are important to get in the right order in downstream systems.
 
 ## Sequence
 
-The messages are anchored in time using a time stamp in the Publishing system. Time is expected to be handled in UTC-format in all endpoints. The computers publishing messages are expected to have synchronized time.
+The messages are anchored in time using a time stamp in the publishing endpoint. Time is expected to be handled in UTC-format in all endpoints. The computers publishing messages are expected to have synchronized time.
 
 ## Data
 
@@ -23,15 +21,14 @@ We keep track of already seen messages to be able to discard older version. The 
 * Id - The given Sequence id, for example UserActions
 * SequenceId - The id of the object that is sequenced, for example a user id
 
-New row
+### Object Id
 
-Test.
+TODO
 
-Again.
+### Collection
 
-### Hihi Hoho
+TODO
 
-Test
+### Scope Id
 
-Long long long: https://github.com/aejmelaeus/NServiceBus.SequenceGate.git long long long long long https://github.com/aejmelaeus/NServiceBus.SequenceGate.git
-
+TODO
