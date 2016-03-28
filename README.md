@@ -20,9 +20,8 @@ The messages are anchored in time using a time stamp in the Publishing system. T
 
 We keep track of already seen messages to be able to discard older version. The following data is stored in the database:
 
-* Test
-* Test
-* Test
+* Id - The given Sequence id, for example UserActions
+* SequenceId - The id of the object that is sequenced, for example a user id
 
 New row
 
