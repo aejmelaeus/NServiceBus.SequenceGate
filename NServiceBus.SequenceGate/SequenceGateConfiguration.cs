@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate.Repository
 {
-    class SequenceGateConfiguration
+    public class SequenceGateConfiguration : List<SequenceGate>
     {
+        // Nothing here...
+    }
+    public class SequenceGate
+    {
+        public string Id { get; set; }
+        public string ScopeId { get; set; }
+        public List<SequenceGateMember> Members { get; set; }
     }
 }

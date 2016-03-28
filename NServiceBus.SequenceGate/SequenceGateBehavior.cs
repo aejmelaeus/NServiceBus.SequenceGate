@@ -4,11 +4,18 @@ using NServiceBus.Pipeline.Contexts;
 
 namespace NServiceBus.SequenceGate.Repository
 {
-    public class SequenceGateBehaviour : IBehavior<IncomingContext>
+    internal class MessageClass
+    {
+        public DateTime TimeStamp { get; set; }
+        public string ObjectId { get; set; }
+    }
+
+    public class SequenceGateBehavior : IBehavior<IncomingContext>
     {
         public void Invoke(IncomingContext context, Action next)
         {
-            throw new NotImplementedException();
+            var member = new SequenceGateMember();
+            member.ObjectIdProperty = 
         }
     }
 }

@@ -5,7 +5,7 @@ namespace NServiceBus.SequenceGate.Repository
     internal class SequenceGateRegistration : RegisterStep
     {
         public SequenceGateRegistration()
-            : base("SequenceGateBehavior", typeof (SequenceGateBehaviour), "Discards older messages")
+            : base("SequenceGateBehavior", typeof (SequenceGateBehavior), "Discards older messages")
         {
             InsertBefore(WellKnownStep.LoadHandlers);
         }
