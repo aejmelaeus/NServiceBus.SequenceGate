@@ -16,8 +16,13 @@ Examples of this might be `UserEmailUpdated` or `PermissionGrantedForUser` and `
 
 The messages are anchored in time using a time stamp in the Publishing system. Time is expected to be handled in UTC-format in all endpoints. The computers publishing messages are expected to have synchronized time.
 
+## Data
 
-## Blah blah
+We keep track of already seen messages to be able to discard older version. The following data is stored in the database:
+
+* Test
+* Test
+* Test
 
 New row
 
