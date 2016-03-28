@@ -10,7 +10,7 @@ However this might not always be possible and this Sequence Gate tries to solve 
 
 The scenario that the Sequence Gate is solving is when there are states that takes out each other and the last stat is the one that we are intrested in.
 
-Examples of this might be "UserEmailUpdated" or "PermissionGrantedForUser" and "PermissionDeniedForUser". These types of events are important to get in the right order in downstream systems.
+Examples of this might be `UserEmailUpdated` or `PermissionGrantedForUser` and `PermissionDeniedForUser`. These types of events are important to get in the right order in downstream systems.
 
 ## Sequence
 
