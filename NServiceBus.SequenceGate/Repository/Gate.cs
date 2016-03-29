@@ -2,6 +2,10 @@
 
 namespace NServiceBus.SequenceGate.Repository
 {
+    /*
+    ** TODO: Figure out what to call this...
+    */
+
     /// <summary>
     /// Holds the information needed to discard old messages
     /// </summary>

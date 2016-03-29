@@ -7,8 +7,8 @@
     <ProjectGuid>{6BAF41B0-485E-4BEB-9B26-D1571606217C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NServiceBus.SequenceGate.Repository</RootNamespace>
-    <AssemblyName>NServiceBus.SequenceGate.Repository</AssemblyName>
+    <RootNamespace>NServiceBus.SequenceGate</RootNamespace>
+    <AssemblyName>NServiceBus.SequenceGate</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,10 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SequenceGate.cs" />
+    <Compile Include="SequenceGateType.cs" />
+    <Compile Include="SequenceGateBusConfiguration.cs" />
+    <Compile Include="SequenceGateMember.cs" />
+    <Compile Include="SequenceGateConfiguration.cs" />
     <Compile Include="SequenceGateRegistration.cs" />
     <Compile Include="Repository\Gate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SequenceGate.cs" />
+    <Compile Include="SequenceGateBehavior.cs" />
+    <Compile Include="Temp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
