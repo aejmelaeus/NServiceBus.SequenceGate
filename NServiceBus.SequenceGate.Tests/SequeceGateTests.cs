@@ -26,6 +26,11 @@ namespace NServiceBus.SequenceGate.Tests
         [Test]
         public void EntranceGranted_WithNewestMessage_ReturnsTrue()
         {
+            /*
+            ** TODO: The test set up is going to be cumbersome...
+            **       They say that another abstraction layer...
+            */
+
             // Arrange
             var message = new UserEmailUpdated();
 
