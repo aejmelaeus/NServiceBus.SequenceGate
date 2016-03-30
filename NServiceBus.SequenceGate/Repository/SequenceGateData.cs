@@ -9,7 +9,7 @@ namespace NServiceBus.SequenceGate.Repository
     /// <summary>
     /// Holds the information needed to discard old messages
     /// </summary>
-    public class Gate
+    public class SequenceGateData
     {
         /// <summary>
         /// The Database Id
@@ -25,10 +25,6 @@ namespace NServiceBus.SequenceGate.Repository
         /// The Id of the object, for example the User Id
         /// </summary>
         public string ObjectId { get; set; }
-        /// <summary>
-        /// The id of the scope, can for example be a Customer Id
-        /// </summary>
-        public string ScopeId { get; set; }
         /// <summary>
         /// The message time stamp in UTC
         /// </summary>

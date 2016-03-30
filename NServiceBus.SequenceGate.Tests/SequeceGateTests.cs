@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NServiceBus.SequenceGate.Repository;
 using NServiceBus.SequenceGate.Tests.Messages;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests
@@ -9,36 +10,55 @@ namespace NServiceBus.SequenceGate.Tests
     public class SequeceGateTests
     {
         [Test]
-        public void EntranceGranted_WithMessageNotParticipatingInGate_ReturnsTrue()
+        public void Pass_WithMessageNotParticipatingInGate_ReturnsTheMessage()
         {
             // Arrange
             var message = new UserEmailUpdated();
+            var repository = Substitute.For<ISequenceGateRepository>();
+            var parser = Substitute.For<ISequenceGateParser>();
             var configuration = new SequenceGateConfiguration();
-            var sequenceGate = new SequenceGate(configuration);
+            var sequenceGate = new SequenceGate(configuration, repository, parser);
 
             // Act
-            var result = sequenceGate.EntranceGranted(message);
+            var result = sequenceGate.Pass(message);
 
             // Assert
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.SameAs(message));
         }
 
         [Test]
-        public void EntranceGranted_WithNewestMessage_ReturnsTrue()
+        public void Pass_WithMessageNotParticipatingInGate_RepositoryNotCalled()
         {
-            /*
-            ** TODO: The test set up is going to be cumbersome...
-            **       They say that another abstraction layer...
-            */
-
             // Arrange
             var message = new UserEmailUpdated();
+            var repository = Substitute.For<ISequenceGateRepository>();
+            var parser = Substitute.For<ISequenceGateParser>();
+            var configuration = new SequenceGateConfiguration();
+            var sequenceGate = new SequenceGate(configuration, repository, parser);
+
+            // Act
+            sequenceGate.Pass(message);
+
+            // Assert
+            repository.DidNotReceiveWithAnyArgs().ListObjectIdsWithNewerDates(null);
+            repository.DidNotReceiveWithAnyArgs().Register(null, null);
+        }
+
+        [Test]
+        public void Pass_WithMessageParticipatingInGate_RegisterCalledOnRepository()
+        {
+            // Arrange
+            const string sequenceGateId = "UserEmailUpdated";
+            var message = new UserEmailUpdated();
+            var repository = Substitute.For<ISequenceGateRepository>();
+            var parser = Substitute.For<ISequenceGateParser>();
+            var query = new SequenceGateQuery();
 
             var configuration = new SequenceGateConfiguration
             {
                 new SequenceGateType
                 {
-                    Id = "UserEmailUpdated",
+                    Id = sequenceGateId,
                     Members = new List<SequenceGateMember>
                     {
                         new SequenceGateMember
@@ -51,13 +71,15 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            var sequenceGate = new SequenceGate(configuration);
+            parser.Parse(message, configuration[0].Members[0]).Returns(query);
+
+            var sequenceGate = new SequenceGate(configuration, repository, parser);
 
             // Act
-            var result = sequenceGate.EntranceGranted(message);
+            sequenceGate.Pass(message);
 
             // Assert
-            Assert.That(result, Is.True);
+            repository.Received().Register(sequenceGateId, query);
         }
     }
 }

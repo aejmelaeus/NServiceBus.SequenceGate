@@ -44,13 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repository\ISequenceGateParser.cs" />
+    <Compile Include="Repository\ISequenceGateRepository.cs" />
+    <Compile Include="Repository\SequenceGateData.cs" />
     <Compile Include="SequenceGate.cs" />
+    <Compile Include="SequenceGateQuery.cs" />
     <Compile Include="SequenceGateType.cs" />
     <Compile Include="SequenceGateBusConfiguration.cs" />
     <Compile Include="SequenceGateMember.cs" />
     <Compile Include="SequenceGateConfiguration.cs" />
     <Compile Include="SequenceGateRegistration.cs" />
-    <Compile Include="Repository\Gate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SequenceGateBehavior.cs" />
     <Compile Include="Temp.cs" />
