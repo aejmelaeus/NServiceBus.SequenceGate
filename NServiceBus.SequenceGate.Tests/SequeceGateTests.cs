@@ -14,8 +14,8 @@ namespace NServiceBus.SequenceGate.Tests
         {
             // Arrange
             var message = new UserEmailUpdated();
-            var repository = Substitute.For<ISequenceGateRepository>();
-            var parser = Substitute.For<ISequenceGateParser>();
+            var repository = Substitute.For<IRepository>();
+            var parser = Substitute.For<IParser>();
             var configuration = new SequenceGateConfiguration();
             var sequenceGate = new SequenceGate(configuration, repository, parser);
 
@@ -31,8 +31,8 @@ namespace NServiceBus.SequenceGate.Tests
         {
             // Arrange
             var message = new UserEmailUpdated();
-            var repository = Substitute.For<ISequenceGateRepository>();
-            var parser = Substitute.For<ISequenceGateParser>();
+            var repository = Substitute.For<IRepository>();
+            var parser = Substitute.For<IParser>();
             var configuration = new SequenceGateConfiguration();
             var sequenceGate = new SequenceGate(configuration, repository, parser);
 
@@ -41,7 +41,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             repository.DidNotReceiveWithAnyArgs().ListObjectIdsWithNewerDates(null);
-            repository.DidNotReceiveWithAnyArgs().Register(null, null);
+            repository.DidNotReceiveWithAnyArgs().Register(null);
         }
 
         [Test]
@@ -50,18 +50,18 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             const string sequenceGateId = "UserEmailUpdated";
             var message = new UserEmailUpdated();
-            var repository = Substitute.For<ISequenceGateRepository>();
-            var parser = Substitute.For<ISequenceGateParser>();
-            var query = new SequenceGateQuery();
+            var repository = Substitute.For<IRepository>();
+            var parser = Substitute.For<IParser>();
+            var gateData = new List<GateData>();
 
             var configuration = new SequenceGateConfiguration
             {
-                new SequenceGateType
+                new SequenceGateMember
                 {
                     Id = sequenceGateId,
-                    Members = new List<SequenceGateMember>
+                    Messages = new List<SequenceGateMessage>
                     {
-                        new SequenceGateMember
+                        new SequenceGateMessage
                         {
                             MessageType = typeof (UserEmailUpdated),
                             ObjectIdPropertyName = "UserId",
@@ -71,7 +71,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            parser.Parse(message, configuration[0].Members[0]).Returns(query);
+            parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
 
             var sequenceGate = new SequenceGate(configuration, repository, parser);
 
@@ -79,7 +79,7 @@ namespace NServiceBus.SequenceGate.Tests
             sequenceGate.Pass(message);
 
             // Assert
-            repository.Received().Register(sequenceGateId, query);
+            repository.Received().Register(gateData);
         }
     }
 }

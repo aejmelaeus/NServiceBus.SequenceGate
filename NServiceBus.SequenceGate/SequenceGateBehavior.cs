@@ -1,7 +1,6 @@
 ﻿using System;
 using NServiceBus.Pipeline;
 using NServiceBus.Pipeline.Contexts;
-using NServiceBus.SequenceGate.Repository;
 
 namespace NServiceBus.SequenceGate
 {

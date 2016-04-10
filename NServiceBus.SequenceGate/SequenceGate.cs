@@ -7,10 +7,10 @@ namespace NServiceBus.SequenceGate
     public class SequenceGate
     {
         private readonly SequenceGateConfiguration _configuration;
-        private readonly ISequenceGateRepository _repository;
-        private readonly ISequenceGateParser _parser;
+        private readonly IRepository _repository;
+        private readonly IParser _parser;
 
-        public SequenceGate(SequenceGateConfiguration configuration, ISequenceGateRepository repository, ISequenceGateParser parser)
+        internal SequenceGate(SequenceGateConfiguration configuration, IRepository repository, IParser parser)
         {
             _configuration = configuration;
             _repository = repository;
@@ -30,25 +30,25 @@ namespace NServiceBus.SequenceGate
 
             var member = GetSequenceGateMember(messageType);
             var query = _parser.Parse(message, member);
-            _repository.Register(sequenceGateId, query);
+            _repository.Register(query);
 
             return message;
         }
 
         private string GetSequenceGateId(Type messageType)
         {
-            var sequenceGateType = _configuration.SingleOrDefault(c => c.Members.Any(m => m.MessageType == messageType));
+            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
 
-            return sequenceGateType != default(SequenceGateType) ? sequenceGateType.Id : string.Empty;
+            return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
         }
 
-        private SequenceGateMember GetSequenceGateMember(Type messageType)
+        private SequenceGateMessage GetSequenceGateMember(Type messageType)
         {
-            var sequenceGateType = _configuration.SingleOrDefault(c => c.Members.Any(m => m.MessageType == messageType));
+            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
 
-            if (sequenceGateType != default(SequenceGateType))
+            if (sequenceGateType != default(SequenceGateMember))
             {
-                var sequenceGateMember = sequenceGateType.Members.SingleOrDefault(m => m.MessageType == messageType);
+                var sequenceGateMember = sequenceGateType.Messages.SingleOrDefault(m => m.MessageType == messageType);
                 return sequenceGateMember;
             }
             return null;

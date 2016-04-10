@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace NServiceBus.SequenceGate.Repository
+namespace NServiceBus.SequenceGate
 {
-    public class SequenceGateConfiguration : List<SequenceGateType>
+    public class SequenceGateConfiguration : List<SequenceGateMember>
     {
         // Nothing here...
     }

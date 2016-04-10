@@ -1,15 +1,11 @@
 ﻿using System;
 
-namespace NServiceBus.SequenceGate.Repository
+namespace NServiceBus.SequenceGate
 {
-    /*
-    ** TODO: Figure out what to call this...
-    */
-
     /// <summary>
     /// Holds the information needed to discard old messages
     /// </summary>
-    public class SequenceGateData
+    internal class GateData
     {
         /// <summary>
         /// The Database Id

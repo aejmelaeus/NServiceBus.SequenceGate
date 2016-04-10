@@ -1,24 +1,21 @@
-﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
 
-namespace NServiceBus.SequenceGate.Repository
+namespace NServiceBus.SequenceGate
 {
     /// <summary>
-    /// A member message in the Sequence Gate.
+    /// A member in the sequence gate.
+    /// Can consist of a single message, for example "UserEmailUpdated".
+    /// Or several messages that cancels out each other, for example "UserPermissionGranted" or "UserPermissionRevoked".
     /// </summary>
     public class SequenceGateMember
     {
         /// <summary>
-        /// The type of the message
+        /// The Id of the member, for example "UserEmailUpdated" or "UserPermissionActions".
         /// </summary>
-        public Type MessageType { get; set; }
+        public string Id { get; set; }
         /// <summary>
-        /// The property of the object id
+        /// The metadata of the actual messages.
         /// </summary>
-        public string ObjectIdPropertyName { get; set; }
-        /// <summary>
-        /// The time stamp property of the message
-        /// </summary>
-        public string TimeStampPropertyName { get; set; }
+        public List<SequenceGateMessage> Messages { get; set; }
     }
 }

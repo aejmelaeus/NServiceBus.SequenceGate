@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NServiceBus.SequenceGate.Repository
+/*
+** Figure out where to put this...
+*/
+
+namespace NServiceBus.SequenceGate
 {
     internal class User
     {
