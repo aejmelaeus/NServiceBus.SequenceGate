@@ -5,7 +5,7 @@ namespace NServiceBus.SequenceGate
     /// <summary>
     /// A member message in the Sequence Gate.
     /// </summary>
-    public class SequenceGateMessage
+    public class SequenceGateMessageMetadata
     {
         /// <summary>
         /// The type of the message

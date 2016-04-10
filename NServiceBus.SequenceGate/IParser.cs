@@ -12,8 +12,8 @@ namespace NServiceBus.SequenceGate
         /// further processing.
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="messageMetaData"></param>
+        /// <param name="messageMetadataMetaData"></param>
         /// <returns></returns>
-        IEnumerable<GateData> Parse(object message, SequenceGateMessage messageMetaData);
+        List<GateData> Parse(object message, SequenceGateMessageMetadata messageMetadataMetaData);
     }
 }

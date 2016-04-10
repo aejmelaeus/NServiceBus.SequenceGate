@@ -28,9 +28,11 @@ namespace NServiceBus.SequenceGate
                 return message;
             }
 
-            var member = GetSequenceGateMember(messageType);
-            var query = _parser.Parse(message, member);
-            _repository.Register(query);
+            var messageMetadata = GetSequenceGateMember(messageType);
+            var gateData = _parser.Parse(message, messageMetadata);
+            _repository.Register(gateData);
+
+            var objectIdsWithNewerDates = _repository.ListObjectIdsWithNewerDates(gateData);
 
             return message;
         }
@@ -42,7 +44,7 @@ namespace NServiceBus.SequenceGate
             return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
         }
 
-        private SequenceGateMessage GetSequenceGateMember(Type messageType)
+        private SequenceGateMessageMetadata GetSequenceGateMember(Type messageType)
         {
             var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
 

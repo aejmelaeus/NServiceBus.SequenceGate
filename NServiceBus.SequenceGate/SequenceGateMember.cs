@@ -16,6 +16,6 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// The metadata of the actual messages.
         /// </summary>
-        public List<SequenceGateMessage> Messages { get; set; }
+        public List<SequenceGateMessageMetadata> Messages { get; set; }
     }
 }

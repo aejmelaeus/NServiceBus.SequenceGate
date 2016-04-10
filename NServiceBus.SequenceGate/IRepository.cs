@@ -9,13 +9,13 @@ namespace NServiceBus.SequenceGate
         /// Inserts a entry for each object
         /// </summary>
         /// <param name="gateData"></param>
-        void Register(IEnumerable<GateData> gateData);
+        void Register(List<GateData> gateData);
 
         /// <summary>
         /// Returns the ids of the objects that already are seen
         /// </summary>
         /// <param name="gateData"></param>
         /// <returns></returns>
-        IEnumerable<string> ListObjectIdsWithNewerDates(IEnumerable<GateData> gateData);
+        List<string> ListObjectIdsWithNewerDates(List<GateData> gateData);
     }
 }
