@@ -6,10 +6,10 @@ using NUnit.Framework;
 namespace NServiceBus.SequenceGate.Tests
 {
     [TestFixture]
-    public class SequeceGateTests
+    public class SequenceGateMemberCases
     {
         [Test]
-        public void Pass_WithMessageParticipatingInGate_RegisterCalledOnRepository()
+        public void Pass_WhenCalled_RegisterCalledOnRepository()
         {
             // Arrange
             const string sequenceGateId = "UserEmailUpdated";
@@ -47,7 +47,7 @@ namespace NServiceBus.SequenceGate.Tests
         }
 
         [Test]
-        public void Pass_MessageParticipatingInGate_RepositoryCalledToListMessageStatusWithParsedData()
+        public void Pass_WhenCalled_RepositoryCalledToListMessageStatusWithParsedData()
         {
             const string sequenceGateId = "UserEmailUpdated";
             var message = new UserEmailUpdated();
