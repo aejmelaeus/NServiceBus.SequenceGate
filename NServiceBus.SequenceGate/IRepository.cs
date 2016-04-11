@@ -16,6 +16,6 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         /// <param name="gateData"></param>
         /// <returns></returns>
-        List<string> ListObjectIdsWithNewerDates(List<GateData> gateData);
+        List<string> ListSeenObjectIds(List<GateData> gateData);
     }
 }

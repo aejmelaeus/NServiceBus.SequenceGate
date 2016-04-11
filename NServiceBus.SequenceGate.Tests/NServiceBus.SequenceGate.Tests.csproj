@@ -51,6 +51,7 @@
     <Compile Include="Messages\Message.cs" />
     <Compile Include="SequeceGateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SequenceGateNonMemberCases.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

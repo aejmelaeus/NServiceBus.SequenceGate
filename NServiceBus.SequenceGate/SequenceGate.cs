@@ -32,7 +32,9 @@ namespace NServiceBus.SequenceGate
             var gateData = _parser.Parse(message, messageMetadata);
             _repository.Register(gateData);
 
-            var objectIdsWithNewerDates = _repository.ListObjectIdsWithNewerDates(gateData);
+            var seenObjectIds = _repository.ListSeenObjectIds(gateData);
+
+
 
             return message;
         }
