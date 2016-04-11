@@ -7,56 +7,58 @@ namespace NServiceBus.SequenceGate.Tests
     [TestFixture]
     public class SequenceGateNonMemberCases
     {
+        private IRepository _repository;
+        private IParser _parser;
+        private UserEmailUpdated _message;
+        private SequenceGateConfiguration _configuration;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _repository = Substitute.For<IRepository>();
+            _parser = Substitute.For<IParser>();
+            _message = new UserEmailUpdated();
+            _configuration = new SequenceGateConfiguration();
+        }
+
         [Test]
         public void Pass_WhenCalled_ReturnsTheMessage()
         {
             // Arrange
-            var message = new UserEmailUpdated();
-            var repository = Substitute.For<IRepository>();
-            var parser = Substitute.For<IParser>();
-            var configuration = new SequenceGateConfiguration();
-            var sequenceGate = new SequenceGate(configuration, repository, parser);
+            var sequenceGate = new SequenceGate(_configuration, _repository, _parser);
 
             // Act
-            var result = sequenceGate.Pass(message);
+            var result = sequenceGate.Pass(_message);
 
             // Assert
-            Assert.That(result, Is.SameAs(message));
+            Assert.That(result, Is.SameAs(_message));
         }
 
         [Test]
         public void Pass_WhenCalled_RepositoryNotCalled()
         {
             // Arrange
-            var message = new UserEmailUpdated();
-            var repository = Substitute.For<IRepository>();
-            var parser = Substitute.For<IParser>();
-            var configuration = new SequenceGateConfiguration();
-            var sequenceGate = new SequenceGate(configuration, repository, parser);
+            var sequenceGate = new SequenceGate(_configuration, _repository, _parser);
 
             // Act
-            sequenceGate.Pass(message);
+            sequenceGate.Pass(_message);
 
             // Assert
-            repository.DidNotReceiveWithAnyArgs().ListSeenObjectIds(null);
-            repository.DidNotReceiveWithAnyArgs().Register(null);
+            _repository.DidNotReceiveWithAnyArgs().ListSeenObjectIds(null);
+            _repository.DidNotReceiveWithAnyArgs().Register(null);
         }
 
         [Test]
         public void Pass_WhenCalled_ParserNotCalled()
         {
             // Arrange
-            var message = new UserEmailUpdated();
-            var repository = Substitute.For<IRepository>();
-            var parser = Substitute.For<IParser>();
-            var configuration = new SequenceGateConfiguration();
-            var sequenceGate = new SequenceGate(configuration, repository, parser);
+            var sequenceGate = new SequenceGate(_configuration, _repository, _parser);
 
             // Act
-            sequenceGate.Pass(message);
+            sequenceGate.Pass(_message);
 
             // Assert
-            parser.DidNotReceiveWithAnyArgs().Parse(null, null);
+            _parser.DidNotReceiveWithAnyArgs().Parse(null, null);
         }
     }
 }
