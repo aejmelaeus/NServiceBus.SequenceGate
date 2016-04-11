@@ -125,5 +125,16 @@ namespace NServiceBus.SequenceGate.Tests
             // Assert
             _mutator.DidNotReceiveWithAnyArgs().Mutate(null, null, null);
         }
+
+        [Test]
+        public void Pass_SomeObjectAlreadySeen_MutatedObjectReturned()
+        {
+            // Arrange
+            -
+
+            // Act
+
+            // Assert
+        }
     }
 }
