@@ -9,6 +9,7 @@ namespace NServiceBus.SequenceGate.Tests
     {
         private IRepository _repository;
         private IParser _parser;
+        private IMutator _mutator;
         private UserEmailUpdated _message;
         private SequenceGateConfiguration _configuration;
 
@@ -17,6 +18,7 @@ namespace NServiceBus.SequenceGate.Tests
         {
             _repository = Substitute.For<IRepository>();
             _parser = Substitute.For<IParser>();
+            _mutator = Substitute.For<IMutator>();
             _message = new UserEmailUpdated();
             _configuration = new SequenceGateConfiguration();
         }
@@ -25,7 +27,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_ReturnsTheMessage()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _repository, _parser);
+            var sequenceGate = new SequenceGate(_configuration, _repository, _parser, _mutator);
 
             // Act
             var result = sequenceGate.Pass(_message);
@@ -38,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_RepositoryNotCalled()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _repository, _parser);
+            var sequenceGate = new SequenceGate(_configuration, _repository, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(_message);
@@ -52,7 +54,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_ParserNotCalled()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _repository, _parser);
+            var sequenceGate = new SequenceGate(_configuration, _repository, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(_message);

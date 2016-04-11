@@ -9,12 +9,14 @@ namespace NServiceBus.SequenceGate
         private readonly SequenceGateConfiguration _configuration;
         private readonly IRepository _repository;
         private readonly IParser _parser;
+        private readonly IMutator _mutator;
 
-        internal SequenceGate(SequenceGateConfiguration configuration, IRepository repository, IParser parser)
+        internal SequenceGate(SequenceGateConfiguration configuration, IRepository repository, IParser parser, IMutator mutator)
         {
             _configuration = configuration;
             _repository = repository;
             _parser = parser;
+            _mutator = mutator;
         }
 
         public object Pass(object message)

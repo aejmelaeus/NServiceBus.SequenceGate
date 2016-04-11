@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="GateData.cs" />
