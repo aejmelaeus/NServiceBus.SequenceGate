@@ -4,6 +4,9 @@ namespace NServiceBus.SequenceGate
 {
     public class SequenceGateConfiguration : List<SequenceGateMember>
     {
-        // Nothing here...
+        internal string Validate()
+        {
+            return string.Empty;
+        }
     }
 }
