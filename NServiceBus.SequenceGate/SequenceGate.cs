@@ -21,16 +21,12 @@ namespace NServiceBus.SequenceGate
 
         public object Pass(object message)
         {
-            var messageType = message.GetType();
-
-            var sequenceGateId = GetSequenceGateId(messageType);
-
-            if (string.IsNullOrEmpty(sequenceGateId))
+            if (!MessageIsParticipatingInGate(message))
             {
                 return message;
             }
 
-            var messageMetadata = GetSequenceGateMember(messageType);
+            var messageMetadata = GetSequenceGateMember(message);
             var gateData = _parser.Parse(message, messageMetadata);
             _repository.Register(gateData);
 
@@ -44,6 +40,15 @@ namespace NServiceBus.SequenceGate
             return message;
         }
 
+        private bool MessageIsParticipatingInGate(object message)
+        {
+            var messageType = message.GetType();
+
+            var sequenceGateId = GetSequenceGateId(messageType);
+
+            return !string.IsNullOrEmpty(sequenceGateId);
+        }
+
         private string GetSequenceGateId(Type messageType)
         {
             var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
@@ -51,8 +56,10 @@ namespace NServiceBus.SequenceGate
             return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
         }
 
-        private SequenceGateMessageMetadata GetSequenceGateMember(Type messageType)
+        private SequenceGateMessageMetadata GetSequenceGateMember(object message)
         {
+            var messageType = message.GetType();
+
             var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
 
             if (sequenceGateType != default(SequenceGateMember))
