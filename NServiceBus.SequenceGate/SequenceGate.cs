@@ -36,7 +36,10 @@ namespace NServiceBus.SequenceGate
 
             var seenObjectIds = _repository.ListSeenObjectIds(gateData);
 
-
+            if (seenObjectIds.Any())
+            {
+                message = _mutator.Mutate(message, seenObjectIds, messageMetadata);
+            }
 
             return message;
         }

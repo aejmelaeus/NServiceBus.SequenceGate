@@ -2,6 +2,7 @@
 using NServiceBus.SequenceGate.Tests.Messages;
 using NSubstitute;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace NServiceBus.SequenceGate.Tests
 {
@@ -27,6 +28,8 @@ namespace NServiceBus.SequenceGate.Tests
             const string sequenceGateId = "UserEmailUpdated";
             var message = new UserEmailUpdated();
             var gateData = new List<GateData>();
+
+            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -63,6 +66,8 @@ namespace NServiceBus.SequenceGate.Tests
             var message = new UserEmailUpdated();
             var gateData = new List<GateData>();
 
+            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(new List<string>());
+
             var configuration = new SequenceGateConfiguration
             {
                 new SequenceGateMember
@@ -98,6 +103,8 @@ namespace NServiceBus.SequenceGate.Tests
             var message = new UserEmailUpdated();
             var gateData = new List<GateData>();
 
+            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(new List<string>());
+
             var configuration = new SequenceGateConfiguration
             {
                 new SequenceGateMember
@@ -130,11 +137,40 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_SomeObjectAlreadySeen_MutatedObjectReturned()
         {
             // Arrange
-            -
+            var originalObject = new UserEmailUpdated();
+            var seenObjects = new List<string> { "ASeenId" };
+
+            var metadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (UserEmailUpdated),
+                ObjectIdPropertyName = "UserId",
+                TimeStampPropertyName = "TimeStamp"
+            };
+
+            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(seenObjects);
+
+            var mutatedObject = new UserEmailUpdated();
+            _mutator.Mutate(originalObject, seenObjects, metadata).Returns(mutatedObject);
+
+            var configuration = new SequenceGateConfiguration
+            {
+                new SequenceGateMember
+                {
+                    Id = "abc123",
+                    Messages = new List<SequenceGateMessageMetadata>
+                    {
+                        metadata
+                    }
+                }
+            };
+
+            var sequenceGate = new SequenceGate(configuration, _repository, _parser, _mutator);
 
             // Act
+            var result = sequenceGate.Pass(originalObject);
 
             // Assert
+            Assert.That(result, Is.SameAs(mutatedObject));
         }
     }
 }
