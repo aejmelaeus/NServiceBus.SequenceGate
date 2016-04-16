@@ -33,7 +33,7 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// Validates the metadata
         /// </summary>
-        /// <returns>Returns a string</returns>
+        /// <returns>A list of strings with error messages</returns>
         internal List<string> Validate()
         {
             var result = new List<string>();
