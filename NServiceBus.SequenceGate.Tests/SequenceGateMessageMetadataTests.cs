@@ -39,7 +39,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetatdata.Validate();
 
             // Assert
-            var expectedResult = "Metadata for UserEmailUpdated is invalid. ObjectIdPropertyName WrongObjectIdProperty is missing";
+            var expectedResult = "Metadata for SimpleMessage is invalid. ObjectIdPropertyName WrongObjectIdProperty is missing";
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -58,14 +58,8 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetadata.Validate();
 
             // Assert
-            var expectedResult = "Metadata for UserEmailUpdated is invalid. TimeStampPropertyName WrongTimeStampProperty is missing";
+            var expectedResult = "Metadata for SimpleMessage is invalid. TimeStampPropertyName WrongTimeStampProperty is missing";
             Assert.That(result.Contains(expectedResult));
-        }
-
-        private class TimeStampInWrongFormat
-        {
-            public string Id { get; set; }
-            public string TimeStamp { get; set; }
         }
 
         [Test]
@@ -95,6 +89,24 @@ namespace NServiceBus.SequenceGate.Tests
             {
                 MessageType = typeof (ComplexMetaDataMessage),
                 ObjectIdPropertyName = "UserId",
+                TimeStampPropertyName = "MetaData.TimeStamp"
+            };
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void Validate_ObjectIdInComplexType_ValidateCorreclty()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (ComplexUserAndMetaDataMessage),
+                ObjectIdPropertyName = "User.Id",
                 TimeStampPropertyName = "MetaData.TimeStamp"
             };
 

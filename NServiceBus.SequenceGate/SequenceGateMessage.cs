@@ -28,22 +28,41 @@ namespace NServiceBus.SequenceGate
         /// <returns>Returns a string</returns>
         internal List<string> Validate()
         {
-            var result = new List<string>();
-            var objectIdPropertyInfo = MessageType.GetProperty(ObjectIdPropertyName);
-
-            if (objectIdPropertyInfo == default(PropertyInfo))
+            var result = new List<string>
             {
-                result.Add($"Metadata for {MessageType.Name} is invalid. ObjectIdPropertyName {ObjectIdPropertyName} is missing");
-            }
+                ValidateObjectId(),
+                ValidateTimeStamp()
+            };
 
-            var timeStampResult = ValidateTimeStamp();
+            result.RemoveAll(string.IsNullOrEmpty);
 
-            if (!string.IsNullOrEmpty(timeStampResult))
-            {
-                result.Add(timeStampResult);
-            }
-            
             return result;
+        }
+
+        private string ValidateObjectId()
+        {
+            var properties = ObjectIdPropertyName.Split('.');
+            var propertiesQueue = new Queue<string>(properties);
+            var type = MessageType;
+
+            while (true)
+            {
+                var propertyName = propertiesQueue.Dequeue();
+
+                var propertyInfo = type.GetProperty(propertyName);
+
+                if (propertyInfo == default(PropertyInfo))
+                {
+                    return $"Metadata for {MessageType.Name} is invalid. ObjectIdPropertyName {ObjectIdPropertyName} is missing";
+                }
+
+                if (propertiesQueue.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                type = propertyInfo.PropertyType;
+            }
         }
 
         private string ValidateTimeStamp()

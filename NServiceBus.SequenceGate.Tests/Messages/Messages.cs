@@ -9,6 +9,12 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public DateTime TimeStamp { get; set; }
     }
 
+    internal class TimeStampInWrongFormat
+    {
+        public string Id { get; set; }
+        public string TimeStamp { get; set; }
+    }
+
     internal class MetaData
     {
         public DateTime TimeStamp { get; set; }
