@@ -242,5 +242,23 @@ namespace NServiceBus.SequenceGate.Tests
             // Assert
             Assert.That(result.Contains("Metadata for CollectionMessage is invalid. Collection with PropertyName WrongCollection does not exist on message type or is not of type ICollection"));
         }
+
+        [Test]
+        public void Validate_WithWrongCollectionType_CorrectErrorMessage()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof(WrongCollectionTypeMessage),
+                CollectionPropertyName = "CollectionThatIsAString",
+                TimeStampPropertyName = "TimeStamp"
+            };
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result.Contains("Metadata for WrongCollectionTypeMessage is invalid. Collection with PropertyName CollectionThatIsAString does not exist on message type or is not of type ICollection"));
+        }
     }
 }

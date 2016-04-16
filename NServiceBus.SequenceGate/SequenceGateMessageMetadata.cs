@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -68,9 +69,8 @@ namespace NServiceBus.SequenceGate
             }
             else
             {
-                // Metadata for CollectionMessage is invalid. Collection with PropertyName WrongCollection does not exist on message type
                 var collectionPropertyInfo = MessageType.GetProperty(CollectionPropertyName);
-                if (collectionPropertyInfo == default(PropertyInfo))
+                if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
                 {
                     result.Add($"Metadata for {MessageType.Name} is invalid. Collection with PropertyName {CollectionPropertyName} does not exist on message type or is not of type ICollection");
                 }
@@ -89,6 +89,11 @@ namespace NServiceBus.SequenceGate
             }
             
             return result;
+        }
+
+        private bool PropertyIsOfTypeIEnumerable(PropertyInfo collectionPropertyInfo)
+        {
+            return collectionPropertyInfo.PropertyType.GetInterface("ICollection") != null;
         }
 
         private bool ValidateProperty(string unsplittedPropertyName, Type expectedType = null, bool required = true)
