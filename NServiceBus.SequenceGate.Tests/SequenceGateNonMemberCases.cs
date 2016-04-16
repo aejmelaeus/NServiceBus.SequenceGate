@@ -7,7 +7,7 @@ namespace NServiceBus.SequenceGate.Tests
     [TestFixture]
     public class SequenceGateNonMemberCases
     {
-        private IRepository _repository;
+        private IPersistence _persistence;
         private IParser _parser;
         private IMutator _mutator;
         private UserEmailUpdated _message;
@@ -16,7 +16,7 @@ namespace NServiceBus.SequenceGate.Tests
         [SetUp]
         public void SetUp()
         {
-            _repository = Substitute.For<IRepository>();
+            _persistence = Substitute.For<IPersistence>();
             _parser = Substitute.For<IParser>();
             _mutator = Substitute.For<IMutator>();
             _message = new UserEmailUpdated();
@@ -27,7 +27,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_ReturnsTheMessage()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
             var result = sequenceGate.Pass(_message);
@@ -40,21 +40,21 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_RepositoryNotCalled()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(_message);
 
             // Assert
-            _repository.DidNotReceiveWithAnyArgs().ListSeenObjectIds(null);
-            _repository.DidNotReceiveWithAnyArgs().Register(null);
+            _persistence.DidNotReceiveWithAnyArgs().ListAlreadySeenTrackedObjectIds(null);
+            _persistence.DidNotReceiveWithAnyArgs().Register(null);
         }
 
         [Test]
         public void Pass_WhenCalled_ParserNotCalled()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(_message);

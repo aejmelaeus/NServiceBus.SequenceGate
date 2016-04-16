@@ -9,14 +9,14 @@ namespace NServiceBus.SequenceGate.Tests
     [TestFixture]
     public class SequenceGateMemberCases
     {
-        private IRepository _repository;
+        private IPersistence _persistence;
         private IParser _parser;
         private IMutator _mutator;
 
         [SetUp]
         public void SetUp()
         {
-            _repository = Substitute.For<IRepository>();
+            _persistence = Substitute.For<IPersistence>();
             _parser = Substitute.For<IParser>();
             _mutator = Substitute.For<IMutator>();
         }
@@ -27,9 +27,9 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             const string sequenceGateId = "UserEmailUpdated";
             var message = new UserEmailUpdated();
-            var gateData = new List<GateData>();
+            var gateData = new List<TrackedObject>();
 
-            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(new List<string>());
+            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -50,13 +50,13 @@ namespace NServiceBus.SequenceGate.Tests
 
             _parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
 
-            var sequenceGate = new SequenceGate(configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(message);
 
             // Assert
-            _repository.Received().Register(gateData);
+            _persistence.Received().Register(gateData);
         }
 
         [Test]
@@ -64,9 +64,9 @@ namespace NServiceBus.SequenceGate.Tests
         {
             const string sequenceGateId = "UserEmailUpdated";
             var message = new UserEmailUpdated();
-            var gateData = new List<GateData>();
+            var gateData = new List<TrackedObject>();
 
-            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(new List<string>());
+            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -87,13 +87,13 @@ namespace NServiceBus.SequenceGate.Tests
 
             _parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
 
-            var sequenceGate = new SequenceGate(configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(message);
 
             // Assert
-            _repository.Received().ListSeenObjectIds(gateData);
+            _persistence.Received().ListAlreadySeenTrackedObjectIds(gateData);
         }
 
         [Test]
@@ -101,9 +101,9 @@ namespace NServiceBus.SequenceGate.Tests
         {
             const string sequenceGateId = "UserEmailUpdated";
             var message = new UserEmailUpdated();
-            var gateData = new List<GateData>();
+            var gateData = new List<TrackedObject>();
 
-            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(new List<string>());
+            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -124,7 +124,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             _parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
 
-            var sequenceGate = new SequenceGate(configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(message);
@@ -147,7 +147,7 @@ namespace NServiceBus.SequenceGate.Tests
                 TimeStampPropertyName = "TimeStamp"
             };
 
-            _repository.ListSeenObjectIds(Arg.Any<List<GateData>>()).Returns(seenObjects);
+            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(seenObjects);
 
             var mutatedObject = new UserEmailUpdated();
             _mutator.Mutate(originalObject, seenObjects, metadata).Returns(mutatedObject);
@@ -164,7 +164,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            var sequenceGate = new SequenceGate(configuration, _repository, _parser, _mutator);
+            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             var result = sequenceGate.Pass(originalObject);

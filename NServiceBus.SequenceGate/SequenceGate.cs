@@ -7,14 +7,14 @@ namespace NServiceBus.SequenceGate
     public class SequenceGate
     {
         private readonly SequenceGateConfiguration _configuration;
-        private readonly IRepository _repository;
+        private readonly IPersistence _persistence;
         private readonly IParser _parser;
         private readonly IMutator _mutator;
 
-        internal SequenceGate(SequenceGateConfiguration configuration, IRepository repository, IParser parser, IMutator mutator)
+        internal SequenceGate(SequenceGateConfiguration configuration, IPersistence persistence, IParser parser, IMutator mutator)
         {
             _configuration = configuration;
-            _repository = repository;
+            _persistence = persistence;
             _parser = parser;
             _mutator = mutator;
         }
@@ -28,9 +28,9 @@ namespace NServiceBus.SequenceGate
 
             var messageMetadata = GetSequenceGateMember(message);
             var gateData = _parser.Parse(message, messageMetadata);
-            _repository.Register(gateData);
+            _persistence.Register(gateData);
 
-            var seenObjectIds = _repository.ListSeenObjectIds(gateData);
+            var seenObjectIds = _persistence.ListAlreadySeenTrackedObjectIds(gateData);
 
             if (seenObjectIds.Any())
             {

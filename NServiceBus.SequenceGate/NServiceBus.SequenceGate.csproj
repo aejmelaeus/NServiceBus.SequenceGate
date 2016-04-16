@@ -46,8 +46,8 @@
   <ItemGroup>
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="GateData.cs" />
+    <Compile Include="IPersistence.cs" />
+    <Compile Include="TrackedObject.cs" />
     <Compile Include="SequenceGate.cs" />
     <Compile Include="SequenceGateMember.cs" />
     <Compile Include="SequenceGateBusConfiguration.cs" />

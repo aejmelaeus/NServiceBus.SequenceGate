@@ -14,6 +14,6 @@ namespace NServiceBus.SequenceGate
         /// <param name="message"></param>
         /// <param name="messageMetadataMetaData"></param>
         /// <returns></returns>
-        List<GateData> Parse(object message, SequenceGateMessageMetadata messageMetadataMetaData);
+        List<TrackedObject> Parse(object message, SequenceGateMessageMetadata messageMetadataMetaData);
     }
 }
