@@ -1,4 +1,6 @@
-﻿using NServiceBus.SequenceGate.Tests.Messages;
+﻿using System;
+using System.Runtime.CompilerServices;
+using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests
@@ -58,6 +60,31 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             var expectedResult = "Metadata for UserEmailUpdated is invalid. TimeStampPropertyName WrongTimeStampProperty is missing";
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        private class TimeStampInWrongFormat
+        {
+            public string Id { get; set; }
+            public string TimeStamp { get; set; }
+        }
+
+        [Test]
+        public void Validate_WithInvalidaTypeForTimestamp_ReturnsErrorString()
+        {
+            // Arrange
+            var invalidMessageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (TimeStampInWrongFormat),
+                ObjectIdPropertyName = "Id",
+                TimeStampPropertyName = "TimeStamp"
+            };
+
+            // Act
+            var result = invalidMessageMetadata.Validate();
+
+            // Assert
+            var expectedResult = "Metadata for TimeStampInWrongFormat is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
             Assert.That(result, Is.EqualTo(expectedResult));
         }
     }

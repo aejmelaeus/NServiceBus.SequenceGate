@@ -46,7 +46,7 @@ namespace NServiceBus.SequenceGate.Tests
             sequenceGate.Pass(_message);
 
             // Assert
-            _persistence.DidNotReceiveWithAnyArgs().ListAlreadySeenTrackedObjectIds(null);
+            _persistence.DidNotReceiveWithAnyArgs().ListObjectIdsToDismiss(null);
             _persistence.DidNotReceiveWithAnyArgs().Register(null);
         }
 

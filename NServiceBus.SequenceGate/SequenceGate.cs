@@ -27,14 +27,14 @@ namespace NServiceBus.SequenceGate
             }
 
             var messageMetadata = GetSequenceGateMember(message);
-            var gateData = _parser.Parse(message, messageMetadata);
-            _persistence.Register(gateData);
+            var trackedObjects = _parser.Parse(message, messageMetadata);
+            _persistence.Register(trackedObjects);
 
-            var seenObjectIds = _persistence.ListAlreadySeenTrackedObjectIds(gateData);
+            var alreadyHandledObjectIds = _persistence.ListObjectIdsToDismiss(trackedObjects);
 
-            if (seenObjectIds.Any())
+            if (alreadyHandledObjectIds.Any())
             {
-                message = _mutator.Mutate(message, seenObjectIds, messageMetadata);
+                message = _mutator.Mutate(message, alreadyHandledObjectIds, messageMetadata);
             }
 
             return message;

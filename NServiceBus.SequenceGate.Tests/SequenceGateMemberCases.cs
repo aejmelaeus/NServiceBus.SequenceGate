@@ -29,7 +29,7 @@ namespace NServiceBus.SequenceGate.Tests
             var message = new UserEmailUpdated();
             var gateData = new List<TrackedObject>();
 
-            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
+            _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -66,7 +66,7 @@ namespace NServiceBus.SequenceGate.Tests
             var message = new UserEmailUpdated();
             var gateData = new List<TrackedObject>();
 
-            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
+            _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -93,7 +93,7 @@ namespace NServiceBus.SequenceGate.Tests
             sequenceGate.Pass(message);
 
             // Assert
-            _persistence.Received().ListAlreadySeenTrackedObjectIds(gateData);
+            _persistence.Received().ListObjectIdsToDismiss(gateData);
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace NServiceBus.SequenceGate.Tests
             var message = new UserEmailUpdated();
             var gateData = new List<TrackedObject>();
 
-            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
+            _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration
             {
@@ -147,7 +147,7 @@ namespace NServiceBus.SequenceGate.Tests
                 TimeStampPropertyName = "TimeStamp"
             };
 
-            _persistence.ListAlreadySeenTrackedObjectIds(Arg.Any<List<TrackedObject>>()).Returns(seenObjects);
+            _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(seenObjects);
 
             var mutatedObject = new UserEmailUpdated();
             _mutator.Mutate(originalObject, seenObjects, metadata).Returns(mutatedObject);

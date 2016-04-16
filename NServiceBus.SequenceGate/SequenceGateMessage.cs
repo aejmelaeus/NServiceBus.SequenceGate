@@ -37,6 +37,11 @@ namespace NServiceBus.SequenceGate
                 return $"Metadata for {MessageType.Name} is invalid. TimeStampPropertyName {TimeStampPropertyName} is missing";
             }
 
+            if (timeStampPropertyInfo.PropertyType != typeof (System.DateTime))
+            {
+                return $"Metadata for {MessageType.Name} is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
+            }
+
             return string.Empty;
         }
     }
