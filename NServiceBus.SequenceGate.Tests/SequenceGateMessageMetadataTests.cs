@@ -1,4 +1,5 @@
-﻿using NServiceBus.SequenceGate.Tests.Messages;
+﻿using System.Security.Cryptography.X509Certificates;
+using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests
@@ -39,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetatdata.Validate();
 
             // Assert
-            var expectedResult = "Metadata for SimpleMessage is invalid. ObjectIdPropertyName WrongObjectIdProperty is missing";
+            var expectedResult = "Metadata for SimpleMessage is invalid. ObjectIdProperty: WrongObjectIdProperty is missing";
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -57,9 +58,21 @@ namespace NServiceBus.SequenceGate.Tests
             // Act
             var result = invalidMessageMetadata.Validate();
 
-            // Assert
-            var expectedResult = "Metadata for SimpleMessage is invalid. TimeStampPropertyName WrongTimeStampProperty is missing";
+            // Assert                                                    
+            var expectedResult = "Metadata for SimpleMessage is invalid. TimeStampProperty: WrongTimeStampProperty is missing or not of type System.DateTime";
             Assert.That(result.Contains(expectedResult));
+        }
+
+        [Test]
+        public void Validate_AllPropertiesAreNull_ReturnsErrorsInsteadOfException()
+        {
+            // Arrange
+            var nullMessage = new SequenceGateMessageMetadata();
+
+            // Act
+            nullMessage.Validate();
+
+            Assert.Pass("Should not crash with uninitialized properties");
         }
 
         [Test]
@@ -77,8 +90,21 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetadata.Validate();
 
             // Assert
-            var expectedResult = "Metadata for TimeStampInWrongFormat is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
+            var expectedResult = "Metadata for TimeStampInWrongFormat is invalid. TimeStampProperty: TimeStamp is missing or not of type System.DateTime";
             Assert.That(result.Contains(expectedResult));
+        }
+
+        [Test]
+        public void Validate_MessageTypeIsNull_CorrectErrorMessageReturned()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata();
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result.Contains("MessageType missing."));
         }
 
         [Test]
@@ -105,7 +131,7 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             var messageMetadata = new SequenceGateMessageMetadata
             {
-                MessageType = typeof (ComplexUserAndMetaDataMessage),
+                MessageType = typeof (ComplexMessage),
                 ObjectIdPropertyName = "User.Id",
                 TimeStampPropertyName = "MetaData.TimeStamp"
             };
@@ -116,15 +142,24 @@ namespace NServiceBus.SequenceGate.Tests
             // Assert
             Assert.That(result, Is.Empty);
         }
-    }
 
-    public class ComplexType
-    {
-        public TheInnerType TheInnerType { get; set; }
-    }
+        [Test]
+        public void Validate_MessageWithCorrectScope_ValidatesOK()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (ComplexMessage),
+                ObjectIdPropertyName = "User.Id",
+                ScopeId = "Scope.Id",
+                TimeStampPropertyName = "MetaData.TimeStamp"
+            };
 
-    public class TheInnerType
-    {
-        public string Id { get; set; }
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
     }
 }

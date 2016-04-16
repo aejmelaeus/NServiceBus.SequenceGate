@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate
@@ -17,5 +18,10 @@ namespace NServiceBus.SequenceGate
         /// The metadata of the actual messages.
         /// </summary>
         public List<SequenceGateMessageMetadata> Messages { get; set; }
+
+        internal void Validate()
+        {
+            throw new NotImplementedException("Should validate that all messages has the same ScopeId");
+        }
     }
 }

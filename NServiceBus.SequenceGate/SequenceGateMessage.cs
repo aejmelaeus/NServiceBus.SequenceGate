@@ -23,51 +23,50 @@ namespace NServiceBus.SequenceGate
         public string TimeStampPropertyName { get; set; }
 
         /// <summary>
+        /// A message can contain a scope.
+        /// The scope can be a "client" or "category" in the system.
+        /// A message where scope could be used could be "UserGrantedDiscountOnProductCategory".
+        /// In this case the product category would be the ScopeId.
+        /// </summary>
+        public string ScopeId { get; set; }
+
+        /// <summary>
         /// Validates the metadata
         /// </summary>
         /// <returns>Returns a string</returns>
         internal List<string> Validate()
         {
-            var result = new List<string>
+            var result = new List<string>();
+
+            if (MessageType == null)
             {
-                ValidateObjectId(),
-                ValidateTimeStamp()
-            };
+                result.Add("MessageType missing.");
+                return result;
+            }
 
-            result.RemoveAll(string.IsNullOrEmpty);
+            var validObjectId = ValidateProperty(ObjectIdPropertyName);
+            if (!validObjectId)
+            {
+                result.Add($"Metadata for {MessageType.Name} is invalid. ObjectIdProperty: {ObjectIdPropertyName} is missing");
+            }
 
+            var validTimeStamp = ValidateProperty(TimeStampPropertyName, typeof (DateTime));
+            if (!validTimeStamp)
+            {
+                result.Add($"Metadata for {MessageType.Name} is invalid. TimeStampProperty: {TimeStampPropertyName} is missing or not of type System.DateTime");
+            }
+            
             return result;
         }
 
-        private string ValidateObjectId()
+        private bool ValidateProperty(string unsplittedPropertyName, Type expectedType = null)
         {
-            var properties = ObjectIdPropertyName.Split('.');
-            var propertiesQueue = new Queue<string>(properties);
-            var type = MessageType;
-
-            while (true)
+            if (string.IsNullOrEmpty(unsplittedPropertyName))
             {
-                var propertyName = propertiesQueue.Dequeue();
-
-                var propertyInfo = type.GetProperty(propertyName);
-
-                if (propertyInfo == default(PropertyInfo))
-                {
-                    return $"Metadata for {MessageType.Name} is invalid. ObjectIdPropertyName {ObjectIdPropertyName} is missing";
-                }
-
-                if (propertiesQueue.Count == 0)
-                {
-                    return string.Empty;
-                }
-
-                type = propertyInfo.PropertyType;
+                return false;
             }
-        }
-
-        private string ValidateTimeStamp()
-        {
-            var properties = TimeStampPropertyName.Split('.');
+            
+            var properties = unsplittedPropertyName.Split('.');
             var propertiesQueue = new Queue<string>(properties);
             var type = MessageType;
 
@@ -79,16 +78,16 @@ namespace NServiceBus.SequenceGate
 
                 if (propertyInfo == default(PropertyInfo))
                 {
-                    return $"Metadata for {MessageType.Name} is invalid. TimeStampPropertyName {TimeStampPropertyName} is missing";
+                    return false;
                 }
 
                 if (propertiesQueue.Count == 0)
                 {
-                    if (propertyInfo.PropertyType == typeof (DateTime))
+                    if (expectedType == default (Type))
                     {
-                        return string.Empty;
+                        return true;
                     }
-                    return $"Metadata for {MessageType.Name} is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
+                    return expectedType == propertyInfo.PropertyType;
                 }
 
                 type = propertyInfo.PropertyType;
