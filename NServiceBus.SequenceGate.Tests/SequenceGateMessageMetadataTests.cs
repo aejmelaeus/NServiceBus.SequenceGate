@@ -183,5 +183,24 @@ namespace NServiceBus.SequenceGate.Tests
             // Assert
             Assert.That(result.Contains("Metadata for SimpleMessage is invalid. ScopeIdProperty: WrongScope is missing"));
         }
+
+        [Test]
+        public void Validate_ScopeIdIsNullOrEmpty_Valid()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (SimpleMessage),
+                ObjectIdPropertyName = "UserId",
+                TimeStampPropertyName = "TimeStamp",
+                ScopeIdPropertyName = string.Empty
+            };
+        
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
     }
 }

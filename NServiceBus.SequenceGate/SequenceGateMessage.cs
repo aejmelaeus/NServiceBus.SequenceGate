@@ -56,7 +56,7 @@ namespace NServiceBus.SequenceGate
                 result.Add($"Metadata for {MessageType.Name} is invalid. TimeStampProperty: {TimeStampPropertyName} is missing or not of type System.DateTime");
             }
 
-            var validScopeId = ValidateProperty(ScopeIdPropertyName);
+            var validScopeId = ValidateProperty(ScopeIdPropertyName, required: false);
             if (!validScopeId)
             {
                 result.Add($"Metadata for {MessageType.Name} is invalid. ScopeIdProperty: {ScopeIdPropertyName} is missing");
@@ -65,8 +65,13 @@ namespace NServiceBus.SequenceGate
             return result;
         }
 
-        private bool ValidateProperty(string unsplittedPropertyName, Type expectedType = null)
+        private bool ValidateProperty(string unsplittedPropertyName, Type expectedType = null, bool required = true)
         {
+            if (!required && string.IsNullOrEmpty(unsplittedPropertyName))
+            {
+                return true;
+            }
+
             if (string.IsNullOrEmpty(unsplittedPropertyName))
             {
                 return false;
