@@ -7,6 +7,7 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public Guid UserId { get; set; }
         public string Email { get; set; }
         public DateTime TimeStamp { get; set; }
+        public string ScopeId { get; set; }
     }
 
     internal class TimeStampInWrongFormat
@@ -30,6 +31,7 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public MetaData MetaData { get; set; }
         public Guid UserId { get; set; }
         public string Email { get; set; }
+        public string ScopeId { get; set; }
     }
 
     internal class ComplexMessage

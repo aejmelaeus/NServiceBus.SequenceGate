@@ -15,7 +15,8 @@ namespace NServiceBus.SequenceGate.Tests
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
-                TimeStampPropertyName = "TimeStamp"
+                TimeStampPropertyName = "TimeStamp",
+                ScopeIdPropertyName = "ScopeId"
             };
 
             // Act
@@ -115,7 +116,8 @@ namespace NServiceBus.SequenceGate.Tests
             {
                 MessageType = typeof (ComplexMetaDataMessage),
                 ObjectIdPropertyName = "UserId",
-                TimeStampPropertyName = "MetaData.TimeStamp"
+                TimeStampPropertyName = "MetaData.TimeStamp",
+                ScopeIdPropertyName = "ScopeId"
             };
 
             // Act
@@ -133,7 +135,8 @@ namespace NServiceBus.SequenceGate.Tests
             {
                 MessageType = typeof (ComplexMessage),
                 ObjectIdPropertyName = "User.Id",
-                TimeStampPropertyName = "MetaData.TimeStamp"
+                TimeStampPropertyName = "MetaData.TimeStamp",
+                ScopeIdPropertyName = "Scope.Id"
             };
 
             // Act
@@ -151,7 +154,7 @@ namespace NServiceBus.SequenceGate.Tests
             {
                 MessageType = typeof (ComplexMessage),
                 ObjectIdPropertyName = "User.Id",
-                ScopeId = "Scope.Id",
+                ScopeIdPropertyName = "Scope.Id",
                 TimeStampPropertyName = "MetaData.TimeStamp"
             };
 
@@ -160,6 +163,25 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void Validate_GivenScopePropertyDoesNotExist_CorrectErrorMessage()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (SimpleMessage),
+                ObjectIdPropertyName = "UserId",
+                TimeStampPropertyName = "TimeStamp",
+                ScopeIdPropertyName = "WrongScope"
+            };
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result.Contains("Metadata for SimpleMessage is invalid. ScopeIdProperty: WrongScope is missing"));
         }
     }
 }

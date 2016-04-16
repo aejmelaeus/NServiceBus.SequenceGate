@@ -28,7 +28,7 @@ namespace NServiceBus.SequenceGate
         /// A message where scope could be used could be "UserGrantedDiscountOnProductCategory".
         /// In this case the product category would be the ScopeId.
         /// </summary>
-        public string ScopeId { get; set; }
+        public string ScopeIdPropertyName { get; set; }
 
         /// <summary>
         /// Validates the metadata
@@ -54,6 +54,12 @@ namespace NServiceBus.SequenceGate
             if (!validTimeStamp)
             {
                 result.Add($"Metadata for {MessageType.Name} is invalid. TimeStampProperty: {TimeStampPropertyName} is missing or not of type System.DateTime");
+            }
+
+            var validScopeId = ValidateProperty(ScopeIdPropertyName);
+            if (!validScopeId)
+            {
+                result.Add($"Metadata for {MessageType.Name} is invalid. ScopeIdProperty: {ScopeIdPropertyName} is missing");
             }
             
             return result;
