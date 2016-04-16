@@ -12,7 +12,7 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             var messageMetadata = new SequenceGateMessageMetadata
             {
-                MessageType = typeof (UserEmailUpdated),
+                MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "TimeStamp"
             };
@@ -30,7 +30,7 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             var invalidMessageMetatdata = new SequenceGateMessageMetadata
             {
-                MessageType = typeof (UserEmailUpdated),
+                MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "WrongObjectIdProperty",
                 TimeStampPropertyName = "TimeStamp"
             };
@@ -49,7 +49,7 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             var invalidMessageMetadata = new SequenceGateMessageMetadata
             {
-                MessageType = typeof (UserEmailUpdated),
+                MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "WrongTimeStampProperty"
             };
@@ -93,7 +93,7 @@ namespace NServiceBus.SequenceGate.Tests
             // Arrange
             var messageMetadata = new SequenceGateMessageMetadata
             {
-                MessageType = typeof (UserEmailUpdatedContainingMetaData),
+                MessageType = typeof (ComplexMetaDataMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "MetaData.TimeStamp"
             };

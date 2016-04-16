@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\Messages.cs" />
     <Compile Include="SequenceGateMessageMetadataTests.cs" />
     <Compile Include="SequenceGateMemberCases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

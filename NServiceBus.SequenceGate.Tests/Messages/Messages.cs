@@ -2,7 +2,7 @@ using System;
 
 namespace NServiceBus.SequenceGate.Tests.Messages
 {
-    internal class UserEmailUpdated
+    internal class SimpleMessage
     {
         public Guid UserId { get; set; }
         public string Email { get; set; }
@@ -14,10 +14,21 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public DateTime TimeStamp { get; set; }
     }
 
-    internal class UserEmailUpdatedContainingMetaData
+    internal class User
+    {
+        public Guid Id { get; set; }  
+    }
+
+    internal class ComplexMetaDataMessage
     {
         public MetaData MetaData { get; set; }
         public Guid UserId { get; set; }
         public string Email { get; set; }
+    }
+
+    internal class ComplexUserAndMetaDataMessage
+    {
+        public MetaData MetaData { get; set; }
+        public User User { get; set; }
     }
 }

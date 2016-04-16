@@ -26,7 +26,7 @@ namespace NServiceBus.SequenceGate.Tests
         {
             // Arrange
             const string sequenceGateId = "UserEmailUpdated";
-            var message = new UserEmailUpdated();
+            var message = new SimpleMessage();
             var gateData = new List<TrackedObject>();
 
             _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
                     {
                         new SequenceGateMessageMetadata
                         {
-                            MessageType = typeof (UserEmailUpdated),
+                            MessageType = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
                             TimeStampPropertyName = "TimeStamp"
                         }
@@ -63,7 +63,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_RepositoryCalledToListMessageStatusWithParsedData()
         {
             const string sequenceGateId = "UserEmailUpdated";
-            var message = new UserEmailUpdated();
+            var message = new SimpleMessage();
             var gateData = new List<TrackedObject>();
 
             _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
@@ -77,7 +77,7 @@ namespace NServiceBus.SequenceGate.Tests
                     {
                         new SequenceGateMessageMetadata
                         {
-                            MessageType = typeof (UserEmailUpdated),
+                            MessageType = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
                             TimeStampPropertyName = "TimeStamp"
                         }
@@ -100,7 +100,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_AllObjectsAreNewest_MutatorNotCalled()
         {
             const string sequenceGateId = "UserEmailUpdated";
-            var message = new UserEmailUpdated();
+            var message = new SimpleMessage();
             var gateData = new List<TrackedObject>();
 
             _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(new List<string>());
@@ -114,7 +114,7 @@ namespace NServiceBus.SequenceGate.Tests
                     {
                         new SequenceGateMessageMetadata
                         {
-                            MessageType = typeof (UserEmailUpdated),
+                            MessageType = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
                             TimeStampPropertyName = "TimeStamp"
                         }
@@ -137,19 +137,19 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_SomeObjectAlreadySeen_MutatedObjectReturned()
         {
             // Arrange
-            var originalObject = new UserEmailUpdated();
+            var originalObject = new SimpleMessage();
             var seenObjects = new List<string> { "ASeenId" };
 
             var metadata = new SequenceGateMessageMetadata
             {
-                MessageType = typeof (UserEmailUpdated),
+                MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "TimeStamp"
             };
 
             _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(seenObjects);
 
-            var mutatedObject = new UserEmailUpdated();
+            var mutatedObject = new SimpleMessage();
             _mutator.Mutate(originalObject, seenObjects, metadata).Returns(mutatedObject);
 
             var configuration = new SequenceGateConfiguration

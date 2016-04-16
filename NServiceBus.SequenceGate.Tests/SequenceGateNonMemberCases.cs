@@ -10,7 +10,7 @@ namespace NServiceBus.SequenceGate.Tests
         private IPersistence _persistence;
         private IParser _parser;
         private IMutator _mutator;
-        private UserEmailUpdated _message;
+        private SimpleMessage _simpleMessage;
         private SequenceGateConfiguration _configuration;
 
         [SetUp]
@@ -19,7 +19,7 @@ namespace NServiceBus.SequenceGate.Tests
             _persistence = Substitute.For<IPersistence>();
             _parser = Substitute.For<IParser>();
             _mutator = Substitute.For<IMutator>();
-            _message = new UserEmailUpdated();
+            _simpleMessage = new SimpleMessage();
             _configuration = new SequenceGateConfiguration();
         }
 
@@ -30,10 +30,10 @@ namespace NServiceBus.SequenceGate.Tests
             var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
-            var result = sequenceGate.Pass(_message);
+            var result = sequenceGate.Pass(_simpleMessage);
 
             // Assert
-            Assert.That(result, Is.SameAs(_message));
+            Assert.That(result, Is.SameAs(_simpleMessage));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace NServiceBus.SequenceGate.Tests
             var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
-            sequenceGate.Pass(_message);
+            sequenceGate.Pass(_simpleMessage);
 
             // Assert
             _persistence.DidNotReceiveWithAnyArgs().ListObjectIdsToDismiss(null);
@@ -57,7 +57,7 @@ namespace NServiceBus.SequenceGate.Tests
             var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
-            sequenceGate.Pass(_message);
+            sequenceGate.Pass(_simpleMessage);
 
             // Assert
             _parser.DidNotReceiveWithAnyArgs().Parse(null, null);
