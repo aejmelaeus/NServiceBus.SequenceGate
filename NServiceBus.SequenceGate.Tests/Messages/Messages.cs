@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate.Tests.Messages
 {
@@ -44,5 +45,12 @@ namespace NServiceBus.SequenceGate.Tests.Messages
     internal class Scope
     {
         public int Id { get; set; }
+    }
+
+    internal class CollectionMessage
+    {
+        public MetaData MetaData { get; set; }
+        public List<User> Users { get; set; }
+        public Scope Scope { get; set; }
     }
 }

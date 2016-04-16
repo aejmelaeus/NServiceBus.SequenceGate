@@ -31,6 +31,20 @@ namespace NServiceBus.SequenceGate
         public string ScopeIdPropertyName { get; set; }
 
         /// <summary>
+        /// When present the tracked objects are expected to be in the collection.
+        /// Both simple and complex types are supported.
+        /// If the collection holds a complex type, for example a "User" class the 
+        /// ObjectIdPropertyName is expected to point out the Id property of the
+        /// object that is tracked.
+        /// If the collection is of primitive type, the ObjectIdPropertyName should
+        /// be left null or empty. One could use primitive types when the message 
+        /// intent is to delete or revoke something. When adding or granting something
+        /// a complex type is preferred, since then the message is "self sufficient",
+        /// containing business card data about a user.
+        /// </summary>
+        public string CollectionPropertyName { get; set; }
+
+        /// <summary>
         /// Validates the metadata
         /// </summary>
         /// <returns>A list of strings with error messages</returns>
@@ -44,10 +58,22 @@ namespace NServiceBus.SequenceGate
                 return result;
             }
 
-            var validObjectId = ValidateProperty(ObjectIdPropertyName);
-            if (!validObjectId)
+            if (string.IsNullOrEmpty(CollectionPropertyName))
             {
-                result.Add($"Metadata for {MessageType.Name} is invalid. ObjectIdProperty: {ObjectIdPropertyName} is missing");
+                var validObjectId = ValidateProperty(ObjectIdPropertyName);
+                if (!validObjectId)
+                {
+                    result.Add($"Metadata for {MessageType.Name} is invalid. ObjectIdProperty: {ObjectIdPropertyName} is missing");
+                }
+            }
+            else
+            {
+                // Metadata for CollectionMessage is invalid. Collection with PropertyName WrongCollection does not exist on message type
+                var collectionPropertyInfo = MessageType.GetProperty(CollectionPropertyName);
+                if (collectionPropertyInfo == default(PropertyInfo))
+                {
+                    result.Add($"Metadata for {MessageType.Name} is invalid. Collection with PropertyName {CollectionPropertyName} does not exist on message type or is not of type ICollection");
+                }
             }
 
             var validTimeStamp = ValidateProperty(TimeStampPropertyName, typeof (DateTime));

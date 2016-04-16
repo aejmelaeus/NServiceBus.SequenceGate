@@ -51,7 +51,7 @@
     <Compile Include="SequenceGate.cs" />
     <Compile Include="SequenceGateMember.cs" />
     <Compile Include="SequenceGateBusConfiguration.cs" />
-    <Compile Include="SequenceGateMessage.cs" />
+    <Compile Include="SequenceGateMessageMetadata.cs" />
     <Compile Include="SequenceGateConfiguration.cs" />
     <Compile Include="SequenceGateRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
