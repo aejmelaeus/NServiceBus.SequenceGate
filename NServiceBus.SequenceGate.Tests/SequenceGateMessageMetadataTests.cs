@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using NServiceBus.SequenceGate.Tests.Messages;
+﻿using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests
@@ -33,7 +31,8 @@ namespace NServiceBus.SequenceGate.Tests
             var invalidMessageMetatdata = new SequenceGateMessageMetadata
             {
                 MessageType = typeof (UserEmailUpdated),
-                ObjectIdPropertyName = "WrongObjectIdProperty"
+                ObjectIdPropertyName = "WrongObjectIdProperty",
+                TimeStampPropertyName = "TimeStamp"
             };
 
             // Act
@@ -41,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             var expectedResult = "Metadata for UserEmailUpdated is invalid. ObjectIdPropertyName WrongObjectIdProperty is missing";
-            Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(result.Contains(expectedResult));
         }
 
         [Test]
@@ -60,7 +59,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             var expectedResult = "Metadata for UserEmailUpdated is invalid. TimeStampPropertyName WrongTimeStampProperty is missing";
-            Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(result.Contains(expectedResult));
         }
 
         private class TimeStampInWrongFormat
@@ -85,7 +84,25 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             var expectedResult = "Metadata for TimeStampInWrongFormat is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
-            Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(result.Contains(expectedResult));
+        }
+
+        [Test]
+        public void Validate_WhenTimeStampIsInComplexType_ValidatedCorrectly()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (UserEmailUpdatedContainingMetaData),
+                ObjectIdPropertyName = "UserId",
+                TimeStampPropertyName = "MetaData.TimeStamp"
+            };
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            Assert.That(result, Is.Empty);
         }
     }
 

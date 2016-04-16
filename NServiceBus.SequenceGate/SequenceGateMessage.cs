@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace NServiceBus.SequenceGate
@@ -21,28 +22,58 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         public string TimeStampPropertyName { get; set; }
 
-        internal string Validate()
+        /// <summary>
+        /// Validates the metadata
+        /// </summary>
+        /// <returns>Returns a string</returns>
+        internal List<string> Validate()
         {
+            var result = new List<string>();
             var objectIdPropertyInfo = MessageType.GetProperty(ObjectIdPropertyName);
 
             if (objectIdPropertyInfo == default(PropertyInfo))
             {
-                return $"Metadata for {MessageType.Name} is invalid. ObjectIdPropertyName {ObjectIdPropertyName} is missing";
+                result.Add($"Metadata for {MessageType.Name} is invalid. ObjectIdPropertyName {ObjectIdPropertyName} is missing");
             }
 
-            var timeStampPropertyInfo = MessageType.GetProperty(TimeStampPropertyName);
+            var timeStampResult = ValidateTimeStamp();
 
-            if (timeStampPropertyInfo == default(PropertyInfo))
+            if (!string.IsNullOrEmpty(timeStampResult))
             {
-                return $"Metadata for {MessageType.Name} is invalid. TimeStampPropertyName {TimeStampPropertyName} is missing";
+                result.Add(timeStampResult);
             }
+            
+            return result;
+        }
 
-            if (timeStampPropertyInfo.PropertyType != typeof (System.DateTime))
+        private string ValidateTimeStamp()
+        {
+            var properties = TimeStampPropertyName.Split('.');
+            var propertiesQueue = new Queue<string>(properties);
+            var type = MessageType;
+
+            while (true)
             {
-                return $"Metadata for {MessageType.Name} is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
-            }
+                var propertyName = propertiesQueue.Dequeue();
 
-            return string.Empty;
+                var propertyInfo = type.GetProperty(propertyName);
+
+                if (propertyInfo == default(PropertyInfo))
+                {
+                    return $"Metadata for {MessageType.Name} is invalid. TimeStampPropertyName {TimeStampPropertyName} is missing";
+                }
+
+                if (propertiesQueue.Count == 0)
+                {
+                    if (propertyInfo.PropertyType == typeof (DateTime))
+                    {
+                        return string.Empty;
+                    }
+                    return $"Metadata for {MessageType.Name} is invalid. Property for TimeStampPropertyName is not of type System.DateTime";
+                }
+
+                type = propertyInfo.PropertyType;
+            }
         }
     }
 }
