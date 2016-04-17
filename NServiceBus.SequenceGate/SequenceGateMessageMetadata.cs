@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace NServiceBus.SequenceGate
@@ -10,6 +11,15 @@ namespace NServiceBus.SequenceGate
     /// </summary>
     public class SequenceGateMessageMetadata
     {
+        internal enum ValidationErrors
+        {
+            MessageTypeMissing,
+            ObjectIdPropertyMissing,
+            TimeStampPropertyMissingOrNotDateTime,
+            ScopeIdPropertyMissing,
+            CollectionPropertyMissingOrNotICollection,
+            ObjectIdPropertyMissingOnObjectInCollection
+        }
         /// <summary>
         /// The type of the message
         /// </summary>
@@ -48,44 +58,53 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// Validates the metadata
         /// </summary>
-        /// <returns>A list of strings with error messages</returns>
-        internal List<string> Validate()
+        /// <returns>A list of validation errors. Empty collection indicates success</returns>
+        internal List<ValidationErrors> Validate()
         {
-            var result = new List<string>();
+            var result = new List<ValidationErrors>();
 
             if (MessageType == null)
             {
-                result.Add("MessageType missing.");
+                result.Add(ValidationErrors.MessageTypeMissing);
                 return result;
             }
 
             if (string.IsNullOrEmpty(CollectionPropertyName))
             {
-                var validObjectId = ValidateProperty(ObjectIdPropertyName);
+                var validObjectId = ValidateProperty(ObjectIdPropertyName, MessageType);
                 if (!validObjectId)
                 {
-                    result.Add($"Metadata for {MessageType.Name} is invalid. ObjectIdProperty: {ObjectIdPropertyName} is missing");
+                    result.Add(ValidationErrors.ObjectIdPropertyMissing);
                 }
             }
             else
             {
                 var collectionPropertyInfo = MessageType.GetProperty(CollectionPropertyName);
                 if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
+                {   
+                    result.Add(ValidationErrors.CollectionPropertyMissingOrNotICollection);
+                }
+                else
                 {
-                    result.Add($"Metadata for {MessageType.Name} is invalid. Collection with PropertyName {CollectionPropertyName} does not exist on message type or is not of type ICollection");
+                    var collectionObjectType = collectionPropertyInfo.PropertyType.GetGenericArguments().Single();
+                    var validCollectionObjectId = ValidateProperty(ObjectIdPropertyName, collectionObjectType);
+                    if (!validCollectionObjectId)
+                    {
+                        result.Add(ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection);
+                    }
                 }
             }
 
-            var validTimeStamp = ValidateProperty(TimeStampPropertyName, typeof (DateTime));
+            var validTimeStamp = ValidateProperty(TimeStampPropertyName, MessageType, typeof (DateTime));
             if (!validTimeStamp)
             {
-                result.Add($"Metadata for {MessageType.Name} is invalid. TimeStampProperty: {TimeStampPropertyName} is missing or not of type System.DateTime");
+                result.Add(ValidationErrors.TimeStampPropertyMissingOrNotDateTime);
             }
 
-            var validScopeId = ValidateProperty(ScopeIdPropertyName, required: false);
+            var validScopeId = ValidateProperty(ScopeIdPropertyName, MessageType, required: false);
             if (!validScopeId)
             {
-                result.Add($"Metadata for {MessageType.Name} is invalid. ScopeIdProperty: {ScopeIdPropertyName} is missing");
+                result.Add(ValidationErrors.ScopeIdPropertyMissing);
             }
             
             return result;
@@ -96,7 +115,7 @@ namespace NServiceBus.SequenceGate
             return collectionPropertyInfo.PropertyType.GetInterface("ICollection") != null;
         }
 
-        private bool ValidateProperty(string unsplittedPropertyName, Type expectedType = null, bool required = true)
+        private bool ValidateProperty(string unsplittedPropertyName, Type rootObjectType, Type expectedPropertyType = null, bool required = true)
         {
             if (!required && string.IsNullOrEmpty(unsplittedPropertyName))
             {
@@ -110,7 +129,7 @@ namespace NServiceBus.SequenceGate
             
             var properties = unsplittedPropertyName.Split('.');
             var propertiesQueue = new Queue<string>(properties);
-            var type = MessageType;
+            var type = rootObjectType;
 
             while (true)
             {
@@ -125,11 +144,11 @@ namespace NServiceBus.SequenceGate
 
                 if (propertiesQueue.Count == 0)
                 {
-                    if (expectedType == default (Type))
+                    if (expectedPropertyType == default (Type))
                     {
                         return true;
                     }
-                    return expectedType == propertyInfo.PropertyType;
+                    return expectedPropertyType == propertyInfo.PropertyType;
                 }
 
                 type = propertyInfo.PropertyType;

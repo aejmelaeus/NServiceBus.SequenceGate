@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using NServiceBus.SequenceGate.Tests.Messages;
+﻿using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests
@@ -41,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetatdata.Validate();
 
             // Assert
-            var expectedResult = "Metadata for SimpleMessage is invalid. ObjectIdProperty: WrongObjectIdProperty is missing";
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.ObjectIdPropertyMissing;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -60,7 +59,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetadata.Validate();
 
             // Assert                                                    
-            var expectedResult = "Metadata for SimpleMessage is invalid. TimeStampProperty: WrongTimeStampProperty is missing or not of type System.DateTime";
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -91,7 +90,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetadata.Validate();
 
             // Assert
-            var expectedResult = "Metadata for TimeStampInWrongFormat is invalid. TimeStampProperty: TimeStamp is missing or not of type System.DateTime";
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -105,7 +104,9 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            Assert.That(result.Contains("MessageType missing."));
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.MessageTypeMissing;
+
+            Assert.That(result.Contains(expectedResult));
         }
 
         [Test]
@@ -181,7 +182,9 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            Assert.That(result.Contains("Metadata for SimpleMessage is invalid. ScopeIdProperty: WrongScope is missing"));
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.ScopeIdPropertyMissing;
+
+            Assert.That(result.Contains(expectedResult));
         }
 
         [Test]
@@ -240,7 +243,9 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            Assert.That(result.Contains("Metadata for CollectionMessage is invalid. Collection with PropertyName WrongCollection does not exist on message type or is not of type ICollection"));
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
+
+            Assert.That(result.Contains(expectedResult));
         }
 
         [Test]
@@ -258,7 +263,30 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            Assert.That(result.Contains("Metadata for WrongCollectionTypeMessage is invalid. Collection with PropertyName CollectionThatIsAString does not exist on message type or is not of type ICollection"));
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
+
+            Assert.That(result.Contains(expectedResult));
+        }
+
+        [Test]
+        public void Validate_ObjectIdDoesNotExistOnCollectionObject_CorrectErrorMessage()
+        {
+            // Arrange
+            var messageMetadata = new SequenceGateMessageMetadata
+            {
+                MessageType = typeof (CollectionMessage),
+                CollectionPropertyName = "Users",
+                ObjectIdPropertyName = "WrongObjectId",
+                TimeStampPropertyName = "TimeStamp"
+            };
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection;
+
+            Assert.That(result.Contains(expectedResult));
         }
     }
 }
