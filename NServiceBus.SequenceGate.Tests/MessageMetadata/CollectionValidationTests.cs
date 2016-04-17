@@ -1,4 +1,5 @@
-﻿using NServiceBus.SequenceGate.Tests.Messages;
+﻿using System;
+using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests.MessageMetadata
@@ -87,6 +88,21 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection;
 
             Assert.That(result.Contains(expectedResult));
+        }
+        
+        [TestCase(typeof(string), true)]
+        [TestCase(typeof(Guid), true)]
+        [TestCase(typeof(int), true)]
+        [TestCase(typeof(long), true)]
+        [TestCase(typeof(DateTime), false)]
+        [TestCase(typeof(User), false)]
+        public void Validate_ObjectIdIsEmptyAndCollectionGiven_ValidTypesPassed(Type type, bool valid)
+        {
+            // Arrange
+
+            // Act
+
+            // Assert
         }
     }
 }
