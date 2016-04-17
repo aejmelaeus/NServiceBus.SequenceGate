@@ -54,6 +54,12 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public Scope Scope { get; set; }
     }
 
+    internal class SimpleCollectionMessage
+    {
+        public MetaData MetaData { get; set; }
+        public List<int> UserIds { get; set; }
+    }
+
     internal class WrongCollectionTypeMessage
     {
         public DateTime TimeStamp { get; set; }

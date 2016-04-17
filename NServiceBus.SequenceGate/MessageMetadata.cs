@@ -11,6 +11,14 @@ namespace NServiceBus.SequenceGate
     /// </summary>
     public class MessageMetadata
     {
+        private static IEnumerable<Type> AllowedBasicCollectionTypes { get; } = new List<Type>
+        {
+            typeof (string),
+            typeof (int),
+            typeof (long),
+            typeof (Guid)
+        };
+
         internal enum ValidationErrors
         {
             MessageTypeMissing,
@@ -18,7 +26,8 @@ namespace NServiceBus.SequenceGate
             TimeStampPropertyMissingOrNotDateTime,
             ScopeIdPropertyMissing,
             CollectionPropertyMissingOrNotICollection,
-            ObjectIdPropertyMissingOnObjectInCollection
+            ObjectIdPropertyMissingOnObjectInCollection,
+            CollectionObjectTypeNotInAllowedBasicCollectionTypes
         }
         /// <summary>
         /// The type of the message
@@ -71,43 +80,77 @@ namespace NServiceBus.SequenceGate
 
             if (string.IsNullOrEmpty(CollectionPropertyName))
             {
-                var validObjectId = ValidateProperty(ObjectIdPropertyName, MessageType);
-                if (!validObjectId)
-                {
-                    result.Add(ValidationErrors.ObjectIdPropertyMissing);
-                }
+                ValidateObjectId(result);
             }
             else
             {
-                var collectionPropertyInfo = MessageType.GetProperty(CollectionPropertyName);
-                if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
-                {   
-                    result.Add(ValidationErrors.CollectionPropertyMissingOrNotICollection);
+                ValidateCollection(result);
+            }
+
+            ValidateTimeStamp(result);
+
+            ValidateScope(result);
+
+            return result;
+        }
+
+        private void ValidateScope(List<ValidationErrors> result)
+        {
+            var validScopeId = ValidateProperty(ScopeIdPropertyName, MessageType, required: false);
+            if (!validScopeId)
+            {
+                result.Add(ValidationErrors.ScopeIdPropertyMissing);
+            }
+        }
+
+        private void ValidateTimeStamp(List<ValidationErrors> result)
+        {
+            var validTimeStamp = ValidateProperty(TimeStampPropertyName, MessageType, typeof (DateTime));
+            if (!validTimeStamp)
+            {
+                result.Add(ValidationErrors.TimeStampPropertyMissingOrNotDateTime);
+            }
+        }
+
+        private void ValidateCollection(List<ValidationErrors> result)
+        {
+            var collectionPropertyInfo = MessageType.GetProperty(CollectionPropertyName);
+
+            if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
+            {
+                result.Add(ValidationErrors.CollectionPropertyMissingOrNotICollection);
+            }
+            else
+            {
+                var collectionObjectType = collectionPropertyInfo.PropertyType.GetGenericArguments().Single();
+
+                if (string.IsNullOrEmpty(ObjectIdPropertyName))
+                {
+                    if (!AllowedBasicCollectionTypes.Contains(collectionObjectType))
+                    {
+                        result.Add(ValidationErrors.CollectionObjectTypeNotInAllowedBasicCollectionTypes);
+                    }
                 }
                 else
                 {
-                    var collectionObjectType = collectionPropertyInfo.PropertyType.GetGenericArguments().Single();
                     var validCollectionObjectId = ValidateProperty(ObjectIdPropertyName, collectionObjectType);
+
                     if (!validCollectionObjectId)
                     {
                         result.Add(ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection);
                     }
                 }
             }
+        }
 
-            var validTimeStamp = ValidateProperty(TimeStampPropertyName, MessageType, typeof (DateTime));
-            if (!validTimeStamp)
-            {
-                result.Add(ValidationErrors.TimeStampPropertyMissingOrNotDateTime);
-            }
+        private void ValidateObjectId(List<ValidationErrors> result)
+        {
+            var validObjectId = ValidateProperty(ObjectIdPropertyName, MessageType);
 
-            var validScopeId = ValidateProperty(ScopeIdPropertyName, MessageType, required: false);
-            if (!validScopeId)
+            if (!validObjectId)
             {
-                result.Add(ValidationErrors.ScopeIdPropertyMissing);
+                result.Add(ValidationErrors.ObjectIdPropertyMissing);
             }
-            
-            return result;
         }
 
         private bool PropertyIsOfTypeIEnumerable(PropertyInfo collectionPropertyInfo)

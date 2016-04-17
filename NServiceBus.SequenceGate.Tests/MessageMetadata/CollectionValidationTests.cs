@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
@@ -90,19 +91,54 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             Assert.That(result.Contains(expectedResult));
         }
         
-        [TestCase(typeof(string), true)]
-        [TestCase(typeof(Guid), true)]
-        [TestCase(typeof(int), true)]
-        [TestCase(typeof(long), true)]
-        [TestCase(typeof(DateTime), false)]
-        [TestCase(typeof(User), false)]
-        public void Validate_ObjectIdIsEmptyAndCollectionGiven_ValidTypesPassed(Type type, bool valid)
+        [Test]
+        public void Validate_ObjectIdIsEmptyAndCollectionGiven_ValidTypesPassed()
         {
             // Arrange
+            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            {
+                MessageType = typeof (GuidCollectionMessage),
+                CollectionPropertyName = "Items",
+                TimeStampPropertyName = "TimeStamp"
+            };
 
             // Act
+            var result = messageMetadata.Validate();
 
             // Assert
+            Assert.That(result, Is.Empty);
         }
+
+        [Test]
+        public void Validate_ObjectIdIsEmptyAndCollectionIsListOfDateTimes_ValidationFails()
+        {
+            // Arrange
+            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            {
+                CollectionPropertyName = nameof(DateTimeCollectionMessage.Items),
+                MessageType = typeof (DateTimeCollectionMessage),
+                TimeStampPropertyName = nameof(DateTimeCollectionMessage.TimeStamp)
+            };
+
+            // Act
+            var result = messageMetadata.Validate();
+
+            // Assert
+            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.CollectionObjectTypeNotInAllowedBasicCollectionTypes;
+
+            Assert.That(result.Contains(expectedResult));
+        }
+    }
+
+    internal class GuidCollectionMessage
+    {
+        public DateTime TimeStamp { get; set; }
+        public List<Guid> Items { get; set; }
+    }
+
+    internal class DateTimeCollectionMessage
+    {
+        public DateTime TimeStamp { get; set; }
+        public List<DateTime> Items { get; set; }
     }
 }
