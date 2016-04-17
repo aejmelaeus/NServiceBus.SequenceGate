@@ -56,7 +56,7 @@ namespace NServiceBus.SequenceGate
             return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
         }
 
-        private SequenceGateMessageMetadata GetSequenceGateMember(object message)
+        private MessageMetadata GetSequenceGateMember(object message)
         {
             var messageType = message.GetType();
 

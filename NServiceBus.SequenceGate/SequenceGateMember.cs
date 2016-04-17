@@ -17,7 +17,7 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// The metadata of the actual messages.
         /// </summary>
-        public List<SequenceGateMessageMetadata> Messages { get; set; }
+        public List<MessageMetadata> Messages { get; set; }
 
         internal void Validate()
         {

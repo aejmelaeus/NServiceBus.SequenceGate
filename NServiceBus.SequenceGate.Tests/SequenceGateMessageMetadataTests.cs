@@ -10,7 +10,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WithValidMetadata_ReturnsEmptyString()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
@@ -29,7 +29,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WithInvalidObjectIdPropertyName_ReturnsErrorString()
         {
             // Arrange
-            var invalidMessageMetatdata = new SequenceGateMessageMetadata
+            var invalidMessageMetatdata = new MessageMetadata
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "WrongObjectIdProperty",
@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetatdata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.ObjectIdPropertyMissing;
+            var expectedResult = MessageMetadata.ValidationErrors.ObjectIdPropertyMissing;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -48,7 +48,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WithInvalidTimeStampPropertyName_ReturnsErrorString()
         {
             // Arrange
-            var invalidMessageMetadata = new SequenceGateMessageMetadata
+            var invalidMessageMetadata = new MessageMetadata
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
@@ -59,7 +59,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetadata.Validate();
 
             // Assert                                                    
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
+            var expectedResult = MessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -67,7 +67,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_AllPropertiesAreNull_ReturnsErrorsInsteadOfException()
         {
             // Arrange
-            var nullMessage = new SequenceGateMessageMetadata();
+            var nullMessage = new MessageMetadata();
 
             // Act
             nullMessage.Validate();
@@ -79,7 +79,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WithInvalidaTypeForTimestamp_ReturnsErrorString()
         {
             // Arrange
-            var invalidMessageMetadata = new SequenceGateMessageMetadata
+            var invalidMessageMetadata = new MessageMetadata
             {
                 MessageType = typeof (TimeStampInWrongFormat),
                 ObjectIdPropertyName = "Id",
@@ -90,7 +90,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = invalidMessageMetadata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
+            var expectedResult = MessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -98,13 +98,13 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_MessageTypeIsNull_CorrectErrorMessageReturned()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata();
+            var messageMetadata = new MessageMetadata();
 
             // Act
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.MessageTypeMissing;
+            var expectedResult = MessageMetadata.ValidationErrors.MessageTypeMissing;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -113,7 +113,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WhenTimeStampIsInComplexType_ValidatedCorrectly()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (ComplexMetaDataMessage),
                 ObjectIdPropertyName = "UserId",
@@ -132,7 +132,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_ObjectIdInComplexType_ValidateCorreclty()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (ComplexMessage),
                 ObjectIdPropertyName = "User.Id",
@@ -151,7 +151,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_MessageWithCorrectScope_ValidatesOK()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (ComplexMessage),
                 ObjectIdPropertyName = "User.Id",
@@ -170,7 +170,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_GivenScopePropertyDoesNotExist_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
@@ -182,7 +182,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.ScopeIdPropertyMissing;
+            var expectedResult = MessageMetadata.ValidationErrors.ScopeIdPropertyMissing;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -191,7 +191,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_ScopeIdIsNullOrEmpty_Valid()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
@@ -210,7 +210,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WhenCorrectCollectionPropertyIsPresent_ValidationPasses()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (CollectionMessage),
                 CollectionPropertyName = "Users",
@@ -230,7 +230,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WithWrongCollectionName_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof(CollectionMessage),
                 CollectionPropertyName = "WrongCollection",
@@ -243,7 +243,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
+            var expectedResult = MessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -252,7 +252,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_WithWrongCollectionType_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof(WrongCollectionTypeMessage),
                 CollectionPropertyName = "CollectionThatIsAString",
@@ -263,7 +263,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
+            var expectedResult = MessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -272,7 +272,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Validate_ObjectIdDoesNotExistOnCollectionObject_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new SequenceGateMessageMetadata
+            var messageMetadata = new MessageMetadata
             {
                 MessageType = typeof (CollectionMessage),
                 CollectionPropertyName = "Users",
@@ -284,7 +284,7 @@ namespace NServiceBus.SequenceGate.Tests
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = SequenceGateMessageMetadata.ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection;
+            var expectedResult = MessageMetadata.ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection;
 
             Assert.That(result.Contains(expectedResult));
         }

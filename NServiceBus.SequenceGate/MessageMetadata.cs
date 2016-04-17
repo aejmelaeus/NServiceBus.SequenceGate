@@ -9,7 +9,7 @@ namespace NServiceBus.SequenceGate
     /// <summary>
     /// A member message in the Sequence Gate.
     /// </summary>
-    public class SequenceGateMessageMetadata
+    public class MessageMetadata
     {
         internal enum ValidationErrors
         {

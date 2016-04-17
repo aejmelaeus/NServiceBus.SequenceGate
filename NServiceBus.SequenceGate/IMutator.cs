@@ -4,6 +4,6 @@ namespace NServiceBus.SequenceGate
 {
     public interface IMutator
     {
-        object Mutate(object message, IEnumerable<string> seenObjectIds, SequenceGateMessageMetadata messageMetadata);
+        object Mutate(object message, IEnumerable<string> seenObjectIds, MessageMetadata messageMetadata);
     }
 }
