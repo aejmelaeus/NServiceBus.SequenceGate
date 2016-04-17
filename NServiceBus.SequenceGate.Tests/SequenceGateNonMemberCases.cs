@@ -60,7 +60,7 @@ namespace NServiceBus.SequenceGate.Tests
             sequenceGate.Pass(_simpleMessage);
 
             // Assert
-            _parser.DidNotReceiveWithAnyArgs().Parse(null, null);
+            _parser.DidNotReceiveWithAnyArgs().Parse(null);
         }
     }
 }

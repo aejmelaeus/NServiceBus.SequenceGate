@@ -27,7 +27,7 @@ namespace NServiceBus.SequenceGate
             }
 
             var messageMetadata = GetSequenceGateMember(message);
-            var trackedObjects = _parser.Parse(message, messageMetadata);
+            var trackedObjects = _parser.Parse(message);
             _persistence.Register(trackedObjects);
 
             var alreadyHandledObjectIds = _persistence.ListObjectIdsToDismiss(trackedObjects);

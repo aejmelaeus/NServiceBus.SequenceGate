@@ -25,5 +25,9 @@ namespace NServiceBus.SequenceGate
         /// The message time stamp in UTC
         /// </summary>
         public DateTime TimeStampUTC { get; set; }
+        /// <summary>
+        /// The scope id, can for example be a specific client
+        /// </summary>
+        public string ScopeId { get; set; }      
     }
 }

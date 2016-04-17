@@ -5,8 +5,7 @@ namespace NServiceBus.SequenceGate.Tests.Messages
 {
     internal class SimpleMessage
     {
-        public Guid UserId { get; set; }
-        public string Email { get; set; }
+        public Guid ObjectId { get; set; }
         public DateTime TimeStamp { get; set; }
         public string ScopeId { get; set; }
     }

@@ -53,7 +53,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
                 MessageType = typeof(SimpleMessage),
-                ObjectIdPropertyName = "UserId",
+                ObjectIdPropertyName = "ObjectId",
                 TimeStampPropertyName = "TimeStamp",
                 ScopeIdPropertyName = string.Empty
             };

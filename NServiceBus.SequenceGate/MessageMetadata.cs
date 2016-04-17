@@ -29,6 +29,7 @@ namespace NServiceBus.SequenceGate
             ObjectIdPropertyMissingOnObjectInCollection,
             CollectionObjectTypeNotInAllowedBasicCollectionTypes
         }
+
         /// <summary>
         /// The type of the message
         /// </summary>

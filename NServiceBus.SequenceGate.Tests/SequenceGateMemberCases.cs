@@ -48,7 +48,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            _parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
+            _parser.Parse(message).Returns(gateData);
 
             var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 
@@ -85,7 +85,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            _parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
+            _parser.Parse(message).Returns(gateData);
 
             var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 
@@ -122,7 +122,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            _parser.Parse(message, configuration[0].Messages[0]).Returns(gateData);
+            _parser.Parse(message).Returns(gateData);
 
             var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
 

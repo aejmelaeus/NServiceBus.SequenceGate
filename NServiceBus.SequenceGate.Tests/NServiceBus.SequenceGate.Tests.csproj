@@ -53,6 +53,7 @@
     <Compile Include="MessageMetadata\ScopeIdValidationTests.cs" />
     <Compile Include="MessageMetadata\ObjectIdValidationTests.cs" />
     <Compile Include="MessageMetadata\GeneralTests.cs" />
+    <Compile Include="Parser\ParserTests.cs" />
     <Compile Include="SequenceGateMemberCases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SequenceGateNonMemberCases.cs" />
