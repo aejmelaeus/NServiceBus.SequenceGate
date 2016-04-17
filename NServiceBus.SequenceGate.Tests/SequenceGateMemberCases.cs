@@ -36,9 +36,9 @@ namespace NServiceBus.SequenceGate.Tests
                 new SequenceGateMember
                 {
                     Id = sequenceGateId,
-                    Messages = new List<MessageMetadata>
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
                     {
-                        new MessageMetadata
+                        new NServiceBus.SequenceGate.MessageMetadata
                         {
                             MessageType = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
@@ -73,9 +73,9 @@ namespace NServiceBus.SequenceGate.Tests
                 new SequenceGateMember
                 {
                     Id = sequenceGateId,
-                    Messages = new List<MessageMetadata>
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
                     {
-                        new MessageMetadata
+                        new NServiceBus.SequenceGate.MessageMetadata
                         {
                             MessageType = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
@@ -110,9 +110,9 @@ namespace NServiceBus.SequenceGate.Tests
                 new SequenceGateMember
                 {
                     Id = sequenceGateId,
-                    Messages = new List<MessageMetadata>
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
                     {
-                        new MessageMetadata
+                        new NServiceBus.SequenceGate.MessageMetadata
                         {
                             MessageType = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
@@ -140,7 +140,7 @@ namespace NServiceBus.SequenceGate.Tests
             var originalObject = new SimpleMessage();
             var seenObjects = new List<string> { "ASeenId" };
 
-            var metadata = new MessageMetadata
+            var metadata = new NServiceBus.SequenceGate.MessageMetadata
             {
                 MessageType = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
@@ -157,7 +157,7 @@ namespace NServiceBus.SequenceGate.Tests
                 new SequenceGateMember
                 {
                     Id = "abc123",
-                    Messages = new List<MessageMetadata>
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
                     {
                         metadata
                     }
