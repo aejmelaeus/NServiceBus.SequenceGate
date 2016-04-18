@@ -41,6 +41,13 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public Scope Scope { get; set; }
     }
 
+    internal class OtherComplexMessage
+    {
+        public MetaData MetaData { get; set; }
+        public User User { get; set; }
+        public Scope Scope { get; set; }
+    }
+
     internal class Scope
     {
         public int Id { get; set; }

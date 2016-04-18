@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace NServiceBus.SequenceGate
 {
@@ -21,9 +22,9 @@ namespace NServiceBus.SequenceGate
             {
                 var trackedObject = new TrackedObject();
 
-                trackedObject.ObjectId = GetObjectId(messageMetadata, message);
-                trackedObject.TimeStampUTC = GetTimeStamp(messageMetadata, message);
-                trackedObject.ScopeId = GetScopeId(messageMetadata, message);
+                trackedObject.ObjectId = GetString(messageMetadata.ObjectIdPropertyName, message);
+                trackedObject.TimeStampUTC = GetDateTime(messageMetadata.TimeStampPropertyName, message);
+                trackedObject.ScopeId = GetString(messageMetadata.ScopeIdPropertyName, message);
                 trackedObject.SequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
 
                 result.Add(trackedObject);
@@ -32,26 +33,42 @@ namespace NServiceBus.SequenceGate
             return result;
         }
 
-        private string GetScopeId(MessageMetadata messageMetadata, object message)
+        private DateTime GetDateTime(string unsplittedPropertyName, object message)
         {
-            var objectIdProperty = messageMetadata.MessageType.GetProperty(messageMetadata.ScopeIdPropertyName);
-            var propertyValue = objectIdProperty.GetValue(message).ToString();
-            return propertyValue;
+            return (DateTime) GetPropertyValue(unsplittedPropertyName, message);
         }
 
-        private string GetObjectId(MessageMetadata messageMetadata, object message)
+        private string GetString(string unsplittedPropertyName, object message)
         {
-            var objectIdProperty = messageMetadata.MessageType.GetProperty(messageMetadata.ObjectIdPropertyName);
-            var propertyValue = objectIdProperty.GetValue(message).ToString();
-            return propertyValue;
+            return GetPropertyValue(unsplittedPropertyName, message).ToString(); 
         }
 
-        private DateTime GetTimeStamp(MessageMetadata messageMetadata, object message)
+        private object GetPropertyValue(string unsplittedPropertyName, object message)
         {
-            var timeStampProperty = messageMetadata.MessageType.GetProperty(messageMetadata.TimeStampPropertyName);
-            var propertyValue = timeStampProperty.GetValue(message);
+            var properties = unsplittedPropertyName.Split('.');
+            var propertiesQueue = new Queue<string>(properties);
+            var type = message.GetType();
+            var obj = message;
+            
+            while (true)
+            {
+                var propertyName = propertiesQueue.Dequeue();
 
-            return (DateTime) propertyValue;
+                var propertyInfo = type.GetProperty(propertyName);
+
+                if (propertyInfo == default(PropertyInfo))
+                {
+                    throw new Exception($"Failed to parse {type.Name}");
+                }
+
+                if (propertiesQueue.Count == 0)
+                { 
+                    return propertyInfo.GetValue(obj);
+                }
+
+                type = propertyInfo.PropertyType;
+                obj = propertyInfo.GetValue(obj);
+            }
         }
     }
 }
