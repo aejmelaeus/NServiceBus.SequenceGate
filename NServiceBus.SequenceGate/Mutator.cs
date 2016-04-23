@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -24,6 +25,31 @@ namespace NServiceBus.SequenceGate
                 {
                     return null;
                 }
+
+                return message;
+            }
+
+            var collectionPropertyInfo = message.GetType().GetProperty(messageMetadata.CollectionPropertyName);
+            var collection = collectionPropertyInfo.GetValue(message) as IList;
+
+            var itemsToRemove = new List<object>();
+
+            /*
+            ** Foreach foreach foreach ahead. Wohaa...
+            */
+
+            foreach (var item in collection)
+            {
+                var objectId = GetPropertyValue(messageMetadata.ObjectIdPropertyName, item);
+                if (objectIdsToDismiss.Contains(objectId))
+                {
+                    itemsToRemove.Add(item);
+                }
+            }
+
+            foreach (var item in itemsToRemove)
+            {
+                collection.Remove(item);
             }
 
             return message;

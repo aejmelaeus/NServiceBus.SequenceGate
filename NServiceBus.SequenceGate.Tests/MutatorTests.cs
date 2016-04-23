@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
@@ -82,6 +83,53 @@ namespace NServiceBus.SequenceGate.Tests
 
             // Assert
             Assert.That(result, Is.Null);
+        }
+
+        [Test]
+        public void Mutate_WithCollectionWithOneAlreadySeenObject_CorrectObjectDismissed()
+        {
+            // Arrange
+            var alreadySeenUserId = Guid.NewGuid();
+            var newestUserId = Guid.NewGuid();
+
+            var objectIdsToDismiss = new List<string> { alreadySeenUserId.ToString() };
+
+            var configuration = new SequenceGateConfiguration
+            {
+                new SequenceGateMember
+                {
+                    Id = "Test",
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
+                    {
+                        new NServiceBus.SequenceGate.MessageMetadata
+                        {
+                            Type = typeof (ComplexCollectionMessage),
+                            ObjectIdPropertyName = "Id",
+                            ScopeIdPropertyName = "Scope.Id",
+                            TimeStampPropertyName = "MetaData.TimeStamp",
+                            CollectionPropertyName = "Users"
+                        }
+                    }
+                }
+            };
+
+            var message = new ComplexCollectionMessage
+            {
+                Users = new List<User>
+                {
+                    new User { Id = alreadySeenUserId },
+                    new User { Id = newestUserId }
+                }
+            };
+
+            var mutator = new Mutator(configuration);
+
+            // Act
+            var result = mutator.Mutate(message, objectIdsToDismiss) as ComplexCollectionMessage;
+
+            // Assert
+            Assert.That(result.Users.Count, Is.EqualTo(1));
+            Assert.That(result.Users.First().Id, Is.EqualTo(newestUserId));
         }
     }
 }
