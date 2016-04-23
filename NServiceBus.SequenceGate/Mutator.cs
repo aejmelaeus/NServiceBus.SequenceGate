@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace NServiceBus.SequenceGate
 {
-    internal class Mutator
+    internal class Mutator : IMutator
     {
         private readonly SequenceGateConfiguration _configuration;
 
@@ -14,7 +15,7 @@ namespace NServiceBus.SequenceGate
             _configuration = configuration;
         }
 
-        public object Mutate(object message, List<string> objectIdsToDismiss)
+        public object Mutate(object message, IEnumerable<string> objectIdsToDismiss)
         {
             var messageMetadata = _configuration.GetMessageMetadata(message);
 

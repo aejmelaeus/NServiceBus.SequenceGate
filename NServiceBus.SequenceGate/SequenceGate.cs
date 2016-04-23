@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using NServiceBus.SequenceGate.Repository;
 
 namespace NServiceBus.SequenceGate
 {
@@ -26,15 +25,15 @@ namespace NServiceBus.SequenceGate
                 return message;
             }
 
-            var messageMetadata = GetSequenceGateMember(message);
             var trackedObjects = _parser.Parse(message);
+
             _persistence.Register(trackedObjects);
 
             var objectsIdsToDismiss = _persistence.ListObjectIdsToDismiss(trackedObjects);
 
             if (objectsIdsToDismiss.Any())
             {
-                message = _mutator.Mutate(message, objectsIdsToDismiss, messageMetadata);
+                message = _mutator.Mutate(message, objectsIdsToDismiss);
             }
 
             return message;
@@ -54,20 +53,6 @@ namespace NServiceBus.SequenceGate
             var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.Type == messageType));
 
             return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
-        }
-
-        private MessageMetadata GetSequenceGateMember(object message)
-        {
-            var messageType = message.GetType();
-
-            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.Type == messageType));
-
-            if (sequenceGateType != default(SequenceGateMember))
-            {
-                var sequenceGateMember = sequenceGateType.Messages.SingleOrDefault(m => m.Type == messageType);
-                return sequenceGateMember;
-            }
-            return null;
         }
     }
 }

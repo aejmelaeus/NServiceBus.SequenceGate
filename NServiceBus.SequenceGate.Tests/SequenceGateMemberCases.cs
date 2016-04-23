@@ -130,7 +130,7 @@ namespace NServiceBus.SequenceGate.Tests
             sequenceGate.Pass(message);
 
             // Assert
-            _mutator.DidNotReceiveWithAnyArgs().Mutate(null, null, null);
+            _mutator.DidNotReceiveWithAnyArgs().Mutate(null, null);
         }
 
         [Test]
@@ -150,7 +150,7 @@ namespace NServiceBus.SequenceGate.Tests
             _persistence.ListObjectIdsToDismiss(Arg.Any<List<TrackedObject>>()).Returns(seenObjects);
 
             var mutatedObject = new SimpleMessage();
-            _mutator.Mutate(originalObject, seenObjects, metadata).Returns(mutatedObject);
+            _mutator.Mutate(originalObject, seenObjects).Returns(mutatedObject);
 
             var configuration = new SequenceGateConfiguration
             {
