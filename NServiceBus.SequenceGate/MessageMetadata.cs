@@ -30,13 +30,29 @@ namespace NServiceBus.SequenceGate
             CollectionObjectTypeNotInAllowedBasicCollectionTypes
         }
 
+        /// <summary>
+        /// Describes the different types of message
+        /// </summary>
         internal enum MessageTypes
         {
+            /// <summary>
+            /// Message contains a single object
+            /// </summary>
             Single,
+            /// <summary>
+            /// Message contains a collection with primitive values
+            /// </summary>
             PrimitiveCollection,
+            /// <summary>
+            /// Message contains a collection of complex object and the object 
+            /// id is descibed in the ObjectIdPropertyName property
+            /// </summary>
             ComplexCollection
         }
 
+        /// <summary>
+        /// The actual message type
+        /// </summary>
         internal MessageTypes MessageType
         {
             get

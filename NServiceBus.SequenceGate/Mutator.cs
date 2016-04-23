@@ -40,7 +40,9 @@ namespace NServiceBus.SequenceGate
 
             foreach (var item in collection)
             {
-                var objectId = GetPropertyValue(messageMetadata.ObjectIdPropertyName, item);
+                var objectId = messageMetadata.MessageType == MessageMetadata.MessageTypes.PrimitiveCollection  ? 
+                    item.ToString() : GetPropertyValue(messageMetadata.ObjectIdPropertyName, item);
+
                 if (objectIdsToDismiss.Contains(objectId))
                 {
                     itemsToRemove.Add(item);
