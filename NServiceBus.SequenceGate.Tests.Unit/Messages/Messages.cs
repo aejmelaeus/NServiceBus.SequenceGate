@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework.Constraints;
 
-namespace NServiceBus.SequenceGate.Tests.Messages
+namespace NServiceBus.SequenceGate.Tests.Unit.Messages
 {
     internal class SimpleMessage
     {

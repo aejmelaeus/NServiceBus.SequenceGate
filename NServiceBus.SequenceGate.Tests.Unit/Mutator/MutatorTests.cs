@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NServiceBus.SequenceGate.Tests.Messages;
+using NServiceBus.SequenceGate.Tests.Unit.Messages;
 using NUnit.Framework;
 
-namespace NServiceBus.SequenceGate.Tests
+namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 {
     [TestFixture]
     public class MutatorTests
@@ -38,7 +38,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
             
-            var mutator = new Mutator(configuration);
+            var mutator = new NServiceBus.SequenceGate.Mutator(configuration);
 
             // Act
             var result = mutator.Mutate(simpleMessage, objectIdsToDismiss);
@@ -76,7 +76,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            var mutator = new Mutator(configuration);
+            var mutator = new NServiceBus.SequenceGate.Mutator(configuration);
 
             // Act
             var result = mutator.Mutate(simpleMessage, objectIdsToDismiss);
@@ -122,7 +122,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            var mutator = new Mutator(configuration);
+            var mutator = new NServiceBus.SequenceGate.Mutator(configuration);
 
             // Act
             var result = mutator.Mutate(message, objectIdsToDismiss) as ComplexCollectionMessage;
@@ -169,7 +169,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            var mutator = new Mutator(configuration);
+            var mutator = new NServiceBus.SequenceGate.Mutator(configuration);
 
             // Act
             var result = mutator.Mutate(message, objectIdsToDismiss) as SimpleCollectionMessage;

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using NServiceBus.SequenceGate.Tests.Messages;
+using NServiceBus.SequenceGate.Tests.Unit.Messages;
 using NSubstitute;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
-namespace NServiceBus.SequenceGate.Tests
+namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 {
     [TestFixture]
     public class SequenceGateMemberCases
@@ -50,7 +49,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             _parser.Parse(message).Returns(gateData);
 
-            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(message);
@@ -87,7 +86,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             _parser.Parse(message).Returns(gateData);
 
-            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(message);
@@ -124,7 +123,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             _parser.Parse(message).Returns(gateData);
 
-            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(message);
@@ -164,7 +163,7 @@ namespace NServiceBus.SequenceGate.Tests
                 }
             };
 
-            var sequenceGate = new SequenceGate(configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(configuration, _persistence, _parser, _mutator);
 
             // Act
             var result = sequenceGate.Pass(originalObject);

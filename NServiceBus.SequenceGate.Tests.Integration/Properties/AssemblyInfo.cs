@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NServiceBus.SequenceGate.Repository")]
+[assembly: AssemblyTitle("NServiceBus.SequenceGate.Tests.Integration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HP")]
-[assembly: AssemblyProduct("NServiceBus.SequenceGate.Repository")]
+[assembly: AssemblyProduct("NServiceBus.SequenceGate.Tests.Integration")]
 [assembly: AssemblyCopyright("Copyright © HP 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6baf41b0-485e-4beb-9b26-d1571606217c")]
+[assembly: Guid("e1a09ff9-165d-4904-b5b8-a80d18995995")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,6 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: InternalsVisibleTo("NServiceBus.SequenceGate.Tests.Unit")]
-[assembly: InternalsVisibleTo("NServiceBus.SequenceGate.Tests.Integration")]
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

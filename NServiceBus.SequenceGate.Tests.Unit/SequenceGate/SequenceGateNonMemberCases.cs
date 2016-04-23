@@ -1,8 +1,8 @@
-using NServiceBus.SequenceGate.Tests.Messages;
+using NServiceBus.SequenceGate.Tests.Unit.Messages;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace NServiceBus.SequenceGate.Tests
+namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 {
     [TestFixture]
     public class SequenceGateNonMemberCases
@@ -27,7 +27,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_ReturnsTheMessage()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
             var result = sequenceGate.Pass(_simpleMessage);
@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_RepositoryNotCalled()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(_simpleMessage);
@@ -54,7 +54,7 @@ namespace NServiceBus.SequenceGate.Tests
         public void Pass_WhenCalled_ParserNotCalled()
         {
             // Arrange
-            var sequenceGate = new SequenceGate(_configuration, _persistence, _parser, _mutator);
+            var sequenceGate = new NServiceBus.SequenceGate.SequenceGate(_configuration, _persistence, _parser, _mutator);
 
             // Act
             sequenceGate.Pass(_simpleMessage);

@@ -1,7 +1,7 @@
-using NServiceBus.SequenceGate.Tests.Messages;
+using NServiceBus.SequenceGate.Tests.Unit.Messages;
 using NUnit.Framework;
 
-namespace NServiceBus.SequenceGate.Tests.MessageMetadata
+namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
 {
     [TestFixture]
     public class ObjectIdValidationTests

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
-using NUnit.Framework;
 using System.Collections.Generic;
-using NServiceBus.SequenceGate.Tests.Messages;
+using System.Linq;
+using NServiceBus.SequenceGate.Tests.Unit.Messages;
+using NUnit.Framework;
 
-namespace NServiceBus.SequenceGate.Tests.Parser
+namespace NServiceBus.SequenceGate.Tests.Unit.Parser
 {
     [TestFixture]
     public class ParserTests
