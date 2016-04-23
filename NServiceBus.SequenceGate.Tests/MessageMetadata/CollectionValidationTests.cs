@@ -14,7 +14,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(CollectionMessage),
+                Type = typeof(CollectionMessage),
                 CollectionPropertyName = "Users",
                 ObjectIdPropertyName = "Id",
                 ScopeIdPropertyName = "Scope.Id",
@@ -34,7 +34,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(CollectionMessage),
+                Type = typeof(CollectionMessage),
                 CollectionPropertyName = "WrongCollection",
                 ObjectIdPropertyName = "Id",
                 ScopeIdPropertyName = "Scope.Id",
@@ -56,7 +56,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(WrongCollectionTypeMessage),
+                Type = typeof(WrongCollectionTypeMessage),
                 CollectionPropertyName = "CollectionThatIsAString",
                 TimeStampPropertyName = "TimeStamp"
             };
@@ -76,7 +76,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(CollectionMessage),
+                Type = typeof(CollectionMessage),
                 CollectionPropertyName = "Users",
                 ObjectIdPropertyName = "WrongObjectId",
                 TimeStampPropertyName = "TimeStamp"
@@ -97,7 +97,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof (GuidCollectionMessage),
+                Type = typeof (GuidCollectionMessage),
                 CollectionPropertyName = "Items",
                 TimeStampPropertyName = "TimeStamp"
             };
@@ -116,7 +116,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
                 CollectionPropertyName = nameof(DateTimeCollectionMessage.Items),
-                MessageType = typeof (DateTimeCollectionMessage),
+                Type = typeof (DateTimeCollectionMessage),
                 TimeStampPropertyName = nameof(DateTimeCollectionMessage.TimeStamp)
             };
 

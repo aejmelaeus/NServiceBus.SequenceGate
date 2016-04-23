@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (SimpleMessage),
+                            Type = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
                             TimeStampPropertyName = "TimeStamp"
                         }
@@ -77,7 +77,7 @@ namespace NServiceBus.SequenceGate.Tests
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (SimpleMessage),
+                            Type = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
                             TimeStampPropertyName = "TimeStamp"
                         }
@@ -114,7 +114,7 @@ namespace NServiceBus.SequenceGate.Tests
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (SimpleMessage),
+                            Type = typeof (SimpleMessage),
                             ObjectIdPropertyName = "UserId",
                             TimeStampPropertyName = "TimeStamp"
                         }
@@ -142,7 +142,7 @@ namespace NServiceBus.SequenceGate.Tests
 
             var metadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof (SimpleMessage),
+                Type = typeof (SimpleMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "TimeStamp"
             };

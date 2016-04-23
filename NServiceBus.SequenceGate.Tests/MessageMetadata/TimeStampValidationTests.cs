@@ -12,7 +12,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var invalidMessageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(SimpleMessage),
+                Type = typeof(SimpleMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "WrongTimeStampProperty"
             };
@@ -31,7 +31,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var invalidMessageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(TimeStampInWrongFormat),
+                Type = typeof(TimeStampInWrongFormat),
                 ObjectIdPropertyName = "Id",
                 TimeStampPropertyName = "TimeStamp"
             };
@@ -50,7 +50,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof(ComplexMetaDataMessage),
+                Type = typeof(ComplexMetaDataMessage),
                 ObjectIdPropertyName = "UserId",
                 TimeStampPropertyName = "MetaData.TimeStamp",
                 ScopeIdPropertyName = "ScopeId"

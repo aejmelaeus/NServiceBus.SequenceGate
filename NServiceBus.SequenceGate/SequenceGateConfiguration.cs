@@ -12,14 +12,14 @@ namespace NServiceBus.SequenceGate
 
         public MessageMetadata GetMessageMetadata(object message)
         {
-            return this.SelectMany(m => m.Messages).SingleOrDefault(m => m.MessageType == message.GetType());
+            return this.SelectMany(m => m.Messages).SingleOrDefault(m => m.Type == message.GetType());
         }
 
         public string GetSequenceGateIdForMessage(object message)
         {
             foreach (var sequenceGateMember in this)
             {
-                if (sequenceGateMember.Messages.Any(m => m.MessageType == message.GetType()))
+                if (sequenceGateMember.Messages.Any(m => m.Type == message.GetType()))
                 {
                     return sequenceGateMember.Id;
                 }

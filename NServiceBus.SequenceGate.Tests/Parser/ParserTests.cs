@@ -24,7 +24,7 @@ namespace NServiceBus.SequenceGate.Tests.Parser
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (SimpleMessage),
+                            Type = typeof (SimpleMessage),
                             ObjectIdPropertyName = "ObjectId",
                             TimeStampPropertyName = "TimeStamp",
                             ScopeIdPropertyName = "ScopeId"
@@ -75,7 +75,7 @@ namespace NServiceBus.SequenceGate.Tests.Parser
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (ComplexMessage),
+                            Type = typeof (ComplexMessage),
                             ObjectIdPropertyName = "User.Id",
                             TimeStampPropertyName = "MetaData.TimeStamp",
                             ScopeIdPropertyName = "Scope.Id"
@@ -126,7 +126,7 @@ namespace NServiceBus.SequenceGate.Tests.Parser
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (ComplexCollectionMessage),
+                            Type = typeof (ComplexCollectionMessage),
                             ObjectIdPropertyName = "Id",
                             TimeStampPropertyName = "MetaData.TimeStamp",
                             ScopeIdPropertyName = "Scope.Id",
@@ -190,7 +190,7 @@ namespace NServiceBus.SequenceGate.Tests.Parser
                     {
                         new NServiceBus.SequenceGate.MessageMetadata
                         {
-                            MessageType = typeof (SimpleCollectionMessage),
+                            Type = typeof (SimpleCollectionMessage),
                             TimeStampPropertyName = "MetaData.TimeStamp",
                             ScopeIdPropertyName = "Scope.Id",
                             CollectionPropertyName = "UserIds"

@@ -1,4 +1,5 @@
-﻿using NServiceBus.SequenceGate.Tests.Messages;
+﻿using System.Xml.Serialization;
+using NServiceBus.SequenceGate.Tests.Messages;
 using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests.MessageMetadata
@@ -12,7 +13,7 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             // Arrange
             var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
             {
-                MessageType = typeof (SimpleMessage),
+                Type = typeof (SimpleMessage),
                 ObjectIdPropertyName = "ObjectId",
                 TimeStampPropertyName = "TimeStamp",
                 ScopeIdPropertyName = "ScopeId"
@@ -51,6 +52,41 @@ namespace NServiceBus.SequenceGate.Tests.MessageMetadata
             var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.MessageTypeMissing;
 
             Assert.That(result.Contains(expectedResult));
+        }
+
+        [Test]
+        public void MessageType_WhenCollectionPropertyNameIsNull_SingleIsReturned()
+        {
+            // Arrange
+            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata();
+            messageMetadata.CollectionPropertyName = null;
+
+            // Assert
+            Assert.That(messageMetadata.MessageType, Is.EqualTo(NServiceBus.SequenceGate.MessageMetadata.MessageTypes.Single));
+        }
+
+        [Test]
+        public void MessageType_WhenCollectionAndObjectIdPropertySet_ComplexCollectionIsReturned()
+        {
+            // Arrange
+            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata();
+            messageMetadata.CollectionPropertyName = "Collectional";
+            messageMetadata.ObjectIdPropertyName = "Objective";
+
+            // Assert
+            Assert.That(messageMetadata.MessageType, Is.EqualTo(NServiceBus.SequenceGate.MessageMetadata.MessageTypes.ComplexCollection));
+        }
+
+        [Test]
+        public void MessageType_WhenCollectionIsSetAndObjectIdIsNull_PrimitiveCollectionIsReturned()
+        {
+            // Arrange
+            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata();
+            messageMetadata.CollectionPropertyName = "Collectional";
+            messageMetadata.ObjectIdPropertyName = null;
+
+            // Assert
+            Assert.That(messageMetadata.MessageType, Is.EqualTo(NServiceBus.SequenceGate.MessageMetadata.MessageTypes.PrimitiveCollection));
         }
     }
 }

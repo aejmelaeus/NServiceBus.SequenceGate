@@ -30,10 +30,33 @@ namespace NServiceBus.SequenceGate
             CollectionObjectTypeNotInAllowedBasicCollectionTypes
         }
 
+        internal enum MessageTypes
+        {
+            Single,
+            PrimitiveCollection,
+            ComplexCollection
+        }
+
+        internal MessageTypes MessageType
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(CollectionPropertyName))
+                {
+                    return MessageTypes.Single;
+                }
+                if (string.IsNullOrEmpty(ObjectIdPropertyName))
+                {
+                    return MessageTypes.PrimitiveCollection;
+                }
+                return MessageTypes.ComplexCollection;
+            }
+        }
+
         /// <summary>
         /// The type of the message
         /// </summary>
-        public Type MessageType { get; set; }
+        public Type Type { get; set; }
         /// <summary>
         /// The property of the object id
         /// </summary>
@@ -73,7 +96,7 @@ namespace NServiceBus.SequenceGate
         {
             var result = new List<ValidationErrors>();
 
-            if (MessageType == null)
+            if (Type == null)
             {
                 result.Add(ValidationErrors.MessageTypeMissing);
                 return result;
@@ -97,7 +120,7 @@ namespace NServiceBus.SequenceGate
 
         private void ValidateScope(List<ValidationErrors> result)
         {
-            var validScopeId = ValidateProperty(ScopeIdPropertyName, MessageType, required: false);
+            var validScopeId = ValidateProperty(ScopeIdPropertyName, Type, required: false);
             if (!validScopeId)
             {
                 result.Add(ValidationErrors.ScopeIdPropertyMissing);
@@ -106,7 +129,7 @@ namespace NServiceBus.SequenceGate
 
         private void ValidateTimeStamp(List<ValidationErrors> result)
         {
-            var validTimeStamp = ValidateProperty(TimeStampPropertyName, MessageType, typeof (DateTime));
+            var validTimeStamp = ValidateProperty(TimeStampPropertyName, Type, typeof (DateTime));
             if (!validTimeStamp)
             {
                 result.Add(ValidationErrors.TimeStampPropertyMissingOrNotDateTime);
@@ -115,7 +138,7 @@ namespace NServiceBus.SequenceGate
 
         private void ValidateCollection(List<ValidationErrors> result)
         {
-            var collectionPropertyInfo = MessageType.GetProperty(CollectionPropertyName);
+            var collectionPropertyInfo = Type.GetProperty(CollectionPropertyName);
 
             if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
             {
@@ -146,7 +169,7 @@ namespace NServiceBus.SequenceGate
 
         private void ValidateObjectId(List<ValidationErrors> result)
         {
-            var validObjectId = ValidateProperty(ObjectIdPropertyName, MessageType);
+            var validObjectId = ValidateProperty(ObjectIdPropertyName, Type);
 
             if (!validObjectId)
             {

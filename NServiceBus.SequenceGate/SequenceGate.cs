@@ -30,11 +30,11 @@ namespace NServiceBus.SequenceGate
             var trackedObjects = _parser.Parse(message);
             _persistence.Register(trackedObjects);
 
-            var alreadyHandledObjectIds = _persistence.ListObjectIdsToDismiss(trackedObjects);
+            var objectsIdsToDismiss = _persistence.ListObjectIdsToDismiss(trackedObjects);
 
-            if (alreadyHandledObjectIds.Any())
+            if (objectsIdsToDismiss.Any())
             {
-                message = _mutator.Mutate(message, alreadyHandledObjectIds, messageMetadata);
+                message = _mutator.Mutate(message, objectsIdsToDismiss, messageMetadata);
             }
 
             return message;
@@ -51,7 +51,7 @@ namespace NServiceBus.SequenceGate
 
         private string GetSequenceGateId(Type messageType)
         {
-            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
+            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.Type == messageType));
 
             return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
         }
@@ -60,11 +60,11 @@ namespace NServiceBus.SequenceGate
         {
             var messageType = message.GetType();
 
-            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.MessageType == messageType));
+            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.Type == messageType));
 
             if (sequenceGateType != default(SequenceGateMember))
             {
-                var sequenceGateMember = sequenceGateType.Messages.SingleOrDefault(m => m.MessageType == messageType);
+                var sequenceGateMember = sequenceGateType.Messages.SingleOrDefault(m => m.Type == messageType);
                 return sequenceGateMember;
             }
             return null;
