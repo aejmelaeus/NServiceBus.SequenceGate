@@ -12,8 +12,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
         [Required]
         public string ObjectId { get; set; }
         [Required]
-        public DateTime TimeStampUTC { get; set; }
-        [Required]
+        public long SequenceAnchor { get; set; }
         public string ScopeId { get; set; }
     }
 }

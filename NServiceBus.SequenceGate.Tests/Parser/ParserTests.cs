@@ -53,10 +53,11 @@ namespace NServiceBus.SequenceGate.Tests.Parser
             Assert.That(result.Count, Is.EqualTo(1));
 
             var parsed = result.First();
+            var expectedSequenceAnchor = timeStamp.Ticks;
 
             Assert.That(parsed.SequenceGateId, Is.EqualTo(sequenceGateId));
             Assert.That(parsed.ObjectId, Is.EqualTo(objectId.ToString()));
-            Assert.That(parsed.TimeStampUTC, Is.EqualTo(timeStamp));
+            Assert.That(parsed.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
             Assert.That(parsed.ScopeId, Is.EqualTo(scopeId));
         }
 
@@ -104,10 +105,11 @@ namespace NServiceBus.SequenceGate.Tests.Parser
             Assert.That(result.Count, Is.EqualTo(1));
 
             var parsed = result.First();
+            var expectedSequenceAnchor = timeStamp.Ticks;
 
             Assert.That(parsed.SequenceGateId, Is.EqualTo(sequenceGateId));
             Assert.That(parsed.ObjectId, Is.EqualTo(objectId.ToString()));
-            Assert.That(parsed.TimeStampUTC, Is.EqualTo(timeStamp));
+            Assert.That(parsed.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
             Assert.That(parsed.ScopeId, Is.EqualTo(scopeId.ToString()));
         }
 
@@ -160,6 +162,7 @@ namespace NServiceBus.SequenceGate.Tests.Parser
 
             // Assert
             Assert.That(result.Count, Is.EqualTo(2));
+            var expectedSequenceAnchor = timeStamp.Ticks;
 
             var userId1Object = result.Single(r => r.ObjectId.Equals(userId1.ToString()));
             var userId2Object = result.Single(r => r.ObjectId.Equals(userId2.ToString()));
@@ -167,12 +170,12 @@ namespace NServiceBus.SequenceGate.Tests.Parser
             Assert.That(userId1Object.ObjectId, Is.EqualTo(userId1.ToString()));
             Assert.That(userId1Object.ScopeId, Is.EqualTo(scopeId.ToString()));
             Assert.That(userId1Object.SequenceGateId, Is.EqualTo(sequenceGateId));
-            Assert.That(userId1Object.TimeStampUTC, Is.EqualTo(timeStamp));
+            Assert.That(userId1Object.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
 
             Assert.That(userId2Object.ObjectId, Is.EqualTo(userId2.ToString()));
             Assert.That(userId2Object.ScopeId, Is.EqualTo(scopeId.ToString()));
             Assert.That(userId2Object.SequenceGateId, Is.EqualTo(sequenceGateId));
-            Assert.That(userId2Object.TimeStampUTC, Is.EqualTo(timeStamp));
+            Assert.That(userId2Object.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
         }
 
         [Test]
@@ -219,6 +222,7 @@ namespace NServiceBus.SequenceGate.Tests.Parser
 
             // Assert
             Assert.That(result.Count, Is.EqualTo(2));
+            var expectedSequenceAnchor = timeStamp.Ticks;
 
             var userId1Object = result.Single(r => r.ObjectId.Equals(userId1.ToString()));
             var userId2Object = result.Single(r => r.ObjectId.Equals(userId2.ToString()));
@@ -226,12 +230,12 @@ namespace NServiceBus.SequenceGate.Tests.Parser
             Assert.That(userId1Object.ObjectId, Is.EqualTo(userId1.ToString()));
             Assert.That(userId1Object.ScopeId, Is.EqualTo(scopeId.ToString()));
             Assert.That(userId1Object.SequenceGateId, Is.EqualTo(sequenceGateId));
-            Assert.That(userId1Object.TimeStampUTC, Is.EqualTo(timeStamp));
+            Assert.That(userId1Object.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
 
             Assert.That(userId2Object.ObjectId, Is.EqualTo(userId2.ToString()));
             Assert.That(userId2Object.ScopeId, Is.EqualTo(scopeId.ToString()));
             Assert.That(userId2Object.SequenceGateId, Is.EqualTo(sequenceGateId));
-            Assert.That(userId2Object.TimeStampUTC, Is.EqualTo(timeStamp));
+            Assert.That(userId2Object.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
         }
     }
 }

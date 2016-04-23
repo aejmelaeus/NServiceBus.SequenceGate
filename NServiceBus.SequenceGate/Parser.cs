@@ -19,7 +19,7 @@ namespace NServiceBus.SequenceGate
             var result = new List<TrackedObject>();
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
-            var timeStamp = GetDateTime(messageMetadata.TimeStampPropertyName, message);
+            var timeStamp = GetDateTime(messageMetadata.TimeStampPropertyName, message).Ticks;
             var scopeId = GetString(messageMetadata.ScopeIdPropertyName, message);
             var sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
 
@@ -28,7 +28,7 @@ namespace NServiceBus.SequenceGate
                 var trackedObject = new TrackedObject();
 
                 trackedObject.ObjectId = GetString(messageMetadata.ObjectIdPropertyName, message);
-                trackedObject.TimeStampUTC = timeStamp;
+                trackedObject.SequenceAnchor = timeStamp;
                 trackedObject.ScopeId = scopeId;
                 trackedObject.SequenceGateId = sequenceGateId;
                 
@@ -42,7 +42,7 @@ namespace NServiceBus.SequenceGate
                 foreach (var item in collection)
                 {
                     var trackedObject = new TrackedObject();
-                    trackedObject.TimeStampUTC = timeStamp;
+                    trackedObject.SequenceAnchor = timeStamp;
                     trackedObject.ScopeId = scopeId;
                     trackedObject.SequenceGateId = sequenceGateId;
 

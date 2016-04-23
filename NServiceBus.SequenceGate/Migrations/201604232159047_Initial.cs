@@ -14,8 +14,8 @@ namespace NServiceBus.SequenceGate.Migrations
                         Id = c.Long(nullable: false, identity: true),
                         SequenceGateId = c.String(nullable: false),
                         ObjectId = c.String(nullable: false),
-                        TimeStampUTC = c.DateTime(nullable: false),
-                        ScopeId = c.String(nullable: false),
+                        SequenceAnchor = c.Long(nullable: false),
+                        ScopeId = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             

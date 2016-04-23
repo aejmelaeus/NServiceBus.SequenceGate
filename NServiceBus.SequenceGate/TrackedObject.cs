@@ -8,10 +8,6 @@ namespace NServiceBus.SequenceGate
     internal class TrackedObject
     {
         /// <summary>
-        /// The Database Id
-        /// </summary>
-        public long Id { get; set; }
-        /// <summary>
         /// The id of the gate, for example:
         /// - UserActions
         /// - UserEmailUpdate
@@ -24,7 +20,7 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// The message time stamp in UTC
         /// </summary>
-        public DateTime TimeStampUTC { get; set; }
+        public long SequenceAnchor { get; set; }
         /// <summary>
         /// The scope id, can for example be a specific client
         /// </summary>
