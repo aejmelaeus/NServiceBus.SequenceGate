@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 namespace NServiceBus.SequenceGate.Tests.Messages
 {
@@ -41,6 +42,20 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public Scope Scope { get; set; }
     }
 
+    internal class ComplexCollectionMessage
+    {
+        public MetaData MetaData { get; set; }
+        public List<User> Users { get; set; }
+        public Scope Scope { get; set; }
+    }
+
+    internal class SimpleCollectionMessage
+    {
+        public MetaData MetaData { get; set; }
+        public List<Guid> UserIds { get; set; }
+        public Scope Scope { get; set; }
+    }
+
     internal class OtherComplexMessage
     {
         public MetaData MetaData { get; set; }
@@ -58,12 +73,6 @@ namespace NServiceBus.SequenceGate.Tests.Messages
         public MetaData MetaData { get; set; }
         public List<User> Users { get; set; }
         public Scope Scope { get; set; }
-    }
-
-    internal class SimpleCollectionMessage
-    {
-        public MetaData MetaData { get; set; }
-        public List<int> UserIds { get; set; }
     }
 
     internal class WrongCollectionTypeMessage

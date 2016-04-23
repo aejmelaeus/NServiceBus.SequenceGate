@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -18,18 +19,46 @@ namespace NServiceBus.SequenceGate
             var result = new List<TrackedObject>();
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
+            var timeStamp = GetDateTime(messageMetadata.TimeStampPropertyName, message);
+            var scopeId = GetString(messageMetadata.ScopeIdPropertyName, message);
+            var sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
+
             if (string.IsNullOrEmpty(messageMetadata.CollectionPropertyName))
             {
                 var trackedObject = new TrackedObject();
 
                 trackedObject.ObjectId = GetString(messageMetadata.ObjectIdPropertyName, message);
-                trackedObject.TimeStampUTC = GetDateTime(messageMetadata.TimeStampPropertyName, message);
-                trackedObject.ScopeId = GetString(messageMetadata.ScopeIdPropertyName, message);
-                trackedObject.SequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
-
+                trackedObject.TimeStampUTC = timeStamp;
+                trackedObject.ScopeId = scopeId;
+                trackedObject.SequenceGateId = sequenceGateId;
+                
                 result.Add(trackedObject);
             }
+            else
+            {
+                var collectionPropertyInfo = message.GetType().GetProperty(messageMetadata.CollectionPropertyName);
+                IEnumerable collection = (IEnumerable) collectionPropertyInfo.GetValue(message);
 
+                foreach (var item in collection)
+                {
+                    var trackedObject = new TrackedObject();
+                    trackedObject.TimeStampUTC = timeStamp;
+                    trackedObject.ScopeId = scopeId;
+                    trackedObject.SequenceGateId = sequenceGateId;
+
+                    if (string.IsNullOrEmpty(messageMetadata.ObjectIdPropertyName))
+                    {
+                        trackedObject.ObjectId = item.ToString();
+                    }
+                    else
+                    {
+                        trackedObject.ObjectId = GetString(messageMetadata.ObjectIdPropertyName, item);
+                    }
+
+                    result.Add(trackedObject);
+                }
+            }
+            
             return result;
         }
 
