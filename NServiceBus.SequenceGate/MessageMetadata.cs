@@ -102,7 +102,7 @@ namespace NServiceBus.SequenceGate
                 return result;
             }
 
-            if (string.IsNullOrEmpty(CollectionPropertyName))
+            if (MessageType == MessageTypes.Single)
             {
                 ValidateObjectId(result);
             }
@@ -148,7 +148,7 @@ namespace NServiceBus.SequenceGate
             {
                 var collectionObjectType = collectionPropertyInfo.PropertyType.GetGenericArguments().Single();
 
-                if (string.IsNullOrEmpty(ObjectIdPropertyName))
+                if (MessageType == MessageTypes.PrimitiveCollection)
                 {
                     if (!AllowedBasicCollectionTypes.Contains(collectionObjectType))
                     {

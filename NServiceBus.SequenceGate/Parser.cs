@@ -23,7 +23,7 @@ namespace NServiceBus.SequenceGate
             var scopeId = GetString(messageMetadata.ScopeIdPropertyName, message);
             var sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
 
-            if (string.IsNullOrEmpty(messageMetadata.CollectionPropertyName))
+            if (messageMetadata.MessageType == MessageMetadata.MessageTypes.Single)
             {
                 var trackedObject = new TrackedObject();
 
@@ -46,7 +46,7 @@ namespace NServiceBus.SequenceGate
                     trackedObject.ScopeId = scopeId;
                     trackedObject.SequenceGateId = sequenceGateId;
 
-                    if (string.IsNullOrEmpty(messageMetadata.ObjectIdPropertyName))
+                    if (messageMetadata.MessageType == MessageMetadata.MessageTypes.PrimitiveCollection)
                     {
                         trackedObject.ObjectId = item.ToString();
                     }
