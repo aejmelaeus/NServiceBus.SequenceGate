@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
@@ -22,11 +24,39 @@ namespace NServiceBus.SequenceGate.EntityFramework
 
                 context.SaveChanges();
             }
-        }
+        }       
 
         public List<string> ListObjectIdsToDismiss(List<TrackedObject> trackedObjects)
         {
-            throw new NotImplementedException();
+            var result = new List<string>();
+
+            var sequenceGateId = trackedObjects.First().SequenceGateId;
+            var scopeId = trackedObjects.First().ScopeId;
+            var sequenceAnchor = trackedObjects.First().SequenceAnchor;
+            var objectIds = trackedObjects.Select(to => to.ObjectId);
+
+            using (var context = new TrackedObjectsContext())
+            {
+                var newest = context.TrackedObjectEntities
+                    .Where(entity => objectIds.Contains(entity.ObjectId) &&
+                                     entity.SequenceGateId.Equals(sequenceGateId) &&
+                                     entity.ScopeId.Equals(scopeId))
+                    .GroupBy(entity => entity.ObjectId)
+                    .ToDictionary(entity => entity.Key, entities => entities.Max(entity => entity.SequenceAnchor));
+                
+                foreach (var objectId in objectIds)
+                {
+                    if (newest.ContainsKey(objectId))
+                    {
+                        if (newest[objectId] > sequenceAnchor)
+                        {
+                            result.Add(objectId);
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
