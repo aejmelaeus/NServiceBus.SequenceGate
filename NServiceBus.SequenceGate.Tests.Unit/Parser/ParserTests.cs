@@ -237,5 +237,53 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             Assert.That(userId2Object.SequenceGateId, Is.EqualTo(sequenceGateId));
             Assert.That(userId2Object.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
         }
+
+        [Test]
+        public void Parse_WhenScopeIdIsNullOrEmpty_ScopeIdNotTakenIntoAccount()
+        {
+            // Arrange
+            const string sequenceGateId = "SimpleMessage";
+
+            var configuration = new SequenceGateConfiguration
+            {
+                new SequenceGateMember
+                {
+                    Id = sequenceGateId,
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
+                    {
+                        new NServiceBus.SequenceGate.MessageMetadata
+                        {
+                            Type = typeof (SimpleMessage),
+                            ObjectIdPropertyName = "ObjectId",
+                            TimeStampPropertyName = "TimeStamp"
+                        }
+                    }
+                }
+            };
+
+            var parser = new NServiceBus.SequenceGate.Parser(configuration);
+
+            Guid objectId = Guid.NewGuid();
+            DateTime timeStamp = DateTime.UtcNow;
+
+            var message = new SimpleMessage
+            {
+                ObjectId = objectId,
+                TimeStamp = timeStamp
+            };
+
+            // Act
+            var result = parser.Parse(message);
+
+            // Assert
+            Assert.That(result.Count, Is.EqualTo(1));
+
+            var parsed = result.First();
+            var expectedSequenceAnchor = timeStamp.Ticks;
+
+            Assert.That(parsed.SequenceGateId, Is.EqualTo(sequenceGateId));
+            Assert.That(parsed.ObjectId, Is.EqualTo(objectId.ToString()));
+            Assert.That(parsed.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
+        }
     }
 }

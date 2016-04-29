@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Autofac;
+using NServiceBus.SequenceGate.Repository;
 
 namespace NServiceBus.SequenceGate
 {
@@ -6,6 +7,17 @@ namespace NServiceBus.SequenceGate
     {
         public static BusConfiguration SequenceGate(this BusConfiguration busConfiguration, SequenceGateConfiguration sequenceGateConfiguration)
         {
+            IPersistence persistence = new EntityFramework.Persistence();
+            IParser parser = new Parser(sequenceGateConfiguration);
+            IMutator mutator = new Mutator(sequenceGateConfiguration);
+            var sequenceGate = new SequenceGate(sequenceGateConfiguration, persistence, parser, mutator);
+
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance(sequenceGate);
+            IContainer container = builder.Build();
+            busConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(container));
+
+            busConfiguration.Pipeline.Register<SequenceGateRegistration>();
             return busConfiguration;
         }
     }

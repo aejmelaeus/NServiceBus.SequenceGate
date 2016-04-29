@@ -20,8 +20,11 @@ namespace NServiceBus.SequenceGate
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
             var timeStamp = GetDateTime(messageMetadata.TimeStampPropertyName, message).Ticks;
-            var scopeId = GetString(messageMetadata.ScopeIdPropertyName, message);
             var sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
+
+            var scopeId = string.IsNullOrEmpty(messageMetadata.ScopeIdPropertyName) ?
+                string.Empty : 
+                GetString(messageMetadata.ScopeIdPropertyName, message);
 
             if (messageMetadata.MessageType == MessageMetadata.MessageTypes.Single)
             {
