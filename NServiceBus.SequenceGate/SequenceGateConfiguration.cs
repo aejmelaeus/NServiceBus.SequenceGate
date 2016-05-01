@@ -7,6 +7,13 @@ namespace NServiceBus.SequenceGate
     {
         internal string Validate()
         {
+            //var errors = new List<ValidationError>();
+
+            //foreach (var sequenceGateMember in this)
+            //{
+            //    errors.AddRange(sequenceGateMember.Validate());
+            //}
+
             return string.Empty;
         }
 

@@ -79,4 +79,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Messages
         public DateTime TimeStamp { get; set; }
         public string CollectionThatIsAString { get; set; }
     }
+
+    internal class UserActivated
+    {
+        public Guid ObjectId { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public string ARandomProperty { get; set; }
+    }
+
+    internal class UserDeactivated
+    {
+        public Guid ObjectId { get; set; }
+        public DateTime TimeStamp { get; set; }
+    }
 }

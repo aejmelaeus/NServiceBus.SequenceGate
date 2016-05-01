@@ -45,7 +45,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
+            var expectedResult = ValidationError.CollectionPropertyMissingOrNotICollection;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -65,7 +65,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.CollectionPropertyMissingOrNotICollection;
+            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationError.CollectionPropertyMissingOrNotICollection;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -86,7 +86,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection;
+            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationError.ObjectIdPropertyMissingOnObjectInCollection;
 
             Assert.That(result.Contains(expectedResult));
         }
@@ -124,7 +124,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.CollectionObjectTypeNotInAllowedBasicCollectionTypes;
+            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationError.CollectionObjectTypeNotInAllowedBasicCollectionTypes;
 
             Assert.That(result.Contains(expectedResult));
         }

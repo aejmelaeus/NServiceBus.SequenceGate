@@ -7,6 +7,8 @@ namespace NServiceBus.SequenceGate
     {
         public static BusConfiguration SequenceGate(this BusConfiguration busConfiguration, SequenceGateConfiguration sequenceGateConfiguration)
         {
+            sequenceGateConfiguration.Validate();
+
             IPersistence persistence = new EntityFramework.Persistence();
             IParser parser = new Parser(sequenceGateConfiguration);
             IMutator mutator = new Mutator(sequenceGateConfiguration);

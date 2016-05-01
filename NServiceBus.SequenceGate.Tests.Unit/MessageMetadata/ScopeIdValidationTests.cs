@@ -41,7 +41,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.ScopeIdPropertyMissing;
+            var expectedResult = ValidationError.ScopeIdPropertyMissing;
 
             Assert.That(result.Contains(expectedResult));
         }

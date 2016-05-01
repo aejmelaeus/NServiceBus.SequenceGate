@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NServiceBus.SequenceGate;
 
 namespace NServiceBus.SequenceGate
 {
@@ -18,17 +19,6 @@ namespace NServiceBus.SequenceGate
             typeof (long),
             typeof (Guid)
         };
-
-        internal enum ValidationErrors
-        {
-            MessageTypeMissing,
-            ObjectIdPropertyMissing,
-            TimeStampPropertyMissingOrNotDateTime,
-            ScopeIdPropertyMissing,
-            CollectionPropertyMissingOrNotICollection,
-            ObjectIdPropertyMissingOnObjectInCollection,
-            CollectionObjectTypeNotInAllowedBasicCollectionTypes
-        }
 
         /// <summary>
         /// Describes the different types of message
@@ -108,13 +98,13 @@ namespace NServiceBus.SequenceGate
         /// Validates the metadata
         /// </summary>
         /// <returns>A list of validation errors. Empty collection indicates success</returns>
-        internal List<ValidationErrors> Validate()
+        internal List<ValidationError> Validate()
         {
-            var result = new List<ValidationErrors>();
+            var result = new List<ValidationError>();
 
             if (Type == null)
             {
-                result.Add(ValidationErrors.MessageTypeMissing);
+                result.Add(ValidationError.MessageTypeMissing);
                 return result;
             }
 
@@ -134,31 +124,31 @@ namespace NServiceBus.SequenceGate
             return result;
         }
 
-        private void ValidateScope(List<ValidationErrors> result)
+        private void ValidateScope(List<ValidationError> result)
         {
             var validScopeId = ValidateProperty(ScopeIdPropertyName, Type, required: false);
             if (!validScopeId)
             {
-                result.Add(ValidationErrors.ScopeIdPropertyMissing);
+                result.Add(ValidationError.ScopeIdPropertyMissing);
             }
         }
 
-        private void ValidateTimeStamp(List<ValidationErrors> result)
+        private void ValidateTimeStamp(List<ValidationError> result)
         {
             var validTimeStamp = ValidateProperty(TimeStampPropertyName, Type, typeof (DateTime));
             if (!validTimeStamp)
             {
-                result.Add(ValidationErrors.TimeStampPropertyMissingOrNotDateTime);
+                result.Add(ValidationError.TimeStampPropertyMissingOrNotDateTime);
             }
         }
 
-        private void ValidateCollection(List<ValidationErrors> result)
+        private void ValidateCollection(List<ValidationError> result)
         {
             var collectionPropertyInfo = Type.GetProperty(CollectionPropertyName);
 
             if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
             {
-                result.Add(ValidationErrors.CollectionPropertyMissingOrNotICollection);
+                result.Add(ValidationError.CollectionPropertyMissingOrNotICollection);
             }
             else
             {
@@ -168,7 +158,7 @@ namespace NServiceBus.SequenceGate
                 {
                     if (!AllowedBasicCollectionTypes.Contains(collectionObjectType))
                     {
-                        result.Add(ValidationErrors.CollectionObjectTypeNotInAllowedBasicCollectionTypes);
+                        result.Add(ValidationError.CollectionObjectTypeNotInAllowedBasicCollectionTypes);
                     }
                 }
                 else
@@ -177,19 +167,19 @@ namespace NServiceBus.SequenceGate
 
                     if (!validCollectionObjectId)
                     {
-                        result.Add(ValidationErrors.ObjectIdPropertyMissingOnObjectInCollection);
+                        result.Add(ValidationError.ObjectIdPropertyMissingOnObjectInCollection);
                     }
                 }
             }
         }
 
-        private void ValidateObjectId(List<ValidationErrors> result)
+        private void ValidateObjectId(List<ValidationError> result)
         {
             var validObjectId = ValidateProperty(ObjectIdPropertyName, Type);
 
             if (!validObjectId)
             {
-                result.Add(ValidationErrors.ObjectIdPropertyMissing);
+                result.Add(ValidationError.ObjectIdPropertyMissing);
             }
         }
 

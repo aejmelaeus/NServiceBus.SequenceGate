@@ -56,9 +56,10 @@
     <Compile Include="MessageMetadata\GeneralTests.cs" />
     <Compile Include="Mutator\MutatorTests.cs" />
     <Compile Include="Parser\ParserTests.cs" />
-    <Compile Include="SequenceGate\SequenceGateMemberCases.cs" />
+    <Compile Include="SequenceGate\SequenceGateConfigurationTests.cs" />
+    <Compile Include="SequenceGate\SequenceGateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SequenceGate\SequenceGateNonMemberCases.cs" />
+    <Compile Include="SequenceGate\SequenceGateMemberTests.cs" />
     <Compile Include="MessageMetadata\TimeStampValidationTests.cs" />
   </ItemGroup>
   <ItemGroup>

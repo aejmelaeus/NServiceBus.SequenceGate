@@ -21,7 +21,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = invalidMessageMetatdata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.ObjectIdPropertyMissing;
+            var expectedResult = ValidationError.ObjectIdPropertyMissing;
             Assert.That(result.Contains(expectedResult));
         }
 

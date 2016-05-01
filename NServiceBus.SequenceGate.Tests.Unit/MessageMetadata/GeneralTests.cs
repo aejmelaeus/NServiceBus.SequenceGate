@@ -48,7 +48,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = messageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.MessageTypeMissing;
+            var expectedResult = ValidationError.MessageTypeMissing;
 
             Assert.That(result.Contains(expectedResult));
         }

@@ -21,7 +21,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = invalidMessageMetadata.Validate();
 
             // Assert                                                    
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
+            var expectedResult = ValidationError.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 
@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = invalidMessageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationErrors.TimeStampPropertyMissingOrNotDateTime;
+            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationError.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 

@@ -14,6 +14,7 @@ namespace NServiceBus.SequenceGate
         /// The Id of the member, for example "UserEmailUpdated" or "UserPermissionActions".
         /// </summary>
         public string Id { get; set; }
+
         /// <summary>
         /// The metadata of the actual messages.
         /// </summary>
