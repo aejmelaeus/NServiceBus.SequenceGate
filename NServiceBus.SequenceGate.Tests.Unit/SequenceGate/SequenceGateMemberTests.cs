@@ -36,11 +36,9 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             // Act
             var result = sequenceGateMember.Validate();
-            // var sequenceMemberErrors = result[sequenceGateMemberId];
             
             // Assert
             Assert.That(result.Count, Is.EqualTo(0));
-            // Assert.That(sequenceMemberErrors.First() == ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent);
         }
 
         [Test]
@@ -76,6 +74,32 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             // Assert
             Assert.That(sequenceMemberErrors.First() == ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent);
+        }
+
+        [Test]
+        public void Validate_IdIsNullOrEmpty_CorrectValidationError()
+        {
+            // Arrange
+            var sequenceGateMember = new SequenceGateMember
+            {
+                Id = string.Empty,
+                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
+                {
+                    new NServiceBus.SequenceGate.MessageMetadata
+                    {
+                        Type = typeof(UserActivated),
+                        ObjectIdPropertyName = nameof(UserActivated.ObjectId),
+                        TimeStampPropertyName = nameof(UserActivated.TimeStamp)
+                    }
+                }
+            };
+
+            // Act
+            var result = sequenceGateMember.Validate();
+            var sequenceMemberErrors = result[typeof(SequenceGateMember).Assembly.FullName];
+
+            // Assert
+            Assert.That(sequenceMemberErrors.First() == ValidationError.IdMissingOnSequenceGateMember);
         }
     }
 }

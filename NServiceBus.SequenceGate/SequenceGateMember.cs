@@ -25,6 +25,11 @@ namespace NServiceBus.SequenceGate
         {
             var result = new Dictionary<string, IEnumerable<ValidationError>>();
 
+            if (string.IsNullOrEmpty(Id))
+            {
+                result.Add(typeof(SequenceGateMember).Assembly.FullName, new [] { ValidationError.IdMissingOnSequenceGateMember });
+            }
+
             if (!AllMessagesHasConsistentScope())
             {
                 result.Add(Id, new[] { ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent});

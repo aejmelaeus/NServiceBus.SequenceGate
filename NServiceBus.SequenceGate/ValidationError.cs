@@ -9,6 +9,7 @@ namespace NServiceBus.SequenceGate
         CollectionPropertyMissingOrNotICollection,
         ObjectIdPropertyMissingOnObjectInCollection,
         CollectionObjectTypeNotInAllowedBasicCollectionTypes,
-        AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent
+        AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent,
+        IdMissingOnSequenceGateMember
     }
 }
