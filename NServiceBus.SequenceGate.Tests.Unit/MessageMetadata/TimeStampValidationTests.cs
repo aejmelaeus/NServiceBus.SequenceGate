@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
             var result = invalidMessageMetadata.Validate();
 
             // Assert
-            var expectedResult = NServiceBus.SequenceGate.MessageMetadata.ValidationError.TimeStampPropertyMissingOrNotDateTime;
+            var expectedResult = ValidationError.TimeStampPropertyMissingOrNotDateTime;
             Assert.That(result.Contains(expectedResult));
         }
 

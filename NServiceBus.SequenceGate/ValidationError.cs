@@ -8,6 +8,7 @@ namespace NServiceBus.SequenceGate
         ScopeIdPropertyMissing,
         CollectionPropertyMissingOrNotICollection,
         ObjectIdPropertyMissingOnObjectInCollection,
-        CollectionObjectTypeNotInAllowedBasicCollectionTypes
+        CollectionObjectTypeNotInAllowedBasicCollectionTypes,
+        AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent
     }
 }

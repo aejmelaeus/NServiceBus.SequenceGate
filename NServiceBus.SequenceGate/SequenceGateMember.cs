@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NServiceBus.SequenceGate
 {
@@ -20,9 +21,27 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         public List<MessageMetadata> Messages { get; set; }
 
-        internal void Validate()
+        internal Dictionary<string, IEnumerable<ValidationError>> Validate()
         {
-            throw new NotImplementedException("Should validate that all messages has the same ScopeId");
+            var result = new Dictionary<string, IEnumerable<ValidationError>>();
+
+            if (!AllMessagesHasConsistentScope())
+            {
+                result.Add(Id, new[] { ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent});
+            }
+
+            return result;
+        }
+
+        private bool AllMessagesHasConsistentScope()
+        {
+            var firstMessageMetadata = Messages.First();
+
+            if (string.IsNullOrEmpty(firstMessageMetadata.ScopeIdPropertyName))
+            {
+                return Messages.TrueForAll(m => string.IsNullOrEmpty(m.ScopeIdPropertyName));
+            }
+            return Messages.TrueForAll(m => !string.IsNullOrEmpty(m.ScopeIdPropertyName));
         }
     }
 }
