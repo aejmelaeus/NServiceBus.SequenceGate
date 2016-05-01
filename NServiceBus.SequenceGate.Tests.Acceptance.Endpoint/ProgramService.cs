@@ -37,21 +37,21 @@ class ProgramService : ServiceBase
     public void Customize(BusConfiguration configuration)
     {
         var sequenceGateConfiguration = new SequenceGateConfiguration
+        {
+            new SequenceGateMember
             {
-                new SequenceGateMember
+                Id = "UserEmailUpdated",
+                Messages = new List<MessageMetadata>
                 {
-                    Id = "UserEmailUpdated",
-                    Messages = new List<MessageMetadata>
+                    new MessageMetadata
                     {
-                        new MessageMetadata
-                        {
-                            Type = typeof(UserEmailUpdated),
-                            ObjectIdPropertyName = nameof(UserEmailUpdated.UserId),
-                            TimeStampPropertyName = nameof(UserEmailUpdated.TimeStampUtc)
-                        }
+                        Type = typeof(UserEmailUpdated),
+                        ObjectIdPropertyName = nameof(UserEmailUpdated.UserId),
+                        TimeStampPropertyName = nameof(UserEmailUpdated.TimeStampUtc)
                     }
                 }
-            };
+            }
+        };
 
         configuration.SequenceGate(sequenceGateConfiguration);
     }

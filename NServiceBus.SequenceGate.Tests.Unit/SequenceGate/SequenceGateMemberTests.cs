@@ -96,10 +96,64 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             // Act
             var result = sequenceGateMember.Validate();
-            var sequenceMemberErrors = result[typeof(SequenceGateMember).Assembly.FullName];
+            var sequenceMemberErrors = result[typeof(SequenceGateMember).FullName];
 
             // Assert
             Assert.That(sequenceMemberErrors.First() == ValidationError.IdMissingOnSequenceGateMember);
+        }
+
+        [Test]
+        public void Validate_NoMessageMetadataGiven_CorrectValidation()
+        {
+            // Arrange
+            const string sequenceGateId = "abc123";
+
+            var sequenceGateMember = new SequenceGateMember
+            {
+                Id = sequenceGateId,
+                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>()
+            };
+
+            // Act
+            var result = sequenceGateMember.Validate();
+            var sequenceMemberErrors = result[sequenceGateId];
+
+            // Assert
+            Assert.That(sequenceMemberErrors.Contains(ValidationError.SequenceMetadataIsMissingOnMember));
+        }
+
+        [Test]
+        public void Validate_ValidatesAllMessageMetadatas_VaidationErrorsFromMessageMetadatasReturned()
+        {
+            // Arrange
+            const string sequenceGateMemberId = "SomeId";
+
+            var sequenceGateMember = new SequenceGateMember
+            {
+                Id = sequenceGateMemberId,
+                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
+                {
+                    new NServiceBus.SequenceGate.MessageMetadata
+                    {
+                        Type = typeof(UserActivated),
+                        ObjectIdPropertyName = nameof(UserActivated.ObjectId),
+                        TimeStampPropertyName = nameof(UserActivated.TimeStamp),
+                    },
+                    new NServiceBus.SequenceGate.MessageMetadata
+                    {
+                        Type = typeof(UserDeactivated),
+                        ObjectIdPropertyName = "Some.Bogus",
+                        TimeStampPropertyName = nameof(UserDeactivated.TimeStamp)
+                    }
+                }
+            };
+
+            // Act
+            var result = sequenceGateMember.Validate();
+            var sequenceMemberErrors = result[typeof(UserDeactivated).FullName];
+
+            // Assert
+            Assert.That(sequenceMemberErrors.First() == ValidationError.ObjectIdPropertyMissing);
         }
     }
 }

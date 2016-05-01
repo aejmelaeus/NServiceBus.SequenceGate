@@ -1,20 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NServiceBus.SequenceGate
 {
     public class SequenceGateConfiguration : List<SequenceGateMember>
     {
-        internal string Validate()
+        internal void Validate()
         {
-            //var errors = new List<ValidationError>();
+            foreach (var sequenceGateMember in this)
+            {
+                var result = sequenceGateMember.Validate();
 
-            //foreach (var sequenceGateMember in this)
-            //{
-            //    errors.AddRange(sequenceGateMember.Validate());
-            //}
-
-            return string.Empty;
+                foreach (var item in result)
+                {
+                    foreach (var validationError in item.Value)
+                    {
+                        throw new ArgumentException($"Sequence Gate Configuration error => {item.Key}: {validationError}");
+                    }
+                }
+            }
         }
 
         public MessageMetadata GetMessageMetadata(object message)

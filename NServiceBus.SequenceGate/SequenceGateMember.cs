@@ -27,12 +27,27 @@ namespace NServiceBus.SequenceGate
 
             if (string.IsNullOrEmpty(Id))
             {
-                result.Add(typeof(SequenceGateMember).Assembly.FullName, new [] { ValidationError.IdMissingOnSequenceGateMember });
+                result.Add(typeof(SequenceGateMember).FullName, new [] { ValidationError.IdMissingOnSequenceGateMember });
+            }
+
+            if (Messages == null || !Messages.Any())
+            {
+                result.Add(Id, new [] { ValidationError.SequenceMetadataIsMissingOnMember });
+                return result;
             }
 
             if (!AllMessagesHasConsistentScope())
             {
                 result.Add(Id, new[] { ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent});
+            }
+
+            foreach (var messageMetadata in Messages)
+            {
+                var messageMetadataValidationResult = messageMetadata.Validate();
+                if (messageMetadataValidationResult.Any())
+                {
+                    result.Add(messageMetadata.Type.FullName, messageMetadataValidationResult);
+                }
             }
 
             return result;

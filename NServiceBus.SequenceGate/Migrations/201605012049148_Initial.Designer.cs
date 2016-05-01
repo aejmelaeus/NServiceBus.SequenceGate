@@ -13,7 +13,7 @@ namespace NServiceBus.SequenceGate.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201604232159047_Initial"; }
+            get { return "201605012049148_Initial"; }
         }
         
         string IMigrationMetadata.Source

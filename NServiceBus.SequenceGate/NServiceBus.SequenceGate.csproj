@@ -66,9 +66,9 @@
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="IPersistence.cs" />
-    <Compile Include="Migrations\201604232159047_Initial.cs" />
-    <Compile Include="Migrations\201604232159047_Initial.Designer.cs">
-      <DependentUpon>201604232159047_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201605012049148_Initial.cs" />
+    <Compile Include="Migrations\201605012049148_Initial.Designer.cs">
+      <DependentUpon>201605012049148_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Mutator.cs" />
@@ -83,7 +83,6 @@
     <Compile Include="SequenceGateRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SequenceGateBehavior.cs" />
-    <Compile Include="Temp.cs" />
     <Compile Include="ValidationError.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,8 +90,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604232159047_Initial.resx">
-      <DependentUpon>201604232159047_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201605012049148_Initial.resx">
+      <DependentUpon>201605012049148_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
