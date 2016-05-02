@@ -50,6 +50,26 @@ class ProgramService : ServiceBase
                         TimeStampPropertyName = nameof(UserEmailUpdated.TimeStampUtc)
                     }
                 }
+            },
+            new SequenceGateMember
+            {
+                Id = "VIPStatusActions",
+                Messages = new List<MessageMetadata>
+                {
+                    new MessageMetadata
+                    {
+                        Type = typeof(VIPStatusGranted),
+                        ObjectIdPropertyName = nameof(User.Id),
+                        CollectionPropertyName = nameof(VIPStatusGranted.Users),
+                        TimeStampPropertyName = nameof(VIPStatusGranted.TimeStamp)
+                    },
+                    new MessageMetadata
+                    {
+                        Type = typeof(VIPStatusRevoked),
+                        CollectionPropertyName = nameof(VIPStatusRevoked.UserIds),
+                        TimeStampPropertyName = nameof(VIPStatusRevoked.TimeStamp)
+                    }
+                }
             }
         };
 

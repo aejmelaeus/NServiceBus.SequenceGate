@@ -20,6 +20,7 @@ namespace NServiceBus.SequenceGate
             busConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(container));
 
             busConfiguration.Pipeline.Register<SequenceGateRegistration>();
+
             return busConfiguration;
         }
     }

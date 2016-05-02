@@ -1,5 +1,6 @@
 ﻿using NServiceBus.SequenceGate.Tests.Acceptance.Messages;
 using NServiceBus.SequenceGate.Tests.Acceptance.Repository;
+using User = NServiceBus.SequenceGate.Tests.Acceptance.Repository.User;
 
 namespace NServiceBus.SequenceGate.Tests.Acceptance.Endpoint
 {

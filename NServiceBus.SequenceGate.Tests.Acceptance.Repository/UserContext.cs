@@ -10,5 +10,6 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance.Repository
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<VIPs> VIPs { get; set; } 
     }
 }
