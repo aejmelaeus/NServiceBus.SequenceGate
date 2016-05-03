@@ -57,10 +57,15 @@
     <Compile Include="Migrations\201605021905350_VIPs.Designer.cs">
       <DependentUpon>201605021905350_VIPs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605030358486_UserCustomer.cs" />
+    <Compile Include="Migrations\201605030358486_UserCustomer.Designer.cs">
+      <DependentUpon>201605030358486_UserCustomer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="UserContext.cs" />
+    <Compile Include="AcceptanceContext.cs" />
+    <Compile Include="UserCustomer.cs" />
     <Compile Include="VIPs.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +78,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605021905350_VIPs.resx">
       <DependentUpon>201605021905350_VIPs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605030358486_UserCustomer.resx">
+      <DependentUpon>201605030358486_UserCustomer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

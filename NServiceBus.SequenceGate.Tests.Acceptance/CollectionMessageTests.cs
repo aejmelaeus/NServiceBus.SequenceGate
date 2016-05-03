@@ -9,7 +9,7 @@ using User = NServiceBus.SequenceGate.Tests.Acceptance.Messages.User;
 namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
     [TestFixture]
-    public class CollectionMessageTests
+    public class CollectionMessageTests : TestFixtureBase
     {
         [Test]
         public void Send_WhenMessagesAreInACollection_OlderMessageDiscarded()
@@ -49,13 +49,13 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
             var bus = GetBus();
 
             // Act
-            bus.Send(destination, revokedVIPs);
+            bus.Send(Destination, revokedVIPs);
             Thread.Sleep(5000);
-            bus.Send(destination, newVIPs);
+            bus.Send(Destination, newVIPs);
             Thread.Sleep(5000);
 
             // Assert
-            using (var context = new UserContext())
+            using (var context = new AcceptanceContext())
             {
                 var bobVIP = context.VIPs.Find(bobUserId);
                 Assert.That(bobVIP, Is.Null);
@@ -63,23 +63,6 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                 var maryVIP = context.VIPs.Find(maryUserId);
                 Assert.That(maryVIP.UserId, Is.EqualTo(maryUserId));
             }
-        }
-
-        /*
-        ** TODOS: Move these to a common base class.
-        */
-
-        const string destination = "NServiceBus.SequenceGate.Tests.Acceptance.Endpoint";
-
-        private ISendOnlyBus GetBus()
-        {
-            var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName("NServiceBus.SequenceGate.Tests.Acceptance");
-            busConfiguration.UseSerialization<JsonSerializer>();
-            busConfiguration.UsePersistence<InMemoryPersistence>();
-            busConfiguration.EnableInstallers();
-
-            return Bus.CreateSendOnly(busConfiguration);
         }
     }
 }

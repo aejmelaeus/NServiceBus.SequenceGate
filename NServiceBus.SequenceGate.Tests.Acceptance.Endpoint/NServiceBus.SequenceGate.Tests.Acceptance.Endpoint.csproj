@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="UserEmailUpdatedHandler.cs" />
+    <Compile Include="UsersGrantedAccessToCustomerHandler.cs" />
     <Compile Include="VIPHandlers.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,14 +7,21 @@ using NUnit.Framework;
 namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
     [TestFixture]
-    public class SimpleMessageTests
+    public class SimpleMessageTests : TestFixtureBase
     {
-        const string destination = "NServiceBus.SequenceGate.Tests.Acceptance.Endpoint";
-
         [Test]
         public void Send_WithOlderMessage_OlderMessageDiscarded()
         {
             // Arrange
+
+            /*
+            ** In this case a users email becomes
+            ** updated. We pretend that the first
+            ** message fails and that the users
+            ** email is changed again before a 
+            ** retry of the first message.
+            */
+
             var userId = Guid.NewGuid();
             const string newerEmail = "newer.test@test.com";
             const string olderEmail = "older.test@test.com";
@@ -35,33 +42,22 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
 
             var bus = GetBus();
 
-            bus.Send(destination, newerMessage);
+            bus.Send(Destination, newerMessage);
             
             Thread.Sleep(TimeSpan.FromSeconds(5));
 
             // Act
-            bus.Send(destination, olderMessage);
+            bus.Send(Destination, olderMessage);
 
             Thread.Sleep(TimeSpan.FromSeconds(5));
 
             // Assert
-            using (var context = new UserContext())
+            using (var context = new AcceptanceContext())
             {
                 var user = context.Users.Find(userId);
 
                 Assert.That(user.Email, Is.EqualTo(newerEmail));
             }
-        }
-
-        private ISendOnlyBus GetBus()
-        {
-            var busConfiguration = new BusConfiguration();
-            busConfiguration.EndpointName("NServiceBus.SequenceGate.Tests.Acceptance");
-            busConfiguration.UseSerialization<JsonSerializer>();
-            busConfiguration.UsePersistence<InMemoryPersistence>();
-            busConfiguration.EnableInstallers();
-
-            return Bus.CreateSendOnly(busConfiguration);
         }
     }
 }

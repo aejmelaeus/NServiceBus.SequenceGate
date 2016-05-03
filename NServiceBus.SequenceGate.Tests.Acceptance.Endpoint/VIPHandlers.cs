@@ -7,7 +7,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance.Endpoint
     {
         public void Handle(VIPStatusGranted message)
         {
-            using (var context = new UserContext())
+            using (var context = new AcceptanceContext())
             {
                 foreach (var newVIP in message.Users)
                 {
@@ -21,7 +21,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance.Endpoint
 
         public void Handle(VIPStatusRevoked message)
         {
-            using (var context = new UserContext())
+            using (var context = new AcceptanceContext())
             {
                 foreach (var userId in message.UserIds)
                 {

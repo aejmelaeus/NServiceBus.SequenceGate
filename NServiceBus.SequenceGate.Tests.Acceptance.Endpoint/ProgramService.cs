@@ -70,6 +70,21 @@ class ProgramService : ServiceBase
                         TimeStampPropertyName = nameof(VIPStatusRevoked.TimeStamp)
                     }
                 }
+            },
+            new SequenceGateMember
+            {
+                Id = "UserCustomerActions",
+                Messages = new List<MessageMetadata>
+                {
+                    new MessageMetadata
+                    {
+                        Type = typeof(UsersGrantedAccessToCustomer),
+                        ObjectIdPropertyName = nameof(User.Id),
+                        CollectionPropertyName = nameof(UsersGrantedAccessToCustomer.Users),
+                        ScopeIdPropertyName = "Customer.Id",
+                        TimeStampPropertyName = nameof(UsersGrantedAccessToCustomer.TimeStamp)
+                    }
+                }
             }
         };
 

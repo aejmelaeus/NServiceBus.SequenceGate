@@ -8,7 +8,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance.Endpoint
     {
         public void Handle(UserEmailUpdated message)
         {
-            using (var context = new UserContext())
+            using (var context = new AcceptanceContext())
             {
                 var user = context.Users.Find(message.UserId);
 
