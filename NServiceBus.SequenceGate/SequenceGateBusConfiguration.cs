@@ -5,11 +5,18 @@ namespace NServiceBus.SequenceGate
 {
     public static class SequenceGateBusConfiguration
     {
-        public static BusConfiguration SequenceGate(this BusConfiguration busConfiguration, SequenceGateConfiguration sequenceGateConfiguration)
+        public static BusConfiguration SequenceGate(this BusConfiguration busConfiguration,
+            SequenceGateConfiguration sequenceGateConfiguration)
+        {
+            var persistence = new EntityFramework.Persistence();
+            return SequenceGate(busConfiguration, sequenceGateConfiguration, persistence);
+        }
+
+        public static BusConfiguration SequenceGate(this BusConfiguration busConfiguration, 
+            SequenceGateConfiguration sequenceGateConfiguration, IPersistence persistence)
         {
             sequenceGateConfiguration.Validate();
 
-            IPersistence persistence = new EntityFramework.Persistence();
             IParser parser = new Parser(sequenceGateConfiguration);
             IMutator mutator = new Mutator(sequenceGateConfiguration);
             var sequenceGate = new SequenceGate(sequenceGateConfiguration, persistence, parser, mutator);

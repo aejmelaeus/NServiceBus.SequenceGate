@@ -5,7 +5,7 @@ namespace NServiceBus.SequenceGate
     /// <summary>
     /// Holds the information needed to discard old messages
     /// </summary>
-    internal class TrackedObject
+    public class TrackedObject
     {
         /// <summary>
         /// The id of the gate, for example:

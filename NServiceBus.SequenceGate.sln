@@ -1,21 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate", "NServiceBus.SequenceGate\NServiceBus.SequenceGate.csproj", "{6BAF41B0-485E-4BEB-9B26-D1571606217C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Unit", "NServiceBus.SequenceGate.Tests.Unit\NServiceBus.SequenceGate.Tests.Unit.csproj", "{5D608E41-CF2D-43E1-97DD-8BE662018381}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Integration", "NServiceBus.SequenceGate.Tests.Integration\NServiceBus.SequenceGate.Tests.Integration.csproj", "{E1A09FF9-165D-4904-B5B8-A80D18995995}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Acceptance", "NServiceBus.SequenceGate.Tests.Acceptance\NServiceBus.SequenceGate.Tests.Acceptance.csproj", "{1B3D64FD-21CB-41C8-80C0-BA2FE8A76B19}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Acceptance.Endpoint", "NServiceBus.SequenceGate.Tests.Acceptance.Endpoint\NServiceBus.SequenceGate.Tests.Acceptance.Endpoint.csproj", "{D71F7E09-6425-4A12-B11F-87CE8B842999}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Acceptance.Messages", "NServiceBus.SequenceGate.Tests.Acceptance.Messages\NServiceBus.SequenceGate.Tests.Acceptance.Messages.csproj", "{6D030B1D-74DA-4608-B91A-3319CF84D2B8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Acceptance.Repository", "NServiceBus.SequenceGate.Tests.Acceptance.Repository\NServiceBus.SequenceGate.Tests.Acceptance.Repository.csproj", "{278CCB64-0698-40AD-8533-1988E4B5922D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,22 +27,6 @@ Global
 		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B3D64FD-21CB-41C8-80C0-BA2FE8A76B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B3D64FD-21CB-41C8-80C0-BA2FE8A76B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B3D64FD-21CB-41C8-80C0-BA2FE8A76B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B3D64FD-21CB-41C8-80C0-BA2FE8A76B19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D71F7E09-6425-4A12-B11F-87CE8B842999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D71F7E09-6425-4A12-B11F-87CE8B842999}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D71F7E09-6425-4A12-B11F-87CE8B842999}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D71F7E09-6425-4A12-B11F-87CE8B842999}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D030B1D-74DA-4608-B91A-3319CF84D2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D030B1D-74DA-4608-B91A-3319CF84D2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D030B1D-74DA-4608-B91A-3319CF84D2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D030B1D-74DA-4608-B91A-3319CF84D2B8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{278CCB64-0698-40AD-8533-1988E4B5922D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{278CCB64-0698-40AD-8533-1988E4B5922D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{278CCB64-0698-40AD-8533-1988E4B5922D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{278CCB64-0698-40AD-8533-1988E4B5922D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

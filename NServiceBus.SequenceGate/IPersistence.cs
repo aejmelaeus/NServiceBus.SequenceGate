@@ -2,7 +2,7 @@
 
 namespace NServiceBus.SequenceGate
 {
-    internal interface IPersistence
+    public interface IPersistence
     {
         /// <summary>
         /// Inserts a entry for each object
