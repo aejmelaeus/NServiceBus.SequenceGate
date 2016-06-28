@@ -28,7 +28,7 @@ The messages are anchored in time using a time stamp in the publishing endpoint.
 
 ## Persistence
 
-The current implementation uses SQL Server as persistence. The Sequence Gate expects a connection string called `NServiceBus/SequenceGate`.
+The current implementation uses SQL Server as persistence. The Sequence Gate expects a connection string called `NServiceBus/SequenceGate`. The scema in the database is expected to be named [Endpointname].SequenceGate, for example an Order Endpoint named Order.Endpoint would expect a table called `Order.Endpoint.SequenceGate`.
 
 ### Endpoints
 

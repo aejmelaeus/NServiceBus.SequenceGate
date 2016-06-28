@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityFramework\Parsed.cs" />
     <Compile Include="EntityFramework\TrackedObjectEntity.cs" />
     <Compile Include="EntityFramework\TrackedObjectsContext.cs" />
     <Compile Include="IMutator.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Mutator.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="EntityFramework\Persistence.cs" />
+    <Compile Include="Sql.cs" />
     <Compile Include="TrackedObject.cs" />
     <Compile Include="SequenceGate.cs" />
     <Compile Include="SequenceGateMember.cs" />
@@ -93,6 +95,9 @@
     <EmbeddedResource Include="Migrations\201605012049148_Initial.resx">
       <DependentUpon>201605012049148_Initial.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="create.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

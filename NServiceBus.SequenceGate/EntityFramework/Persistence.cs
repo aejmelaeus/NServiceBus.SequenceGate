@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
@@ -11,20 +9,19 @@ namespace NServiceBus.SequenceGate.EntityFramework
         {
             using (var context = new TrackedObjectsContext())
             {
-                foreach (var trackedObject in trackedObjects)
-                {
-                    var trackedObjectEntity = new TrackedObjectEntity();
-                    trackedObjectEntity.ObjectId = trackedObject.ObjectId;
-                    trackedObjectEntity.ScopeId = trackedObject.ScopeId;
-                    trackedObjectEntity.SequenceGateId = trackedObject.SequenceGateId;
-                    trackedObjectEntity.SequenceAnchor = trackedObject.SequenceAnchor;
-
-                    context.TrackedObjectEntities.Add(trackedObjectEntity);
-                }
-
-                context.SaveChanges();
+                
             }
-        }       
+        }
+
+        public List<string> Register(Parsed parsed)
+        {
+            // Join -> Those only in trackedObjects parameter should be added
+            // Foreach: Anchor is newer? update anchor : add id to return value
+
+            var result = new List<string>();
+
+            return result;
+        }
 
         public List<string> ListObjectIdsToDismiss(List<TrackedObject> trackedObjects)
         {
@@ -57,6 +54,28 @@ namespace NServiceBus.SequenceGate.EntityFramework
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns the actions.
+        /// </summary>
+        /// <param name="parsed">The parsed data</param>
+        /// <param name="entities">The entities that matches EndpointName and ScopeId</param>
+        /// <returns></returns>
+        internal Processed Process(Parsed parsed, IQueryable<TrackedObjectEntity> entities)
+        {
+            var result = new Processed();
+
+            var idsToAdd = parsed.ObjectIds.Except(entities.Select(e => e.ObjectId));
+
+            result.IdsToAdd = idsToAdd.ToList();
+
+            return result;
+        }
+
+        internal class Processed
+        {
+            public List<string> IdsToAdd { get; set; } = new List<string>();
         }
     }
 }
