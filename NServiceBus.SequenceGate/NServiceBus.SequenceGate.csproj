@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityFramework\Actions.cs" />
     <Compile Include="EntityFramework\Parsed.cs" />
     <Compile Include="EntityFramework\TrackedObjectEntity.cs" />
     <Compile Include="EntityFramework\TrackedObjectsContext.cs" />

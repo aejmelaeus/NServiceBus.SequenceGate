@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
+    // TODO: This is a booring name...
     public class TrackedObjectEntity
     {
         [Key]
@@ -13,6 +13,9 @@ namespace NServiceBus.SequenceGate.EntityFramework
         public string ObjectId { get; set; }
         [Required]
         public long SequenceAnchor { get; set; }
+        [Required]
         public string ScopeId { get; set; }
+        [Required]
+        public string EndpointName { get; set; }
     }
 }

@@ -62,20 +62,28 @@ namespace NServiceBus.SequenceGate.EntityFramework
         /// <param name="parsed">The parsed data</param>
         /// <param name="entities">The entities that matches EndpointName and ScopeId</param>
         /// <returns></returns>
-        internal Processed Process(Parsed parsed, IQueryable<TrackedObjectEntity> entities)
+        internal Actions GetActions(Parsed parsed, IQueryable<TrackedObjectEntity> entities)
         {
-            var result = new Processed();
+            var result = new Actions();
 
             var idsToAdd = parsed.ObjectIds.Except(entities.Select(e => e.ObjectId));
+            var idsToUpdate = entities.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.ObjectId);
+            var idsToDismiss = entities.Where(e => e.SequenceAnchor > parsed.SequenceAnchor).Select(e => e.ObjectId);
 
             result.IdsToAdd = idsToAdd.ToList();
+            result.IdsToUpdate = idsToUpdate.ToList();
+            result.IdsToDismiss = idsToDismiss.ToList();
 
             return result;
         }
 
-        internal class Processed
+        internal IQueryable<TrackedObjectEntity> GetQuery(Parsed parsed, IQueryable<TrackedObjectEntity> entities)
         {
-            public List<string> IdsToAdd { get; set; } = new List<string>();
+            return entities.Where(e => 
+                e.EndpointName.Equals(parsed.EndpointName) && 
+                e.ScopeId.Equals(parsed.ScopeId) &&
+                e.SequenceGateId.Equals(parsed.SequenceGateId)
+            );
         }
     }
 }
