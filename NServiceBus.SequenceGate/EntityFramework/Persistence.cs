@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace NServiceBus.SequenceGate.EntityFramework
@@ -15,12 +16,26 @@ namespace NServiceBus.SequenceGate.EntityFramework
 
         public List<string> Register(Parsed parsed)
         {
-            // Join -> Those only in trackedObjects parameter should be added
-            // Foreach: Anchor is newer? update anchor : add id to return value
+            using (var context = new TrackedObjectsContext())
+            {
+                var query = GetQuery(parsed, context.TrackedObjectEntities);
+                var actions = GetActions(parsed, query);
 
-            var result = new List<string>();
+                var entitiesToAdd = GetEntitiesToAdd(parsed, actions.IdsToAdd);
+                context.TrackedObjectEntities.AddRange(entitiesToAdd);
 
-            return result;
+                UpdateEntities(context, parsed.SequenceAnchor, actions.IdsToUpdate);
+
+                context.SaveChanges();
+
+                return actions.IdsToDismiss;
+            }
+        }
+
+        private void UpdateEntities(TrackedObjectsContext context, long sequenceAnchor, List<string> objedctIdsToUpdate)
+        {
+            var entitiesToUpdate = context.TrackedObjectEntities.Where(e => objedctIdsToUpdate.Contains(e.ObjectId)).ToList();
+            entitiesToUpdate.ForEach(e => e.SequenceAnchor = sequenceAnchor);
         }
 
         public List<string> ListObjectIdsToDismiss(List<TrackedObject> trackedObjects)
@@ -84,6 +99,18 @@ namespace NServiceBus.SequenceGate.EntityFramework
                 e.ScopeId.Equals(parsed.ScopeId) &&
                 e.SequenceGateId.Equals(parsed.SequenceGateId)
             );
+        }
+
+        public IEnumerable<TrackedObjectEntity> GetEntitiesToAdd(Parsed parsed, List<string> idsToAdd)
+        {
+            return idsToAdd.Select(i => new TrackedObjectEntity
+            {
+                EndpointName = parsed.EndpointName,
+                ObjectId = i,
+                ScopeId = parsed.ScopeId,
+                SequenceAnchor = parsed.SequenceAnchor,
+                SequenceGateId =  parsed.SequenceGateId
+            });
         }
     }
 }

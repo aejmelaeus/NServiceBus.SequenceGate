@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using NServiceBus.SequenceGate.EntityFramework;
 using NUnit.Framework;
@@ -176,6 +177,43 @@ namespace NServiceBus.SequenceGate.Tests.Persistence
             // Assert
             Assert.That(query.Count(), Is.EqualTo(1));
             Assert.That(query.Any(e => e.Id.Equals(4)));
+        }
+
+        [Test]
+        public void GetEntitiesToAdd_WhenInvoked_ParsedCorrectly()
+        {
+            // Arrange
+            const string scopeId = "TheScope";
+            const string endpointName = "TheEndpoint";
+            const string sequenceGateId = "TheSequenceGateId";
+            const string firstId = "123";
+            const string secondId = "456";
+            const string thirdId = "789";
+            const long sequenceAnchor = 123;
+            
+            var parsed = new Parsed();
+            parsed.EndpointName = endpointName;
+            parsed.ScopeId = scopeId;
+            parsed.SequenceAnchor = sequenceAnchor;
+            parsed.SequenceGateId = sequenceGateId;
+
+            var idsToAdd = new List<string> { firstId, secondId, thirdId };
+
+            var persistence = new EntityFramework.Persistence();
+
+            // Act
+            var entities = persistence.GetEntitiesToAdd(parsed, idsToAdd).ToList();
+
+            // Assert
+            Assert.That(entities.All(e => e.EndpointName.Equals(endpointName)));
+            Assert.That(entities.All(e => e.ScopeId.Equals(scopeId)));
+            Assert.That(entities.All(e => e.SequenceAnchor.Equals(sequenceAnchor)));
+            Assert.That(entities.All(e => e.SequenceGateId.Equals(sequenceGateId)));
+            
+            Assert.That(entities.Count, Is.EqualTo(3));
+            Assert.That(entities.Any(e => e.ObjectId.Equals(firstId)));
+            Assert.That(entities.Any(e => e.ObjectId.Equals(secondId)));
+            Assert.That(entities.Any(e => e.ObjectId.Equals(thirdId)));
         }
     }
 }
