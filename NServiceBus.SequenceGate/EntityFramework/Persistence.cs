@@ -77,7 +77,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
         /// <param name="parsed">The parsed data</param>
         /// <param name="entities">The entities that matches EndpointName and ScopeId</param>
         /// <returns></returns>
-        internal Actions GetActions(Parsed parsed, IQueryable<TrackedObjectEntity> entities)
+        internal Actions GetActions(Parsed parsed, IQueryable<SequenceObject> entities)
         {
             var result = new Actions();
 
@@ -92,7 +92,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
             return result;
         }
 
-        internal IQueryable<TrackedObjectEntity> GetQuery(Parsed parsed, IQueryable<TrackedObjectEntity> entities)
+        internal IQueryable<SequenceObject> GetQuery(Parsed parsed, IQueryable<SequenceObject> entities)
         {
             return entities.Where(e => 
                 e.EndpointName.Equals(parsed.EndpointName) && 
@@ -101,9 +101,9 @@ namespace NServiceBus.SequenceGate.EntityFramework
             );
         }
 
-        public IEnumerable<TrackedObjectEntity> GetEntitiesToAdd(Parsed parsed, List<string> idsToAdd)
+        public IEnumerable<SequenceObject> GetEntitiesToAdd(Parsed parsed, List<string> idsToAdd)
         {
-            return idsToAdd.Select(i => new TrackedObjectEntity
+            return idsToAdd.Select(i => new SequenceObject
             {
                 EndpointName = parsed.EndpointName,
                 ObjectId = i,

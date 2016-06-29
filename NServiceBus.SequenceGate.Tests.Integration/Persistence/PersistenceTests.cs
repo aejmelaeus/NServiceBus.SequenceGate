@@ -14,7 +14,7 @@ namespace NServiceBus.SequenceGate.Tests.Persistence
         public void Register_WithNewObject_Added()
         {
             // Arrange
-            var entities = new List<TrackedObjectEntity>();
+            var entities = new List<SequenceObject>();
 
             var id = Guid.NewGuid().ToString();
 
@@ -40,9 +40,9 @@ namespace NServiceBus.SequenceGate.Tests.Persistence
             // Arrange
             var id = Guid.NewGuid().ToString();
 
-            var entities = new List<TrackedObjectEntity>();
+            var entities = new List<SequenceObject>();
             
-            entities.Add(new TrackedObjectEntity { ObjectId = id });
+            entities.Add(new SequenceObject { ObjectId = id });
 
             var parsed = new Parsed();
             parsed.EndpointName = "TheName";
@@ -68,9 +68,9 @@ namespace NServiceBus.SequenceGate.Tests.Persistence
 
             var id = Guid.NewGuid().ToString();
 
-            var entities = new List<TrackedObjectEntity>();
+            var entities = new List<SequenceObject>();
 
-            entities.Add(new TrackedObjectEntity { ObjectId = id, SequenceAnchor = olderAnchor });
+            entities.Add(new SequenceObject { ObjectId = id, SequenceAnchor = olderAnchor });
 
             var parsed = new Parsed();
             parsed.EndpointName = "TheName";
@@ -97,9 +97,9 @@ namespace NServiceBus.SequenceGate.Tests.Persistence
 
             var id = Guid.NewGuid().ToString();
 
-            var entities = new List<TrackedObjectEntity>();
+            var entities = new List<SequenceObject>();
 
-            entities.Add(new TrackedObjectEntity { ObjectId = id, SequenceAnchor = newerAnchor });
+            entities.Add(new SequenceObject { ObjectId = id, SequenceAnchor = newerAnchor });
 
             var parsed = new Parsed();
             parsed.EndpointName = "TheName";
@@ -130,37 +130,37 @@ namespace NServiceBus.SequenceGate.Tests.Persistence
             parsed.ScopeId = scopeId;
             parsed.SequenceGateId = sequenceGateId;
 
-            var entities = new List<TrackedObjectEntity>
+            var entities = new List<SequenceObject>
             {
-                new TrackedObjectEntity
+                new SequenceObject
                 {
                     Id = 1,
                     ScopeId = "SomeRandomScopeId",
                     EndpointName = "SomeRandomEndpointName",
                     SequenceGateId = "SomeRandomSequenceGateId"
                 },
-                new TrackedObjectEntity
+                new SequenceObject
                 {
                     Id = 2,
                     ScopeId = scopeId,
                     EndpointName = "SomeRandomEndpointName",
                     SequenceGateId = "SomeRandomSequenceGateId"
                 },
-                new TrackedObjectEntity
+                new SequenceObject
                 {
                     Id = 3,
                     ScopeId = "SomeRandomScopeId",
                     EndpointName = endpointName,
                     SequenceGateId = "SomeRandomSequenceGateId"
                 },
-                new TrackedObjectEntity
+                new SequenceObject
                 {
                     Id = 4,
                     ScopeId = scopeId,
                     EndpointName = endpointName,
                     SequenceGateId = sequenceGateId
                 },
-                new TrackedObjectEntity
+                new SequenceObject
                 {
                     Id = 5,
                     ScopeId = scopeId,

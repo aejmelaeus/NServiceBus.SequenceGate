@@ -63,7 +63,7 @@
   <ItemGroup>
     <Compile Include="EntityFramework\Actions.cs" />
     <Compile Include="EntityFramework\Parsed.cs" />
-    <Compile Include="EntityFramework\TrackedObjectEntity.cs" />
+    <Compile Include="EntityFramework\SequenceObject.cs" />
     <Compile Include="EntityFramework\TrackedObjectsContext.cs" />
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
