@@ -8,7 +8,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
     {
         public void Register(List<TrackedObject> trackedObjects)
         {
-            using (var context = new TrackedObjectsContext())
+            using (var context = new SequenceObjectsContext())
             {
                 
             }
@@ -16,7 +16,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
 
         public List<string> Register(Parsed parsed)
         {
-            using (var context = new TrackedObjectsContext())
+            using (var context = new SequenceObjectsContext())
             {
                 var query = GetQuery(parsed, context.TrackedObjectEntities);
                 var actions = GetActions(parsed, query);
@@ -32,7 +32,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
             }
         }
 
-        private void UpdateEntities(TrackedObjectsContext context, long sequenceAnchor, List<string> objedctIdsToUpdate)
+        private void UpdateEntities(SequenceObjectsContext context, long sequenceAnchor, List<string> objedctIdsToUpdate)
         {
             var entitiesToUpdate = context.TrackedObjectEntities.Where(e => objedctIdsToUpdate.Contains(e.ObjectId)).ToList();
             entitiesToUpdate.ForEach(e => e.SequenceAnchor = sequenceAnchor);
@@ -47,7 +47,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
             var sequenceAnchor = trackedObjects.First().SequenceAnchor;
             var objectIds = trackedObjects.Select(to => to.ObjectId);
 
-            using (var context = new TrackedObjectsContext())
+            using (var context = new SequenceObjectsContext())
             {
                 var newest = context.TrackedObjectEntities
                     .Where(entity => objectIds.Contains(entity.ObjectId) &&

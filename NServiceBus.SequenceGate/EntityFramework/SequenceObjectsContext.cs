@@ -2,9 +2,9 @@
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
-    internal class TrackedObjectsContext : DbContext
+    internal class SequenceObjectsContext : DbContext
     {
-        public TrackedObjectsContext() : base ("NServiceBus/SequenceGate")
+        public SequenceObjectsContext() : base ("NServiceBus/SequenceGate")
         {
             // Nothing here...
         }

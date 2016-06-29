@@ -64,19 +64,14 @@
     <Compile Include="EntityFramework\Actions.cs" />
     <Compile Include="EntityFramework\Parsed.cs" />
     <Compile Include="EntityFramework\SequenceObject.cs" />
-    <Compile Include="EntityFramework\TrackedObjectsContext.cs" />
+    <Compile Include="EntityFramework\SequenceObjectsContext.cs" />
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="IPersistence.cs" />
-    <Compile Include="Migrations\201605012049148_Initial.cs" />
-    <Compile Include="Migrations\201605012049148_Initial.Designer.cs">
-      <DependentUpon>201605012049148_Initial.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Mutator.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="EntityFramework\Persistence.cs" />
-    <Compile Include="Sql.cs" />
     <Compile Include="TrackedObject.cs" />
     <Compile Include="SequenceGate.cs" />
     <Compile Include="SequenceGateMember.cs" />
@@ -91,11 +86,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201605012049148_Initial.resx">
-      <DependentUpon>201605012049148_Initial.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="create.sql" />
