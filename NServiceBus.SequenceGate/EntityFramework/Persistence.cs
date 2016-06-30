@@ -1,19 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
     internal class Persistence : IPersistence
     {
-        public void Register(List<NServiceBus.SequenceGate.TrackedObject> trackedObjects)
-        {
-            using (var context = new SequenceGateContext())
-            {
-                
-            }
-        }
-
         public List<string> Register(Parsed parsed)
         {
             using (var context = new SequenceGateContext())
@@ -36,39 +27,6 @@ namespace NServiceBus.SequenceGate.EntityFramework
         {
             var entitiesToUpdate = context.TrackedObjects.Where(e => objedctIdsToUpdate.Contains(e.Id)).ToList();
             entitiesToUpdate.ForEach(e => e.SequenceAnchor = sequenceAnchor);
-        }
-
-        public List<string> ListObjectIdsToDismiss(List<NServiceBus.SequenceGate.TrackedObject> trackedObjects)
-        {
-            var result = new List<string>();
-
-            var sequenceGateId = trackedObjects.First().SequenceGateId;
-            var scopeId = trackedObjects.First().ScopeId;
-            var sequenceAnchor = trackedObjects.First().SequenceAnchor;
-            var objectIds = trackedObjects.Select(to => to.ObjectId);
-
-            using (var context = new SequenceGateContext())
-            {
-                var newest = context.TrackedObjects
-                    .Where(entity => objectIds.Contains(entity.ObjectId) &&
-                                     entity.SequenceGateId.Equals(sequenceGateId) &&
-                                     entity.ScopeId.Equals(scopeId))
-                    .GroupBy(entity => entity.ObjectId)
-                    .ToDictionary(entity => entity.Key, entities => entities.Max(entity => entity.SequenceAnchor));
-                
-                foreach (var objectId in objectIds)
-                {
-                    if (newest.ContainsKey(objectId))
-                    {
-                        if (newest[objectId] > sequenceAnchor)
-                        {
-                            result.Add(objectId);
-                        }
-                    }
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
