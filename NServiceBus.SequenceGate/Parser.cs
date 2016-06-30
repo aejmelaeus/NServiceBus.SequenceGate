@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using NServiceBus.SequenceGate.EntityFramework;
 
 namespace NServiceBus.SequenceGate
 {
@@ -13,56 +14,51 @@ namespace NServiceBus.SequenceGate
         {
             _configuration = configuration;
         }
-
-        public List<TrackedObject> Parse(object message)
+        
+        public Parsed Parse(object message)
         {
-            var result = new List<TrackedObject>();
+            var result = new Parsed();
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
-            var timeStamp = GetDateTime(messageMetadata.TimeStampPropertyName, message).Ticks;
-            var sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
-
-            var scopeId = string.IsNullOrEmpty(messageMetadata.ScopeIdPropertyName) ?
-                string.Empty : 
-                GetString(messageMetadata.ScopeIdPropertyName, message);
+            result.SequenceAnchor = GetDateTime(messageMetadata.TimeStampPropertyName, message).Ticks;
+            result.SequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
+            result.ScopeId = GetScopeId(message, messageMetadata);
 
             if (messageMetadata.MessageType == MessageMetadata.MessageTypes.Single)
             {
-                var trackedObject = new TrackedObject();
-
-                trackedObject.ObjectId = GetString(messageMetadata.ObjectIdPropertyName, message);
-                trackedObject.SequenceAnchor = timeStamp;
-                trackedObject.ScopeId = scopeId;
-                trackedObject.SequenceGateId = sequenceGateId;
-                
-                result.Add(trackedObject);
+                var objectId = GetString(messageMetadata.ObjectIdPropertyName, message);
+                result.ObjectIds.Add(objectId);
             }
             else
             {
                 var collectionPropertyInfo = message.GetType().GetProperty(messageMetadata.CollectionPropertyName);
-                IEnumerable collection = (IEnumerable) collectionPropertyInfo.GetValue(message);
+                IEnumerable collection = (IEnumerable)collectionPropertyInfo.GetValue(message);
 
                 foreach (var item in collection)
                 {
-                    var trackedObject = new TrackedObject();
-                    trackedObject.SequenceAnchor = timeStamp;
-                    trackedObject.ScopeId = scopeId;
-                    trackedObject.SequenceGateId = sequenceGateId;
+                    string objectId = string.Empty;
 
                     if (messageMetadata.MessageType == MessageMetadata.MessageTypes.PrimitiveCollection)
                     {
-                        trackedObject.ObjectId = item.ToString();
+                        objectId = item.ToString();
                     }
                     else
                     {
-                        trackedObject.ObjectId = GetString(messageMetadata.ObjectIdPropertyName, item);
+                        objectId = GetString(messageMetadata.ObjectIdPropertyName, item);
                     }
 
-                    result.Add(trackedObject);
+                    result.ObjectIds.Add(objectId);
                 }
             }
-            
+
             return result;
+        }
+
+        private string GetScopeId(object message, MessageMetadata messageMetadata)
+        {
+            return string.IsNullOrEmpty(messageMetadata.ScopeIdPropertyName) ?
+                string.Empty :
+                GetString(messageMetadata.ScopeIdPropertyName, message);
         }
 
         private DateTime GetDateTime(string unsplittedPropertyName, object message)

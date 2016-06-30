@@ -25,11 +25,9 @@ namespace NServiceBus.SequenceGate
                 return message;
             }
 
-            var trackedObjects = _parser.Parse(message);
+            var parsed = _parser.Parse(message);
 
-            _persistence.Register(trackedObjects);
-
-            var objectsIdsToDismiss = _persistence.ListObjectIdsToDismiss(trackedObjects);
+            var objectsIdsToDismiss = _persistence.Register(parsed);
 
             if (objectsIdsToDismiss.Any())
             {

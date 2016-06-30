@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NServiceBus.SequenceGate.EntityFramework;
 
 namespace NServiceBus.SequenceGate
 { 
@@ -8,12 +9,11 @@ namespace NServiceBus.SequenceGate
     internal interface IParser
     {
         /// <summary>
-        /// Parses and unpacks the message in the pipeline into repository format for
+        /// Parses and unpacks the message in the pipeline into format suitable for processing in the sequence gate.
         /// further processing.
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="messageMetadataMetaData"></param>
+        /// <param name="message">Parsed data</param>
         /// <returns></returns>
-        List<TrackedObject> Parse(object message);
+        Parsed Parse(object message);
     }
 }
