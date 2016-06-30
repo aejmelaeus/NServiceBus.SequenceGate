@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Unit", "NServiceBus.SequenceGate.Tests.Unit\NServiceBus.SequenceGate.Tests.Unit.csproj", "{5D608E41-CF2D-43E1-97DD-8BE662018381}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.SequenceGate.Tests.Integration", "NServiceBus.SequenceGate.Tests.Integration\NServiceBus.SequenceGate.Tests.Integration.csproj", "{E1A09FF9-165D-4904-B5B8-A80D18995995}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{5D608E41-CF2D-43E1-97DD-8BE662018381}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D608E41-CF2D-43E1-97DD-8BE662018381}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D608E41-CF2D-43E1-97DD-8BE662018381}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1A09FF9-165D-4904-B5B8-A80D18995995}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

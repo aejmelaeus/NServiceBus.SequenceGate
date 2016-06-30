@@ -56,6 +56,7 @@
     <Compile Include="MessageMetadata\GeneralTests.cs" />
     <Compile Include="Mutator\MutatorTests.cs" />
     <Compile Include="Parser\ParserTests.cs" />
+    <Compile Include="Persistence\PersistenceTests.cs" />
     <Compile Include="SequenceGate\SequenceGateConfigurationTests.cs" />
     <Compile Include="SequenceGate\SequenceGateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
