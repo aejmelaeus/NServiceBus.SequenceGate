@@ -6,9 +6,9 @@ namespace NServiceBus.SequenceGate.EntityFramework
 {
     internal class Persistence : IPersistence
     {
-        public void Register(List<TrackedObject> trackedObjects)
+        public void Register(List<NServiceBus.SequenceGate.TrackedObject> trackedObjects)
         {
-            using (var context = new SequenceObjectsContext())
+            using (var context = new SequenceGateContext())
             {
                 
             }
@@ -16,14 +16,15 @@ namespace NServiceBus.SequenceGate.EntityFramework
 
         public List<string> Register(Parsed parsed)
         {
-            using (var context = new SequenceObjectsContext())
+            using (var context = new SequenceGateContext())
             {
-                var query = GetQuery(parsed, context.TrackedObjectEntities);
+                var query = GetQuery(parsed, context.TrackedObjects);
                 var actions = GetActions(parsed, query);
 
                 var entitiesToAdd = GetEntitiesToAdd(parsed, actions.IdsToAdd);
-                context.TrackedObjectEntities.AddRange(entitiesToAdd);
+                context.TrackedObjects.AddRange(entitiesToAdd);
 
+                // TODO: Should be the actual IDS! Not the object ids, otherwise the query is wrong.
                 UpdateEntities(context, parsed.SequenceAnchor, actions.IdsToUpdate);
 
                 context.SaveChanges();
@@ -32,13 +33,13 @@ namespace NServiceBus.SequenceGate.EntityFramework
             }
         }
 
-        private void UpdateEntities(SequenceObjectsContext context, long sequenceAnchor, List<string> objedctIdsToUpdate)
+        private void UpdateEntities(SequenceGateContext context, long sequenceAnchor, List<string> objedctIdsToUpdate)
         {
-            var entitiesToUpdate = context.TrackedObjectEntities.Where(e => objedctIdsToUpdate.Contains(e.ObjectId)).ToList();
+            var entitiesToUpdate = context.TrackedObjects.Where(e => objedctIdsToUpdate.Contains(e.ObjectId)).ToList();
             entitiesToUpdate.ForEach(e => e.SequenceAnchor = sequenceAnchor);
         }
 
-        public List<string> ListObjectIdsToDismiss(List<TrackedObject> trackedObjects)
+        public List<string> ListObjectIdsToDismiss(List<NServiceBus.SequenceGate.TrackedObject> trackedObjects)
         {
             var result = new List<string>();
 
@@ -47,9 +48,9 @@ namespace NServiceBus.SequenceGate.EntityFramework
             var sequenceAnchor = trackedObjects.First().SequenceAnchor;
             var objectIds = trackedObjects.Select(to => to.ObjectId);
 
-            using (var context = new SequenceObjectsContext())
+            using (var context = new SequenceGateContext())
             {
-                var newest = context.TrackedObjectEntities
+                var newest = context.TrackedObjects
                     .Where(entity => objectIds.Contains(entity.ObjectId) &&
                                      entity.SequenceGateId.Equals(sequenceGateId) &&
                                      entity.ScopeId.Equals(scopeId))
@@ -77,7 +78,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
         /// <param name="parsed">The parsed data</param>
         /// <param name="entities">The entities that matches EndpointName and ScopeId</param>
         /// <returns></returns>
-        internal Actions GetActions(Parsed parsed, IQueryable<SequenceObject> entities)
+        internal Actions GetActions(Parsed parsed, IQueryable<TrackedObject> entities)
         {
             var result = new Actions();
 
@@ -92,7 +93,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
             return result;
         }
 
-        internal IQueryable<SequenceObject> GetQuery(Parsed parsed, IQueryable<SequenceObject> entities)
+        internal IQueryable<TrackedObject> GetQuery(Parsed parsed, IQueryable<TrackedObject> entities)
         {
             return entities.Where(e => 
                 e.EndpointName.Equals(parsed.EndpointName) && 
@@ -101,9 +102,9 @@ namespace NServiceBus.SequenceGate.EntityFramework
             );
         }
 
-        public IEnumerable<SequenceObject> GetEntitiesToAdd(Parsed parsed, List<string> idsToAdd)
+        public IEnumerable<TrackedObject> GetEntitiesToAdd(Parsed parsed, List<string> idsToAdd)
         {
-            return idsToAdd.Select(i => new SequenceObject
+            return idsToAdd.Select(i => new TrackedObject
             {
                 EndpointName = parsed.EndpointName,
                 ObjectId = i,

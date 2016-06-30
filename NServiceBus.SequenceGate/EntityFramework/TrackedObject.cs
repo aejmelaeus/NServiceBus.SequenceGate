@@ -2,7 +2,7 @@
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
-    public class SequenceObject
+    public class TrackedObject
     {
         [Key]
         public long Id { get; set; }
