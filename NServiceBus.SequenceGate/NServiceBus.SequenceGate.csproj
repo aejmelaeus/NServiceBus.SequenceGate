@@ -68,11 +68,6 @@
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="IPersistence.cs" />
-    <Compile Include="Migrations\201606300730555_Initial.cs" />
-    <Compile Include="Migrations\201606300730555_Initial.Designer.cs">
-      <DependentUpon>201606300730555_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Mutator.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="EntityFramework\Persistence.cs" />
@@ -93,11 +88,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="create.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201606300730555_Initial.resx">
-      <DependentUpon>201606300730555_Initial.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

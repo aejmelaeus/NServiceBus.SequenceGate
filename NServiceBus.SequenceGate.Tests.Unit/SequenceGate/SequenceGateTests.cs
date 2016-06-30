@@ -200,7 +200,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             // Assert
             _persistence.DidNotReceiveWithAnyArgs().ListObjectIdsToDismiss(null);
-            _persistence.DidNotReceiveWithAnyArgs().Register(null);
+            _persistence.DidNotReceiveWithAnyArgs().Register(new List<TrackedObject>());
         }
 
         [Test]
