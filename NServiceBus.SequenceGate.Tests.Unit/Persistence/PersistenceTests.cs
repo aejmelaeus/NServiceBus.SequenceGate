@@ -29,8 +29,8 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             var result = persistence.GetActions(parsed, entities.AsQueryable());
 
             // Assert
-            Assert.That(result.IdsToAdd.Count, Is.EqualTo(1));
-            Assert.That(result.IdsToAdd.Contains(id));
+            Assert.That(result.ObjectIdsToAdd.Count, Is.EqualTo(1));
+            Assert.That(result.ObjectIdsToAdd.Contains(id));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             var result = persistence.GetActions(parsed, entities.AsQueryable());
 
             // Assert
-            Assert.That(result.IdsToAdd.Count, Is.EqualTo(0));
+            Assert.That(result.ObjectIdsToAdd.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -65,17 +65,18 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             var olderAnchor = 123;
             var newerAnchor = 456;
 
-            var id = Guid.NewGuid().ToString();
+            var objectId = Guid.NewGuid().ToString();
+            var id = 789;
 
             var entities = new List<EntityFramework.TrackedObject>();
 
-            entities.Add(new EntityFramework.TrackedObject { ObjectId = id, SequenceAnchor = olderAnchor });
+            entities.Add(new EntityFramework.TrackedObject { Id = id, ObjectId = objectId, SequenceAnchor = olderAnchor });
 
             var parsed = new Parsed();
             parsed.EndpointName = "TheName";
             parsed.ScopeId = "TheScopeId";
             parsed.SequenceAnchor = newerAnchor;
-            parsed.ObjectIds = new List<string> { id };
+            parsed.ObjectIds = new List<string> { objectId };
 
             var persistence = new EntityFramework.Persistence();
 
@@ -112,8 +113,8 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             var result = persistence.GetActions(parsed, entities.AsQueryable());
 
             // Assert
-            Assert.That(result.IdsToDismiss.Count, Is.EqualTo(1));
-            Assert.That(result.IdsToDismiss.Contains(id));
+            Assert.That(result.ObjectIdsToDismiss.Count, Is.EqualTo(1));
+            Assert.That(result.ObjectIdsToDismiss.Contains(id));
         }
 
         [Test]

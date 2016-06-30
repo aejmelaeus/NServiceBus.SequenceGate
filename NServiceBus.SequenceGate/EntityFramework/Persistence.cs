@@ -21,21 +21,20 @@ namespace NServiceBus.SequenceGate.EntityFramework
                 var query = GetQuery(parsed, context.TrackedObjects);
                 var actions = GetActions(parsed, query);
 
-                var entitiesToAdd = GetEntitiesToAdd(parsed, actions.IdsToAdd);
+                var entitiesToAdd = GetEntitiesToAdd(parsed, actions.ObjectIdsToAdd);
                 context.TrackedObjects.AddRange(entitiesToAdd);
 
-                // TODO: Should be the actual IDS! Not the object ids, otherwise the query is wrong.
                 UpdateEntities(context, parsed.SequenceAnchor, actions.IdsToUpdate);
 
                 context.SaveChanges();
 
-                return actions.IdsToDismiss;
+                return actions.ObjectIdsToDismiss;
             }
         }
 
-        private void UpdateEntities(SequenceGateContext context, long sequenceAnchor, List<string> objedctIdsToUpdate)
+        private void UpdateEntities(SequenceGateContext context, long sequenceAnchor, List<long> objedctIdsToUpdate)
         {
-            var entitiesToUpdate = context.TrackedObjects.Where(e => objedctIdsToUpdate.Contains(e.ObjectId)).ToList();
+            var entitiesToUpdate = context.TrackedObjects.Where(e => objedctIdsToUpdate.Contains(e.Id)).ToList();
             entitiesToUpdate.ForEach(e => e.SequenceAnchor = sequenceAnchor);
         }
 
@@ -83,12 +82,12 @@ namespace NServiceBus.SequenceGate.EntityFramework
             var result = new Actions();
 
             var idsToAdd = parsed.ObjectIds.Except(entities.Select(e => e.ObjectId));
-            var idsToUpdate = entities.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.ObjectId);
+            var idsToUpdate = entities.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.Id);
             var idsToDismiss = entities.Where(e => e.SequenceAnchor > parsed.SequenceAnchor).Select(e => e.ObjectId);
 
-            result.IdsToAdd = idsToAdd.ToList();
+            result.ObjectIdsToAdd = idsToAdd.ToList();
             result.IdsToUpdate = idsToUpdate.ToList();
-            result.IdsToDismiss = idsToDismiss.ToList();
+            result.ObjectIdsToDismiss = idsToDismiss.ToList();
 
             return result;
         }
