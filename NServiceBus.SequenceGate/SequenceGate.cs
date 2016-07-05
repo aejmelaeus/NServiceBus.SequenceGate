@@ -27,7 +27,7 @@ namespace NServiceBus.SequenceGate
 
             var parsed = _parser.Parse(message);
 
-             var objectsIdsToDismiss = _persistence.Register(parsed);
+            var objectsIdsToDismiss = _persistence.Register(parsed);
 
             if (objectsIdsToDismiss.Any())
             {
