@@ -6,6 +6,13 @@ namespace NServiceBus.SequenceGate
 {
     public class SequenceGateConfiguration : List<SequenceGateMember>
     {
+        public string EndpointName { get; }
+
+        public SequenceGateConfiguration(string endpointName)
+        {
+            EndpointName = endpointName;
+        }
+
         internal void Validate()
         {
             foreach (var sequenceGateMember in this)

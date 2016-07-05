@@ -12,7 +12,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
         public void Validate_WhenInvokedWithCorrectConfiguration_ExceptionNotThrown()
         {
             // Arrange
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
         public void Validate_WithInvalidConfiguration_ThrowsException()
         {
             // Arrange
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {

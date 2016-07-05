@@ -40,8 +40,12 @@ namespace NServiceBus.SequenceGate.EntityFramework
             var result = new Actions();
 
             var idsToAdd = parsed.ObjectIds.Except(entities.Select(e => e.ObjectId));
-            var idsToUpdate = entities.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.Id);
-            var idsToDismiss = entities.Where(e => e.SequenceAnchor > parsed.SequenceAnchor).Select(e => e.ObjectId);
+
+            var entitiesInMessage = entities.Where(e => parsed.ObjectIds.Contains(e.ObjectId));
+
+            var idsToUpdate = entitiesInMessage.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.Id);
+
+            var idsToDismiss = entitiesInMessage.Where(e => e.SequenceAnchor > parsed.SequenceAnchor).Select(e => e.ObjectId);
 
             result.ObjectIdsToAdd = idsToAdd.ToList();
             result.IdsToUpdate = idsToUpdate.ToList();

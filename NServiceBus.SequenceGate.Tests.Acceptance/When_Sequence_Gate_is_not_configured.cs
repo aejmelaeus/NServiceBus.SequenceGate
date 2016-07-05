@@ -1,8 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using NServiceBus.AcceptanceTesting;
-using NServiceBus.Config;
-using NServiceBus.Features;
 using NServiceBus.SequenceGate.Tests.Acceptance.Infrastructure;
 
 namespace NServiceBus.SequenceGate.Tests.Acceptance
@@ -11,62 +9,35 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
     public class When_Sequence_Gate_is_not_configured
     {
         [Test]
-        public void Retried_message_is_passed_through_even_that_a_newer_message_has_arrived()
+        public void Then_an_older_message_for_the_same_object_is_processed()
         {
             var id = Guid.NewGuid();
 
+            var newerMessage = new Message { Id = id, Value = "Newer", TimeStamp = DateTime.UtcNow.AddDays(-1) };
+            var olderMessage = new Message { Id = id, Value = "Older", TimeStamp = DateTime.UtcNow.AddDays(-2) };
+
             var context = Scenario.Define(() => new Context { })
-                .WithEndpoint<Producer>(producer => producer
+                .WithEndpoint<Endpoint>(producer => producer
                     .Given((b, c) =>
                     {
-                        b.Send(new Message { Id = id, Value = "First" });
-                        b.Send(new Message { Id = id, Value = "Second" });
+                        b.SendLocal(newerMessage);
+                        b.SendLocal(olderMessage);
                     }))
-                .WithEndpoint<NonGated>()
-                .AllowExceptions()
-                .Run(TimeSpan.FromSeconds(4));
+                .Run();
 
-            /*
-            ** TODO: Disable FLR and set SLR to one attempt 2 seconds later.
-            */
-
-            Assert.That(context.LastValue, Is.EqualTo("First"));
+            Assert.That(context.LastValue, Is.EqualTo(olderMessage.Value));
         }
 
         public class Context : ScenarioContext
         {
-            public bool FirstMessageFailed { get; set; }
             public string LastValue { get; set; }
         }
 
-        public class Producer : EndpointConfigurationBuilder
+        public class Endpoint : EndpointConfigurationBuilder
         {
-            public Producer()
+            public Endpoint()
             {
-                EndpointSetup<DefaultServer>()
-                    .AddMapping<Message>(typeof(NonGated));
-            }
-        }
-
-        public class NonGated : EndpointConfigurationBuilder
-        {
-            public NonGated()
-            {
-                EndpointSetup<DefaultServer>(config =>
-                {
-                    config.EnableFeature<Features.TimeoutManager>();
-                    config.EnableFeature<Features.SecondLevelRetries>();
-                })
-                .WithConfig<TransportConfig>(c =>
-                {
-                    c.MaxRetries = 0;
-                })
-                .WithConfig<SecondLevelRetriesConfig>(c =>
-                {
-                    c.NumberOfRetries = 1;
-                    c.TimeIncrease = TimeSpan.FromSeconds(2);
-                })
-                .AddMapping<Message>(typeof(NonGated));
+                EndpointSetup<DefaultServer>(config => config.EnableInstallers());
             }
 
             public class Handler : IHandleMessages<Message>
@@ -75,11 +46,6 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
 
                 public void Handle(Message message)
                 {
-                    if (!Context.FirstMessageFailed)
-                    {
-                        Context.FirstMessageFailed = true;
-                        throw new Exception("Simulated exception");
-                    }
                     Context.LastValue = message.Value;
                 }
             }
@@ -89,6 +55,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
         {
             public Guid Id { get; set; }
             public string Value { get; set; }
+            public DateTime TimeStamp { get; set; }
         }
     }
 }

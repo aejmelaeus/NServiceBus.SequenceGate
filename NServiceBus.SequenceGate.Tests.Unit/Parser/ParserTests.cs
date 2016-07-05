@@ -15,7 +15,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -68,7 +68,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -120,7 +120,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -182,7 +182,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -234,12 +234,54 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
         }
 
         [Test]
-        public void Parse_WhenScopeIdIsNullOrEmpty_ScopeIdNotTakenIntoAccount()
+        public void Parse_WhenScopeIdIsNullOrEmpty_ScopeIdSetToScopeIdNotApplicable()
         {
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            {
+                new SequenceGateMember
+                {
+                    Id = sequenceGateId,
+                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
+                    {
+                        new NServiceBus.SequenceGate.MessageMetadata
+                        {
+                            Type = typeof (SimpleMessage),
+                            ObjectIdPropertyName = "ObjectId",
+                            TimeStampPropertyName = "TimeStamp"
+                        }
+                    }
+                }
+            };
+
+            var parser = new NServiceBus.SequenceGate.Parser(configuration);
+
+            Guid objectId = Guid.NewGuid();
+            DateTime timeStamp = DateTime.UtcNow;
+
+            var message = new SimpleMessage
+            {
+                ObjectId = objectId,
+                TimeStamp = timeStamp
+            };
+
+            // Act
+            var result = parser.Parse(message);
+
+            // Assert
+            Assert.That(result.ScopeId, Is.EqualTo(NServiceBus.SequenceGate.Parser.ScopeIdNotApplicable));
+        }
+
+        [Test]
+        public void Parse_WhenCalled_EndpointNameTakenFromConfiguration()
+        {
+            // Arrange
+            const string sequenceGateId = "SimpleMessage";
+            const string endpointName = "SomeNiceEndpointName";
+
+            var configuration = new SequenceGateConfiguration(endpointName)
             {
                 new SequenceGateMember
                 {
@@ -272,12 +314,8 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
 
             // Assert
             Assert.That(result.ObjectIds.Count, Is.EqualTo(1));
-            var expectedSequenceAnchor = timeStamp.Ticks;
-            string resultObjectId = result.ObjectIds.First();
-
-            Assert.That(resultObjectId, Is.EqualTo(objectId.ToString()));
-            Assert.That(result.SequenceGateId, Is.EqualTo(sequenceGateId));
-            Assert.That(result.SequenceAnchor, Is.EqualTo(expectedSequenceAnchor));
+            
+            Assert.That(result.EndpointName, Is.EqualTo(endpointName));
         }
     }
 }

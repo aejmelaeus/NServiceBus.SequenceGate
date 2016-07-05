@@ -15,13 +15,10 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             // Arrange
             var entities = new List<EntityFramework.TrackedObject>();
 
-            var id = Guid.NewGuid().ToString();
+            var objectId = Guid.NewGuid().ToString();
 
-            var parsed = new Parsed();
-            parsed.EndpointName = "TheName";
-            parsed.ScopeId = "TheScopeId";
-            parsed.SequenceAnchor = 123;
-            parsed.ObjectIds = new List<string> { id };
+            var parsed = new Parsed("SomeEndpoint", "SequenceGateId", "TheScopeId", DateTime.UtcNow.Ticks);
+            parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
@@ -30,24 +27,21 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
 
             // Assert
             Assert.That(result.ObjectIdsToAdd.Count, Is.EqualTo(1));
-            Assert.That(result.ObjectIdsToAdd.Contains(id));
+            Assert.That(result.ObjectIdsToAdd.Contains(objectId));
         }
 
         [Test]
         public void Register_WithExistingObject_NotInAdded()
         {
             // Arrange
-            var id = Guid.NewGuid().ToString();
+            var objectId = Guid.NewGuid().ToString();
 
             var entities = new List<EntityFramework.TrackedObject>();
             
-            entities.Add(new EntityFramework.TrackedObject { ObjectId = id });
+            entities.Add(new EntityFramework.TrackedObject { ObjectId = objectId });
 
-            var parsed = new Parsed();
-            parsed.EndpointName = "TheName";
-            parsed.ScopeId = "TheScopeId";
-            parsed.SequenceAnchor = 123;
-            parsed.ObjectIds = new List<string> { id };
+            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
+            parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
@@ -72,11 +66,8 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
 
             entities.Add(new EntityFramework.TrackedObject { Id = id, ObjectId = objectId, SequenceAnchor = olderAnchor });
 
-            var parsed = new Parsed();
-            parsed.EndpointName = "TheName";
-            parsed.ScopeId = "TheScopeId";
-            parsed.SequenceAnchor = newerAnchor;
-            parsed.ObjectIds = new List<string> { objectId };
+            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", newerAnchor);
+            parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
@@ -89,23 +80,44 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
         }
 
         [Test]
+        public void Register_WhenQueryContainsOtherObjectsThanInMessage_OtherObjectsNotInIdsToUpdate()
+        {
+            // Arrange
+            var objectId = Guid.NewGuid().ToString();
+
+            var otherObjectId = Guid.NewGuid().ToString();
+            var otherId = 123;
+
+            var entities = new List<EntityFramework.TrackedObject>();
+            entities.Add(new EntityFramework.TrackedObject { Id = otherId, ObjectId = otherObjectId });
+
+            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", 123);
+            parsed.AddObjectId(objectId);
+
+            var persistence = new EntityFramework.Persistence();
+
+            // Act
+            var result = persistence.GetActions(parsed, entities.AsQueryable());
+
+            // Assert
+            Assert.That(!result.IdsToUpdate.Contains(otherId));
+        }
+
+        [Test]
         public void Register_WhenParsedMessageHasOlderAnchor_IdInIdsToDismiss()
         {
             // Arrange
             var olderAnchor = 123;
             var newerAnchor = 456;
 
-            var id = Guid.NewGuid().ToString();
+            var objectId = Guid.NewGuid().ToString();
 
             var entities = new List<EntityFramework.TrackedObject>();
 
-            entities.Add(new EntityFramework.TrackedObject { ObjectId = id, SequenceAnchor = newerAnchor });
+            entities.Add(new EntityFramework.TrackedObject { ObjectId = objectId, SequenceAnchor = newerAnchor });
 
-            var parsed = new Parsed();
-            parsed.EndpointName = "TheName";
-            parsed.ScopeId = "TheScopeId";
-            parsed.SequenceAnchor = olderAnchor;
-            parsed.ObjectIds = new List<string> { id };
+            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", olderAnchor);
+            parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
@@ -114,7 +126,34 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
 
             // Assert
             Assert.That(result.ObjectIdsToDismiss.Count, Is.EqualTo(1));
-            Assert.That(result.ObjectIdsToDismiss.Contains(id));
+            Assert.That(result.ObjectIdsToDismiss.Contains(objectId));
+        }
+
+        [Test]
+        public void Register_WhenQueryContainsOtherObjectsThanInMessageThatHasNewerAnchor_OtherObjectsNotInObjectIdsToDismiss()
+        {
+            // Arrange
+            var newerAnchor = 456;
+            var olderAnchor = 123;
+
+            var objectId = Guid.NewGuid().ToString();
+
+            var otherObjectId = Guid.NewGuid().ToString();
+            var otherId = 123;
+
+            var entities = new List<EntityFramework.TrackedObject>();
+            entities.Add(new EntityFramework.TrackedObject { Id = otherId, ObjectId = otherObjectId, SequenceAnchor = newerAnchor });
+
+            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", olderAnchor);
+            parsed.AddObjectId(objectId);
+
+            var persistence = new EntityFramework.Persistence();
+
+            // Act
+            var result = persistence.GetActions(parsed, entities.AsQueryable());
+
+            // Assert
+            Assert.That(!result.ObjectIdsToDismiss.Contains(otherObjectId));
         }
 
         [Test]
@@ -125,10 +164,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             const string endpointName = "TheEndpoint";
             const string sequenceGateId = "TheSequenceGateId";
 
-            var parsed = new Parsed();
-            parsed.EndpointName = endpointName;
-            parsed.ScopeId = scopeId;
-            parsed.SequenceGateId = sequenceGateId;
+            var parsed = new Parsed(endpointName, sequenceGateId, scopeId, DateTime.UtcNow.Ticks);
 
             var entities = new List<EntityFramework.TrackedObject>
             {
@@ -191,12 +227,8 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             const string thirdId = "789";
             const long sequenceAnchor = 123;
             
-            var parsed = new Parsed();
-            parsed.EndpointName = endpointName;
-            parsed.ScopeId = scopeId;
-            parsed.SequenceAnchor = sequenceAnchor;
-            parsed.SequenceGateId = sequenceGateId;
-
+            var parsed = new Parsed(endpointName, sequenceGateId, scopeId, sequenceAnchor);
+            
             var idsToAdd = new List<string> { firstId, secondId, thirdId };
 
             var persistence = new EntityFramework.Persistence();

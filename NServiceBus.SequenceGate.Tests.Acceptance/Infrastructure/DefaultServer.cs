@@ -18,7 +18,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance.Infrastructure
     {
         public BusConfiguration GetConfiguration(RunDescriptor runDescriptor, EndpointConfiguration endpointConfiguration, IConfigurationSource configSource, Action<BusConfiguration> configurationBuilderCustomization)
         {
-                 var settings = runDescriptor.Settings;
+            var settings = runDescriptor.Settings;
 
             var types = GetTypesToUse(endpointConfiguration);
 

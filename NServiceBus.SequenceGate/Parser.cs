@@ -8,6 +8,8 @@ namespace NServiceBus.SequenceGate
 {
     internal class Parser : IParser
     {
+        internal const string ScopeIdNotApplicable = "NotApplicable";
+
         private readonly SequenceGateConfiguration _configuration;
 
         public Parser(SequenceGateConfiguration configuration)
@@ -17,17 +19,19 @@ namespace NServiceBus.SequenceGate
         
         public Parsed Parse(object message)
         {
-            var result = new Parsed();
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
-            result.SequenceAnchor = GetDateTime(messageMetadata.TimeStampPropertyName, message).Ticks;
-            result.SequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
-            result.ScopeId = GetScopeId(message, messageMetadata);
+            string endpointName = _configuration.EndpointName;
+            long sequenceAnchor = GetDateTime(messageMetadata.TimeStampPropertyName, message).Ticks;
+            string sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
+            string scopeId = GetScopeId(message, messageMetadata);
+
+            var result = new Parsed(endpointName, sequenceGateId, scopeId, sequenceAnchor);
 
             if (messageMetadata.MessageType == MessageMetadata.MessageTypes.Single)
             {
                 var objectId = GetString(messageMetadata.ObjectIdPropertyName, message);
-                result.ObjectIds.Add(objectId);
+                result.AddObjectId(objectId);
             }
             else
             {
@@ -47,7 +51,7 @@ namespace NServiceBus.SequenceGate
                         objectId = GetString(messageMetadata.ObjectIdPropertyName, item);
                     }
 
-                    result.ObjectIds.Add(objectId);
+                    result.AddObjectId(objectId);
                 }
             }
 
@@ -57,7 +61,7 @@ namespace NServiceBus.SequenceGate
         private string GetScopeId(object message, MessageMetadata messageMetadata)
         {
             return string.IsNullOrEmpty(messageMetadata.ScopeIdPropertyName) ?
-                string.Empty :
+                ScopeIdNotApplicable :
                 GetString(messageMetadata.ScopeIdPropertyName, message);
         }
 

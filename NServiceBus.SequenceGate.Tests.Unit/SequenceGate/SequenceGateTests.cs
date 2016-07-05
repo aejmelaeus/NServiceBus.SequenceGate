@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NServiceBus.SequenceGate.EntityFramework;
 using NServiceBus.SequenceGate.Tests.Unit.Messages;
 using NSubstitute;
@@ -22,7 +23,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             _parser = Substitute.For<IParser>();
             _mutator = Substitute.For<IMutator>();
             _simpleMessage = new SimpleMessage();
-            _configuration = new SequenceGateConfiguration();
+            _configuration = new SequenceGateConfiguration("SomeEndpointName");
         }
 
         [Test]
@@ -31,11 +32,11 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             // Arrange
             const string sequenceGateId = "UserEmailUpdated";
             var message = new SimpleMessage();
-            var gateData = new Parsed();
+            var gateData = new Parsed("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
 
             _persistence.Register(Arg.Any<Parsed>()).Returns(new List<string>());
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -69,11 +70,11 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
         {
             const string sequenceGateId = "UserEmailUpdated";
             var message = new SimpleMessage();
-            var gateData = new Parsed();
+            var gateData = new Parsed("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
 
             _persistence.Register(Arg.Any<Parsed>()).Returns(new List<string>());
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -120,7 +121,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             var mutatedObject = new SimpleMessage();
             _mutator.Mutate(originalObject, seenObjects).Returns(mutatedObject);
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {

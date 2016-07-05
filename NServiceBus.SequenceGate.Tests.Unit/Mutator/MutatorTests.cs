@@ -20,7 +20,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string>();
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -58,7 +58,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string> { objectId.ToString() };
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -94,7 +94,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string> { alreadySeenUserId.ToString() };
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
@@ -142,7 +142,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string> { alreadySeenUserId.ToString() };
 
-            var configuration = new SequenceGateConfiguration
+            var configuration = new SequenceGateConfiguration("SomeEndpointName")
             {
                 new SequenceGateMember
                 {
