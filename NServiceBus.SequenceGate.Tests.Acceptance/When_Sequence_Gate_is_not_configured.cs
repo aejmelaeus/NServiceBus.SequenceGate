@@ -16,7 +16,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
             var newerMessage = new Message { Id = id, Value = "Newer", TimeStamp = DateTime.UtcNow.AddDays(-1) };
             var olderMessage = new Message { Id = id, Value = "Older", TimeStamp = DateTime.UtcNow.AddDays(-2) };
 
-            var context = Scenario.Define(() => new Context { })
+            var context = Scenario.Define(() => new Context { })    
                 .WithEndpoint<Endpoint>(producer => producer
                     .Given((b, c) =>
                     {

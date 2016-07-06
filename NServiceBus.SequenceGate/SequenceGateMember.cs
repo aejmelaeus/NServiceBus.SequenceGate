@@ -19,7 +19,7 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// The metadata of the actual messages.
         /// </summary>
-        public List<MessageMetadata> Messages { get; set; }
+        public List<MessageMetadata> Messages { get; set; } = new List<MessageMetadata>();
 
         internal Dictionary<string, IEnumerable<ValidationError>> Validate()
         {
@@ -62,6 +62,24 @@ namespace NServiceBus.SequenceGate
                 return Messages.TrueForAll(m => string.IsNullOrEmpty(m.ScopeIdPropertyName));
             }
             return Messages.TrueForAll(m => !string.IsNullOrEmpty(m.ScopeIdPropertyName));
+        }
+
+        public void AddMessage(MessageMetadata messageMetadata)
+        {
+            // TODO: Encapsulate
+            Messages.Add(messageMetadata);
+        }
+    }
+
+    public static class SequenceGateMemberExtensions
+    {
+        public static SequenceGateMember WithMessage<TMessageType>(this SequenceGateMember sequenceGateMember,
+            Action<MessageMetadata> configureMessageMetadata) where TMessageType : class
+        {
+            var messageMetadata = new MessageMetadata(typeof(TMessageType));
+            configureMessageMetadata(messageMetadata);
+            sequenceGateMember.AddMessage(messageMetadata);
+            return sequenceGateMember;
         }
     }
 }

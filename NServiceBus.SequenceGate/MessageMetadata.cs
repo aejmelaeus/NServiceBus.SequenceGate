@@ -59,6 +59,16 @@ namespace NServiceBus.SequenceGate
             }
         }
 
+        public MessageMetadata()
+        {
+            // TODO: Remove later
+        }
+
+        internal MessageMetadata(Type messageType)
+        {
+            Type = messageType;
+        }
+
         /// <summary>
         /// The type of the message
         /// </summary>

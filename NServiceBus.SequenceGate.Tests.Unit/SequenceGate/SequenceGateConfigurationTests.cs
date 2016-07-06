@@ -12,22 +12,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
         public void Validate_WhenInvokedWithCorrectConfiguration_ExceptionNotThrown()
         {
             // Arrange
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName");
+
+            configuration.WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = "SomeSequenceGateId";
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = "SomeSequenceGateId",
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = nameof(SimpleMessage.ObjectId),
-                            TimeStampPropertyName = nameof(SimpleMessage.TimeStamp)
-                        }
-                    }
-                }
-            };
+                    metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
+                    metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);
+                });
+            });
 
             // Act
             configuration.Validate();
@@ -35,27 +30,22 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             // Assert
             Assert.Pass("SequenceGateConfiguration.Validate did not throw any exceptions! Pass!");
         }
-
+        
         [Test]
         public void Validate_WithInvalidConfiguration_ThrowsException()
         {
             // Arrange
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName");
+
+            configuration.WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = "SomeSequenceGateId";
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = "SomeSequenceGateId",
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = "NonExistingPropertyName",
-                            TimeStampPropertyName = nameof(SimpleMessage.TimeStamp)
-                        }
-                    }
-                }
-            };
+                    metadata.ObjectIdPropertyName = "NonExistingPropertyName";
+                    metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);
+                });
+            });
 
             // Act & Assert
             Assert.Throws<ArgumentException>(() => configuration.Validate());

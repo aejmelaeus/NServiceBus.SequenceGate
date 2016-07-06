@@ -45,5 +45,22 @@ namespace NServiceBus.SequenceGate
             }
             return string.Empty;
         }
+
+        public void AddMember(SequenceGateMember sequenceGateMember)
+        {
+            Add(sequenceGateMember);
+        }
+    }
+
+    public static class SequenceGateConfigurationExtensions
+    {
+        public static SequenceGateConfiguration WithMember(this SequenceGateConfiguration sequenceGateConfiguration, Action<SequenceGateMember> configureSequenceGateMember)
+        {
+            var sequenceGateMember = new SequenceGateMember();
+            configureSequenceGateMember(sequenceGateMember);
+
+            sequenceGateConfiguration.AddMember(sequenceGateMember);
+            return sequenceGateConfiguration;
+        }
     }
 }
