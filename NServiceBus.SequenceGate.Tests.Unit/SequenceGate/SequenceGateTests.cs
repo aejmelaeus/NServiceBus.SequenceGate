@@ -39,7 +39,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "UserId";
                     metadata.TimeStampPropertyName = "TimeStamp";
@@ -70,7 +70,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "UserId";
                     metadata.TimeStampPropertyName = "TimeStamp";
@@ -103,7 +103,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = "abc123";
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
                     metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);

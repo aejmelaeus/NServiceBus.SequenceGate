@@ -17,7 +17,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             configuration.WithMember(member =>
             {
                 member.Id = "SomeSequenceGateId";
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
                     metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);
@@ -40,7 +40,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             configuration.WithMember(member =>
             {
                 member.Id = "SomeSequenceGateId";
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "NonExistingPropertyName";
                     metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);

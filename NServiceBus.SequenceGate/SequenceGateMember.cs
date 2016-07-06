@@ -16,10 +16,12 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         public string Id { get; set; }
 
+        public IEnumerable<MessageMetadata> Messages => _messages; 
+
         /// <summary>
         /// The metadata of the actual messages.
         /// </summary>
-        public List<MessageMetadata> Messages { get; set; } = new List<MessageMetadata>();
+        private readonly List<MessageMetadata> _messages = new List<MessageMetadata>();
 
         internal Dictionary<string, IEnumerable<ValidationError>> Validate()
         {
@@ -59,21 +61,20 @@ namespace NServiceBus.SequenceGate
 
             if (string.IsNullOrEmpty(firstMessageMetadata.ScopeIdPropertyName))
             {
-                return Messages.TrueForAll(m => string.IsNullOrEmpty(m.ScopeIdPropertyName));
+                return _messages.TrueForAll(m => string.IsNullOrEmpty(m.ScopeIdPropertyName));
             }
-            return Messages.TrueForAll(m => !string.IsNullOrEmpty(m.ScopeIdPropertyName));
+            return _messages.TrueForAll(m => !string.IsNullOrEmpty(m.ScopeIdPropertyName));
         }
 
-        public void AddMessage(MessageMetadata messageMetadata)
+        internal void AddMessage(MessageMetadata messageMetadata)
         {
-            // TODO: Encapsulate
-            Messages.Add(messageMetadata);
+            _messages.Add(messageMetadata);
         }
     }
 
     public static class SequenceGateMemberExtensions
     {
-        public static SequenceGateMember WithMessage<TMessageType>(this SequenceGateMember sequenceGateMember,
+        public static SequenceGateMember HasMessage<TMessageType>(this SequenceGateMember sequenceGateMember,
             Action<MessageMetadata> configureMessageMetadata) where TMessageType : class
         {
             var messageMetadata = new MessageMetadata(typeof(TMessageType));

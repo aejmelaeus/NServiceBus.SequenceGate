@@ -48,7 +48,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                     var configuration = new SequenceGateConfiguration("Endpoint").WithMember(member =>
                     {
                         member.Id = "Message";
-                        member.WithMessage<Message>(metadata =>
+                        member.HasMessage<Message>(metadata =>
                         {
                             metadata.ObjectIdPropertyName = nameof(Message.Id);
                             metadata.TimeStampPropertyName = nameof(Message.TimeStamp);

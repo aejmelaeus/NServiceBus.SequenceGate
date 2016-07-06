@@ -23,7 +23,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = "Test";
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
                     metadata.ScopeIdPropertyName = nameof(SimpleMessage.ScopeId);
@@ -54,7 +54,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = "Test";
-                member.WithMessage<SimpleMessage>(metadata =>
+                member.HasMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
                     metadata.ScopeIdPropertyName = nameof(SimpleMessage.ScopeId);
@@ -83,7 +83,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = "Test";
-                member.WithMessage<ComplexCollectionMessage>(metadata =>
+                member.HasMessage<ComplexCollectionMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "Id";
                     metadata.ScopeIdPropertyName = "Scope.Id";
@@ -124,7 +124,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = "Test";
-                member.WithMessage<SimpleCollectionMessage>(metadata =>
+                member.HasMessage<SimpleCollectionMessage>(metadata =>
                 {
                     metadata.ScopeIdPropertyName = "Scope.Id";
                     metadata.TimeStampPropertyName = "MetaData.TimeStamp";

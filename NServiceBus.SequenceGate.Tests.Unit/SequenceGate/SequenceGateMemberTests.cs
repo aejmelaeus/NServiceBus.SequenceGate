@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System.Linq;
-using NServiceBus.SequenceGate.Tests.Unit.Messages;
 using NUnit.Framework;
+using NServiceBus.SequenceGate.Tests.Unit.Messages;
 
 namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 {
@@ -16,24 +15,21 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             var sequenceGateMember = new SequenceGateMember
             {
-                Id = sequenceGateMemberId,
-                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                {
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserActivated),
-                        ObjectIdPropertyName = nameof(UserActivated.ObjectId),
-                        TimeStampPropertyName = nameof(UserActivated.TimeStamp)
-                    },
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserDeactivated),
-                        ObjectIdPropertyName = nameof(UserDeactivated.ObjectId),
-                        TimeStampPropertyName = nameof(UserDeactivated.TimeStamp)
-                    }
-                }
+                Id = sequenceGateMemberId
             };
 
+            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            {
+                metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
+                metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
+            });
+
+            sequenceGateMember.HasMessage<UserDeactivated>(metadata =>
+            {
+                metadata.ObjectIdPropertyName = nameof(UserDeactivated.ObjectId);
+                metadata.TimeStampPropertyName = nameof(UserDeactivated.TimeStamp);
+            });
+            
             // Act
             var result = sequenceGateMember.Validate();
             
@@ -49,24 +45,21 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             var sequenceGateMember = new SequenceGateMember
             {
-                Id = sequenceGateMemberId,
-                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                {
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserActivated),
-                        ObjectIdPropertyName = nameof(UserActivated.ObjectId),
-                        TimeStampPropertyName = nameof(UserActivated.TimeStamp),
-                        ScopeIdPropertyName = nameof(UserActivated.ARandomProperty)
-                    },
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserDeactivated),
-                        ObjectIdPropertyName = nameof(UserDeactivated.ObjectId),
-                        TimeStampPropertyName = nameof(UserDeactivated.TimeStamp)
-                    }
-                }
+                Id = sequenceGateMemberId
             };
+
+            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            {
+                metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
+                metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
+                metadata.ScopeIdPropertyName = nameof(UserActivated.ARandomProperty);
+            });
+
+            sequenceGateMember.HasMessage<UserDeactivated>(metadata =>
+            {
+                metadata.ObjectIdPropertyName = nameof(UserDeactivated.ObjectId);
+                metadata.TimeStampPropertyName = nameof(UserDeactivated.TimeStamp);
+            });
 
             // Act
             var result = sequenceGateMember.Validate();
@@ -82,17 +75,14 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             // Arrange
             var sequenceGateMember = new SequenceGateMember
             {
-                Id = string.Empty,
-                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                {
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserActivated),
-                        ObjectIdPropertyName = nameof(UserActivated.ObjectId),
-                        TimeStampPropertyName = nameof(UserActivated.TimeStamp)
-                    }
-                }
+                Id = string.Empty
             };
+
+            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            {
+                metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
+                metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
+            });
 
             // Act
             var result = sequenceGateMember.Validate();
@@ -110,8 +100,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
 
             var sequenceGateMember = new SequenceGateMember
             {
-                Id = sequenceGateId,
-                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>()
+                Id = sequenceGateId
             };
 
             // Act
@@ -126,27 +115,18 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
         public void Validate_ValidatesAllMessageMetadatas_VaidationErrorsFromMessageMetadatasReturned()
         {
             // Arrange
-            const string sequenceGateMemberId = "SomeId";
+            var sequenceGateMember = new SequenceGateMember();
 
-            var sequenceGateMember = new SequenceGateMember
+            sequenceGateMember.HasMessage<UserActivated>(metadata =>
             {
-                Id = sequenceGateMemberId,
-                Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                {
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserActivated),
-                        ObjectIdPropertyName = nameof(UserActivated.ObjectId),
-                        TimeStampPropertyName = nameof(UserActivated.TimeStamp),
-                    },
-                    new NServiceBus.SequenceGate.MessageMetadata
-                    {
-                        Type = typeof(UserDeactivated),
-                        ObjectIdPropertyName = "Some.Bogus",
-                        TimeStampPropertyName = nameof(UserDeactivated.TimeStamp)
-                    }
-                }
-            };
+                metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
+                metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
+            })
+            .HasMessage<UserDeactivated>(metadata =>
+            {
+                metadata.ObjectIdPropertyName = "Some.Bogus";
+                metadata.TimeStampPropertyName = nameof(UserDeactivated.TimeStamp);
+            });
 
             // Act
             var result = sequenceGateMember.Validate();
