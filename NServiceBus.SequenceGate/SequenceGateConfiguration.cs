@@ -4,9 +4,13 @@ using System.Linq;
 
 namespace NServiceBus.SequenceGate
 {
-    public class SequenceGateConfiguration : List<SequenceGateMember>
+    public class SequenceGateConfiguration
     {
+        private readonly List<SequenceGateMember> _sequenceGateMembers = new List<SequenceGateMember>(); 
+
         public string EndpointName { get; }
+
+        public IEnumerable<SequenceGateMember> SequenceGateMembers => _sequenceGateMembers.AsEnumerable();
 
         public SequenceGateConfiguration(string endpointName)
         {
@@ -15,7 +19,7 @@ namespace NServiceBus.SequenceGate
 
         internal void Validate()
         {
-            foreach (var sequenceGateMember in this)
+            foreach (var sequenceGateMember in _sequenceGateMembers)
             {
                 var result = sequenceGateMember.Validate();
 
@@ -31,12 +35,13 @@ namespace NServiceBus.SequenceGate
 
         public MessageMetadata GetMessageMetadata(object message)
         {
-            return this.SelectMany(m => m.Messages).SingleOrDefault(m => m.Type == message.GetType());
+            return _sequenceGateMembers.SelectMany(m => m.Messages)
+                                       .SingleOrDefault(m => m.Type == message.GetType());
         }
 
         public string GetSequenceGateIdForMessage(object message)
         {
-            foreach (var sequenceGateMember in this)
+            foreach (var sequenceGateMember in _sequenceGateMembers)
             {
                 if (sequenceGateMember.Messages.Any(m => m.Type == message.GetType()))
                 {
@@ -48,7 +53,7 @@ namespace NServiceBus.SequenceGate
 
         public void AddMember(SequenceGateMember sequenceGateMember)
         {
-            Add(sequenceGateMember);
+            _sequenceGateMembers.Add(sequenceGateMember);
         }
     }
 

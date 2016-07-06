@@ -20,23 +20,16 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string>();
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = "Test";
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = "Test",
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = nameof(SimpleMessage.ObjectId),
-                            ScopeIdPropertyName = nameof(SimpleMessage.ScopeId),
-                            TimeStampPropertyName = nameof(SimpleMessage.TimeStamp)
-                        }
-                    }
-                }
-            };
+                    metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
+                    metadata.ScopeIdPropertyName = nameof(SimpleMessage.ScopeId);
+                    metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);
+                });
+            });
             
             var mutator = new NServiceBus.SequenceGate.Mutator(configuration);
 
@@ -58,23 +51,16 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string> { objectId.ToString() };
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = "Test";
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = "Test",
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = nameof(SimpleMessage.ObjectId),
-                            ScopeIdPropertyName = nameof(SimpleMessage.ScopeId),
-                            TimeStampPropertyName = nameof(SimpleMessage.TimeStamp)
-                        }
-                    }
-                }
-            };
+                    metadata.ObjectIdPropertyName = nameof(SimpleMessage.ObjectId);
+                    metadata.ScopeIdPropertyName = nameof(SimpleMessage.ScopeId);
+                    metadata.TimeStampPropertyName = nameof(SimpleMessage.TimeStamp);
+                });
+            });
 
             var mutator = new NServiceBus.SequenceGate.Mutator(configuration);
 
@@ -94,25 +80,18 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string> { alreadySeenUserId.ToString() };
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = "Test";
+                member.WithMessage<ComplexCollectionMessage>(metadata =>
                 {
-                    Id = "Test",
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (ComplexCollectionMessage),
-                            ObjectIdPropertyName = "Id",
-                            ScopeIdPropertyName = "Scope.Id",
-                            TimeStampPropertyName = "MetaData.TimeStamp",
-                            CollectionPropertyName = "Users"
-                        }
-                    }
-                }
-            };
-
+                    metadata.ObjectIdPropertyName = "Id";
+                    metadata.ScopeIdPropertyName = "Scope.Id";
+                    metadata.TimeStampPropertyName = "MetaData.TimeStamp";
+                    metadata.CollectionPropertyName = "Users";
+                });
+            });
+            
             var message = new ComplexCollectionMessage
             {
                 Users = new List<User>
@@ -142,24 +121,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Mutator
 
             var objectIdsToDismiss = new List<string> { alreadySeenUserId.ToString() };
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = "Test";
+                member.WithMessage<SimpleCollectionMessage>(metadata =>
                 {
-                    Id = "Test",
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleCollectionMessage),
-                            ScopeIdPropertyName = "Scope.Id",
-                            TimeStampPropertyName = "MetaData.TimeStamp",
-                            CollectionPropertyName = "UserIds"
-                        }
-                    }
-                }
-            };
-
+                    metadata.ScopeIdPropertyName = "Scope.Id";
+                    metadata.TimeStampPropertyName = "MetaData.TimeStamp";
+                    metadata.CollectionPropertyName = "UserIds";
+                });
+            });
+            
             var message = new SimpleCollectionMessage
             {
                 UserIds = new List<Guid>

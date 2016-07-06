@@ -15,24 +15,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = sequenceGateId;
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = sequenceGateId,
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = "ObjectId",
-                            TimeStampPropertyName = "TimeStamp",
-                            ScopeIdPropertyName = "ScopeId"
-                        }
-                    }
-                }
-            };
-
+                    metadata.ObjectIdPropertyName = "ObjectId";
+                    metadata.TimeStampPropertyName = "TimeStamp";
+                    metadata.ScopeIdPropertyName = "ScopeId";
+                });
+            });
+            
             var parser = new NServiceBus.SequenceGate.Parser(configuration);
 
             Guid objectId = Guid.NewGuid();
@@ -68,24 +61,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = sequenceGateId;
+                member.WithMessage<ComplexMessage>(metadata =>
                 {
-                    Id = sequenceGateId,
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (ComplexMessage),
-                            ObjectIdPropertyName = "User.Id",
-                            TimeStampPropertyName = "MetaData.TimeStamp",
-                            ScopeIdPropertyName = "Scope.Id"
-                        }
-                    }
-                }
-            };
-
+                    metadata.ObjectIdPropertyName = "User.Id";
+                    metadata.TimeStampPropertyName = "MetaData.TimeStamp";
+                    metadata.ScopeIdPropertyName = "Scope.Id";
+                });
+            });
+            
             var parser = new NServiceBus.SequenceGate.Parser(configuration);
 
             Guid objectId = Guid.NewGuid();
@@ -120,25 +106,18 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = sequenceGateId;
+                member.WithMessage<ComplexCollectionMessage>(metadata =>
                 {
-                    Id = sequenceGateId,
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (ComplexCollectionMessage),
-                            ObjectIdPropertyName = "Id",
-                            TimeStampPropertyName = "MetaData.TimeStamp",
-                            ScopeIdPropertyName = "Scope.Id",
-                            CollectionPropertyName = "Users"
-                        }
-                    }
-                }
-            };
-
+                    metadata.ObjectIdPropertyName = "Id";
+                    metadata.TimeStampPropertyName = "MetaData.TimeStamp";
+                    metadata.ScopeIdPropertyName = "Scope.Id";
+                    metadata.CollectionPropertyName = "Users";
+                });
+            });
+            
             var parser = new NServiceBus.SequenceGate.Parser(configuration);
 
             var userId1 = Guid.NewGuid();
@@ -182,24 +161,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = sequenceGateId;
+                member.WithMessage<SimpleCollectionMessage>(metadata =>
                 {
-                    Id = sequenceGateId,
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleCollectionMessage),
-                            TimeStampPropertyName = "MetaData.TimeStamp",
-                            ScopeIdPropertyName = "Scope.Id",
-                            CollectionPropertyName = "UserIds"
-                        }
-                    }
-                }
-            };
-
+                    metadata.TimeStampPropertyName = "MetaData.TimeStamp";
+                    metadata.ScopeIdPropertyName = "Scope.Id";
+                    metadata.CollectionPropertyName = "UserIds";
+                });
+            });
+            
             var parser = new NServiceBus.SequenceGate.Parser(configuration);
 
             var userId1 = Guid.NewGuid();
@@ -239,23 +211,16 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             // Arrange
             const string sequenceGateId = "SimpleMessage";
 
-            var configuration = new SequenceGateConfiguration("SomeEndpointName")
+            var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = sequenceGateId;
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = sequenceGateId,
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = "ObjectId",
-                            TimeStampPropertyName = "TimeStamp"
-                        }
-                    }
-                }
-            };
-
+                    metadata.ObjectIdPropertyName = "ObjectId";
+                    metadata.TimeStampPropertyName = "TimeStamp";
+                });
+            });
+            
             var parser = new NServiceBus.SequenceGate.Parser(configuration);
 
             Guid objectId = Guid.NewGuid();
@@ -281,22 +246,15 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             const string sequenceGateId = "SimpleMessage";
             const string endpointName = "SomeNiceEndpointName";
 
-            var configuration = new SequenceGateConfiguration(endpointName)
+            var configuration = new SequenceGateConfiguration(endpointName).WithMember(member =>
             {
-                new SequenceGateMember
+                member.Id = sequenceGateId;
+                member.WithMessage<SimpleMessage>(metadata =>
                 {
-                    Id = sequenceGateId,
-                    Messages = new List<NServiceBus.SequenceGate.MessageMetadata>
-                    {
-                        new NServiceBus.SequenceGate.MessageMetadata
-                        {
-                            Type = typeof (SimpleMessage),
-                            ObjectIdPropertyName = "ObjectId",
-                            TimeStampPropertyName = "TimeStamp"
-                        }
-                    }
-                }
-            };
+                    metadata.ObjectIdPropertyName = "ObjectId";
+                    metadata.TimeStampPropertyName = "TimeStamp";
+                });
+            });
 
             var parser = new NServiceBus.SequenceGate.Parser(configuration);
 

@@ -45,24 +45,17 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                 {
                     config.EnableInstallers();
 
-                    var sequenceGateConfiguration = new SequenceGateConfiguration("Endpoint")
+                    var configuration = new SequenceGateConfiguration("Endpoint").WithMember(member =>
                     {
-                        new SequenceGateMember
+                        member.Id = "Message";
+                        member.WithMessage<Message>(metadata =>
                         {
-                            Id = "Message",
-                            Messages = new List<MessageMetadata>
-                            {
-                                new MessageMetadata
-                                {
-                                    Type = typeof (Message),
-                                    ObjectIdPropertyName = nameof(Message.Id),
-                                    TimeStampPropertyName = nameof(Message.TimeStamp)
-                                }
-                            }
-                        }
-                    };
-
-                    config.SequenceGate(sequenceGateConfiguration);
+                            metadata.ObjectIdPropertyName = nameof(Message.Id);
+                            metadata.TimeStampPropertyName = nameof(Message.TimeStamp);
+                        });
+                    });
+                    
+                    config.SequenceGate(configuration);
                 });
             }
 

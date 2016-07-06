@@ -48,7 +48,7 @@ namespace NServiceBus.SequenceGate
 
         private string GetSequenceGateId(Type messageType)
         {
-            var sequenceGateType = _configuration.SingleOrDefault(c => c.Messages.Any(m => m.Type == messageType));
+            var sequenceGateType = _configuration.SequenceGateMembers.SingleOrDefault(c => c.Messages.Any(m => m.Type == messageType));
 
             return sequenceGateType != default(SequenceGateMember) ? sequenceGateType.Id : string.Empty;
         }
