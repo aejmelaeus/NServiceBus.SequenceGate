@@ -6,7 +6,7 @@ NServiceBus is about messages. The Sequence Gate is about the objects in the mes
 
 We want to be sure that no state is messed up when we are retrying messages from the error queue.
 
-We fund ourselves to implement a custom solution for message correlation in different Endpoints. This is a way to standardize handling messages that arrive in the wrong order.
+We fund ourselves to implement a custom Saga for message correlation in different Endpoints. This is a way to standardize handling messages that arrive in the wrong order.
 
 Messaging is unreliable by nature. Messages can arrive in the wrong order, or not arrive at all. The Sequence Gate can help when messages arrive in wrong order.
 
@@ -14,13 +14,7 @@ The Sequence Gate could be used in situations where only the latest state of an 
 
 ## Background
 
-Some events in a system are imutable. For example `SendEmail` or `WriteToAuditLog`. But other messages are mutable by nature and changes some objects state, for example `UserEmailUpdated`. There could also be messages that take out each other, for example `UsersConnectedToClient` and `UsersDisconnectedToClient` (figure out a better example?). Often it is important to get these types of messages in the correct order, or at least to only capture the latest state.
-
-Usually message driven systems are designed in such a way that message order does not matter.
-
-If it is not possible to do that, Sagas in NServiceBus is a good way to correlate message ordering. This works when the message semantics has a distinct flow. When something for example is `Initialized` then `Activated` and last `Terminated`. Then the Saga can pick up `Activated` and store some intermidiate result until the `Initialized` event is received.
-
-However, this is not possible in all scenarios. Examples of this might be `UserEmailUpdated` or `PermissionGrantedForUser` and `PermissionDeniedForUser`. These types of events are important to get in the right order in downstream systems.
+Some events in a system are imutable. For example `SendEmail` or `WriteToAuditLog`. But other messages are mutable by nature and changes some objects state, for example `UserEmailUpdated`. There could also be messages that take out each other, for example `PermissionGrantedForUser` and `PermissionDeniedForUser`. Often it is important to get these types of messages in the correct order in downstream systems, or at least to only capture the latest state.
 
 ## Limitations
 
