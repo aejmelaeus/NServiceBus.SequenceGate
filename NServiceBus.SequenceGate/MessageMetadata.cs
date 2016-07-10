@@ -1,25 +1,14 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using NServiceBus.SequenceGate;
+using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate
 {
     /// <summary>
     /// A member message in the Sequence Gate.
     /// </summary>
-    public class MessageMetadata
+    public abstract class MessageMetadata
     {
-        private static IEnumerable<Type> AllowedBasicCollectionTypes { get; } = new List<Type>
-        {
-            typeof (string),
-            typeof (int),
-            typeof (long),
-            typeof (Guid)
-        };
-
         /// <summary>
         /// Describes the different types of message
         /// </summary>
@@ -43,40 +32,18 @@ namespace NServiceBus.SequenceGate
         /// <summary>
         /// The actual message type
         /// </summary>
-        internal MessageTypes MessageType
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(CollectionPropertyName))
-                {
-                    return MessageTypes.Single;
-                }
-                if (string.IsNullOrEmpty(ObjectIdPropertyName))
-                {
-                    return MessageTypes.PrimitiveCollection;
-                }
-                return MessageTypes.ComplexCollection;
-            }
-        }
-
-        public MessageMetadata()
-        {
-            // TODO: Remove later
-        }
-
-        internal MessageMetadata(Type messageType)
-        {
-            Type = messageType;
-        }
-
+        internal abstract MessageTypes MessageType { get; }
+        
         /// <summary>
         /// The type of the message
         /// </summary>
         public Type Type { get; set; }
+        
         /// <summary>
         /// The property of the object id
         /// </summary>
         public string ObjectIdPropertyName { get; set; }
+        
         /// <summary>
         /// The time stamp property of the message
         /// </summary>
@@ -90,19 +57,7 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         public string ScopeIdPropertyName { get; set; }
 
-        /// <summary>
-        /// When present the tracked objects are expected to be in the collection.
-        /// Both simple and complex types are supported.
-        /// If the collection holds a complex type, for example a "User" class the 
-        /// ObjectIdPropertyName is expected to point out the Id property of the
-        /// object that is tracked.
-        /// If the collection is of primitive type, the ObjectIdPropertyName should
-        /// be left null or empty. One could use primitive types when the message 
-        /// intent is to delete or revoke something. When adding or granting something
-        /// a complex type is preferred, since then the message is "self sufficient",
-        /// containing business card data about a user.
-        /// </summary>
-        public string CollectionPropertyName { get; set; }
+        internal abstract void MetadataSpecificValidation(List<ValidationError> result);
 
         /// <summary>
         /// Validates the metadata
@@ -118,14 +73,7 @@ namespace NServiceBus.SequenceGate
                 return result;
             }
 
-            if (MessageType == MessageTypes.Single)
-            {
-                ValidateObjectId(result);
-            }
-            else
-            {
-                ValidateCollection(result);
-            }
+            MetadataSpecificValidation(result);
 
             ValidateTimeStamp(result);
 
@@ -152,53 +100,7 @@ namespace NServiceBus.SequenceGate
             }
         }
 
-        private void ValidateCollection(List<ValidationError> result)
-        {
-            var collectionPropertyInfo = Type.GetProperty(CollectionPropertyName);
-
-            if (collectionPropertyInfo == default(PropertyInfo) || !PropertyIsOfTypeIEnumerable(collectionPropertyInfo))
-            {
-                result.Add(ValidationError.CollectionPropertyMissingOrNotICollection);
-            }
-            else
-            {
-                var collectionObjectType = collectionPropertyInfo.PropertyType.GetGenericArguments().Single();
-
-                if (MessageType == MessageTypes.PrimitiveCollection)
-                {
-                    if (!AllowedBasicCollectionTypes.Contains(collectionObjectType))
-                    {
-                        result.Add(ValidationError.CollectionObjectTypeNotInAllowedBasicCollectionTypes);
-                    }
-                }
-                else
-                {
-                    var validCollectionObjectId = ValidateProperty(ObjectIdPropertyName, collectionObjectType);
-
-                    if (!validCollectionObjectId)
-                    {
-                        result.Add(ValidationError.ObjectIdPropertyMissingOnObjectInCollection);
-                    }
-                }
-            }
-        }
-
-        private void ValidateObjectId(List<ValidationError> result)
-        {
-            var validObjectId = ValidateProperty(ObjectIdPropertyName, Type);
-
-            if (!validObjectId)
-            {
-                result.Add(ValidationError.ObjectIdPropertyMissing);
-            }
-        }
-
-        private bool PropertyIsOfTypeIEnumerable(PropertyInfo collectionPropertyInfo)
-        {
-            return collectionPropertyInfo.PropertyType.GetInterface("ICollection") != null;
-        }
-
-        private bool ValidateProperty(string unsplittedPropertyName, Type rootObjectType, Type expectedPropertyType = null, bool required = true)
+        protected bool ValidateProperty(string unsplittedPropertyName, Type rootObjectType, Type expectedPropertyType = null, bool required = true)
         {
             if (!required && string.IsNullOrEmpty(unsplittedPropertyName))
             {

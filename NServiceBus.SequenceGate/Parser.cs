@@ -28,14 +28,15 @@ namespace NServiceBus.SequenceGate
 
             var result = new Parsed(endpointName, sequenceGateId, scopeId, sequenceAnchor);
 
-            if (messageMetadata.MessageType == MessageMetadata.MessageTypes.Single)
+            if (messageMetadata is SingleObjectMessageMetadata)
             {
                 var objectId = GetString(messageMetadata.ObjectIdPropertyName, message);
                 result.AddObjectId(objectId);
             }
             else
             {
-                var collectionPropertyInfo = message.GetType().GetProperty(messageMetadata.CollectionPropertyName);
+                var multipleObjectsMessageMetadata = messageMetadata as MultipleObjectMessageMetadata;
+                var collectionPropertyInfo = message.GetType().GetProperty(multipleObjectsMessageMetadata.CollectionPropertyName);
                 IEnumerable collection = (IEnumerable)collectionPropertyInfo.GetValue(message);
 
                 foreach (var item in collection)

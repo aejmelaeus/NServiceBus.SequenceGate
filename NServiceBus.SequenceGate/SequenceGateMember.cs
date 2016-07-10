@@ -16,7 +16,7 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         public string Id { get; set; }
 
-        public IEnumerable<MessageMetadata> Messages => _messages; 
+        public IEnumerable<MessageMetadata> Messages => _messages;
 
         /// <summary>
         /// The metadata of the actual messages.
@@ -29,18 +29,18 @@ namespace NServiceBus.SequenceGate
 
             if (string.IsNullOrEmpty(Id))
             {
-                result.Add(typeof(SequenceGateMember).FullName, new [] { ValidationError.IdMissingOnSequenceGateMember });
+                result.Add(typeof(SequenceGateMember).FullName, new[] { ValidationError.IdMissingOnSequenceGateMember });
             }
 
             if (Messages == null || !Messages.Any())
             {
-                result.Add(Id, new [] { ValidationError.SequenceMetadataIsMissingOnMember });
+                result.Add(Id, new[] { ValidationError.SequenceMetadataIsMissingOnMember });
                 return result;
             }
 
             if (!AllMessagesHasConsistentScope())
             {
-                result.Add(Id, new[] { ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent});
+                result.Add(Id, new[] { ValidationError.AllMessagesInASequenceGateMemberMustHaveScopeSetConsistent });
             }
 
             foreach (var messageMetadata in Messages)
@@ -74,10 +74,19 @@ namespace NServiceBus.SequenceGate
 
     public static class SequenceGateMemberExtensions
     {
-        public static SequenceGateMember HasMessage<TMessageType>(this SequenceGateMember sequenceGateMember,
-            Action<MessageMetadata> configureMessageMetadata) where TMessageType : class
+        public static SequenceGateMember HasSingleObjectMessage<TMessageType>(this SequenceGateMember sequenceGateMember,
+            Action<SingleObjectMessageMetadata> configureMessageMetadata) where TMessageType : class
         {
-            var messageMetadata = new MessageMetadata(typeof(TMessageType));
+            var messageMetadata = new SingleObjectMessageMetadata { Type = typeof(TMessageType) };
+            configureMessageMetadata(messageMetadata);
+            sequenceGateMember.AddMessage(messageMetadata);
+            return sequenceGateMember;
+        }
+
+        public static SequenceGateMember HasMultipleObjectsMessage<TMessageType>(this SequenceGateMember sequenceGateMember,
+            Action<MultipleObjectMessageMetadata> configureMessageMetadata) where TMessageType : class
+        {
+            var messageMetadata = new MultipleObjectMessageMetadata { Type = typeof(TMessageType) };
             configureMessageMetadata(messageMetadata);
             sequenceGateMember.AddMessage(messageMetadata);
             return sequenceGateMember;

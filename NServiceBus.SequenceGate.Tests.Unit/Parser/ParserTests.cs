@@ -18,7 +18,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.HasMessage<SimpleMessage>(metadata =>
+                member.HasSingleObjectMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "ObjectId";
                     metadata.TimeStampPropertyName = "TimeStamp";
@@ -64,7 +64,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.HasMessage<ComplexMessage>(metadata =>
+                member.HasSingleObjectMessage<ComplexMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "User.Id";
                     metadata.TimeStampPropertyName = "MetaData.TimeStamp";
@@ -109,7 +109,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.HasMessage<ComplexCollectionMessage>(metadata =>
+                member.HasMultipleObjectsMessage<ComplexCollectionMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "Id";
                     metadata.TimeStampPropertyName = "MetaData.TimeStamp";
@@ -164,7 +164,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.HasMessage<SimpleCollectionMessage>(metadata =>
+                member.HasMultipleObjectsMessage<SimpleCollectionMessage>(metadata =>
                 {
                     metadata.TimeStampPropertyName = "MetaData.TimeStamp";
                     metadata.ScopeIdPropertyName = "Scope.Id";
@@ -214,7 +214,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.HasMessage<SimpleMessage>(metadata =>
+                member.HasSingleObjectMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "ObjectId";
                     metadata.TimeStampPropertyName = "TimeStamp";
@@ -249,7 +249,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Parser
             var configuration = new SequenceGateConfiguration(endpointName).WithMember(member =>
             {
                 member.Id = sequenceGateId;
-                member.HasMessage<SimpleMessage>(metadata =>
+                member.HasSingleObjectMessage<SimpleMessage>(metadata =>
                 {
                     metadata.ObjectIdPropertyName = "ObjectId";
                     metadata.TimeStampPropertyName = "TimeStamp";

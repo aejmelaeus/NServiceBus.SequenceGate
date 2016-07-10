@@ -68,9 +68,11 @@
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="IPersistence.cs" />
+    <Compile Include="MultipleObjectMessageMetadata.cs" />
     <Compile Include="Mutator.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="EntityFramework\Persistence.cs" />
+    <Compile Include="SingleObjectMessageMetadata.cs" />
     <Compile Include="TrackedObject.cs" />
     <Compile Include="SequenceGate.cs" />
     <Compile Include="SequenceGateMember.cs" />

@@ -12,7 +12,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_WhenCorrectCollectionPropertyIsPresent_ValidationPasses()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new NServiceBus.SequenceGate.MultipleObjectMessageMetadata
             {
                 Type = typeof(CollectionMessage),
                 CollectionPropertyName = "Users",
@@ -32,7 +32,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_WithWrongCollectionName_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new NServiceBus.SequenceGate.MultipleObjectMessageMetadata
             {
                 Type = typeof(CollectionMessage),
                 CollectionPropertyName = "WrongCollection",
@@ -54,7 +54,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_WithWrongCollectionType_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new NServiceBus.SequenceGate.MultipleObjectMessageMetadata
             {
                 Type = typeof(WrongCollectionTypeMessage),
                 CollectionPropertyName = "CollectionThatIsAString",
@@ -74,7 +74,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_ObjectIdDoesNotExistOnCollectionObject_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new NServiceBus.SequenceGate.MultipleObjectMessageMetadata
             {
                 Type = typeof(CollectionMessage),
                 CollectionPropertyName = "Users",
@@ -95,7 +95,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_ObjectIdIsEmptyAndCollectionGiven_ValidTypesPassed()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new NServiceBus.SequenceGate.MultipleObjectMessageMetadata
             {
                 Type = typeof (GuidCollectionMessage),
                 CollectionPropertyName = "Items",
@@ -113,7 +113,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_ObjectIdIsEmptyAndCollectionIsListOfDateTimes_ValidationFails()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new NServiceBus.SequenceGate.MultipleObjectMessageMetadata
             {
                 CollectionPropertyName = nameof(DateTimeCollectionMessage.Items),
                 Type = typeof (DateTimeCollectionMessage),

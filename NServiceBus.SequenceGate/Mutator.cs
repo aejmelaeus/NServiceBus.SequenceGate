@@ -19,7 +19,7 @@ namespace NServiceBus.SequenceGate
         {
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
-            if (messageMetadata.MessageType == MessageMetadata.MessageTypes.Single)
+            if (messageMetadata is SingleObjectMessageMetadata)
             {
                 var objectId = GetPropertyValue(messageMetadata.ObjectIdPropertyName, message);
                 if (objectIdsToDismiss.Contains(objectId))
@@ -29,8 +29,8 @@ namespace NServiceBus.SequenceGate
 
                 return message;
             }
-
-            var collectionPropertyInfo = message.GetType().GetProperty(messageMetadata.CollectionPropertyName);
+            var multipleObjectsMessageMetadata = messageMetadata as MultipleObjectMessageMetadata;
+            var collectionPropertyInfo = message.GetType().GetProperty(multipleObjectsMessageMetadata.CollectionPropertyName);
             var collection = collectionPropertyInfo.GetValue(message) as IList;
 
             var itemsToRemove = new List<object>();

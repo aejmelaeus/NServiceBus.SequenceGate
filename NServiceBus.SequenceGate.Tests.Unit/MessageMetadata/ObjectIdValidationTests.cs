@@ -10,7 +10,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_WithInvalidPropertyName_ReturnsError()
         {
             // Arrange
-            var invalidMessageMetatdata = new NServiceBus.SequenceGate.MessageMetadata
+            var invalidMessageMetatdata = new SingleObjectMessageMetadata
             {
                 Type = typeof(SimpleMessage),
                 ObjectIdPropertyName = "WrongObjectIdProperty",
@@ -29,7 +29,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_InComplexType_ValidateCorreclty()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new SingleObjectMessageMetadata
             {
                 Type = typeof(ComplexMessage),
                 ObjectIdPropertyName = "User.Id",

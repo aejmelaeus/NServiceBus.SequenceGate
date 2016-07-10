@@ -10,7 +10,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_CorrectScope_ValidatesOK()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new SingleObjectMessageMetadata
             {
                 Type = typeof(ComplexMessage),
                 ObjectIdPropertyName = "User.Id",
@@ -29,7 +29,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_GivenPropertyDoesNotExist_CorrectErrorMessage()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new SingleObjectMessageMetadata
             {
                 Type = typeof(SimpleMessage),
                 ObjectIdPropertyName = "UserId",
@@ -50,7 +50,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.MessageMetadata
         public void Validate_IsNullOrEmpty_Valid()
         {
             // Arrange
-            var messageMetadata = new NServiceBus.SequenceGate.MessageMetadata
+            var messageMetadata = new SingleObjectMessageMetadata
             {
                 Type = typeof(SimpleMessage),
                 ObjectIdPropertyName = "ObjectId",

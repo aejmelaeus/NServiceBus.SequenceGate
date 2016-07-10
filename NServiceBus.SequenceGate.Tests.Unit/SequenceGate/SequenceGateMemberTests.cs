@@ -18,13 +18,13 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
                 Id = sequenceGateMemberId
             };
 
-            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            sequenceGateMember.HasSingleObjectMessage<UserActivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
                 metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
             });
 
-            sequenceGateMember.HasMessage<UserDeactivated>(metadata =>
+            sequenceGateMember.HasSingleObjectMessage<UserDeactivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = nameof(UserDeactivated.ObjectId);
                 metadata.TimeStampPropertyName = nameof(UserDeactivated.TimeStamp);
@@ -48,14 +48,14 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
                 Id = sequenceGateMemberId
             };
 
-            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            sequenceGateMember.HasSingleObjectMessage<UserActivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
                 metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
                 metadata.ScopeIdPropertyName = nameof(UserActivated.ARandomProperty);
             });
 
-            sequenceGateMember.HasMessage<UserDeactivated>(metadata =>
+            sequenceGateMember.HasSingleObjectMessage<UserDeactivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = nameof(UserDeactivated.ObjectId);
                 metadata.TimeStampPropertyName = nameof(UserDeactivated.TimeStamp);
@@ -78,7 +78,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
                 Id = string.Empty
             };
 
-            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            sequenceGateMember.HasSingleObjectMessage<UserActivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
                 metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
@@ -117,12 +117,12 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             // Arrange
             var sequenceGateMember = new SequenceGateMember();
 
-            sequenceGateMember.HasMessage<UserActivated>(metadata =>
+            sequenceGateMember.HasSingleObjectMessage<UserActivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = nameof(UserActivated.ObjectId);
                 metadata.TimeStampPropertyName = nameof(UserActivated.TimeStamp);
             })
-            .HasMessage<UserDeactivated>(metadata =>
+            .HasSingleObjectMessage<UserDeactivated>(metadata =>
             {
                 metadata.ObjectIdPropertyName = "Some.Bogus";
                 metadata.TimeStampPropertyName = nameof(UserDeactivated.TimeStamp);
