@@ -37,19 +37,17 @@ namespace NServiceBus.SequenceGate.EntityFramework
         /// <returns></returns>
         internal Actions GetActions(Parsed parsed, List<TrackedObject> entitiesInMessage)
         {
-            var result = new Actions();
-
-            var idsToAdd = parsed.ObjectIds.Except(entitiesInMessage.Select(e => e.ObjectId));
-
-            var idsToUpdate = entitiesInMessage.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.Id);
-
-            var idsToDismiss = entitiesInMessage.Where(e => e.SequenceAnchor > parsed.SequenceAnchor).Select(e => e.ObjectId);
-
-            result.ObjectIdsToAdd = idsToAdd.ToList();
-            result.IdsToUpdate = idsToUpdate.ToList();
-            result.ObjectIdsToDismiss = idsToDismiss.ToList();
-
-            return result;
+            return new Actions
+            {
+                ObjectIdsToAdd = parsed.ObjectIds.Except(entitiesInMessage.Select(e => e.ObjectId))
+                    .ToList(),
+                IdsToUpdate = entitiesInMessage.Where(e => e.SequenceAnchor < parsed.SequenceAnchor)
+                    .Select(e => e.Id)
+                    .ToList(),
+                ObjectIdsToDismiss = entitiesInMessage.Where(e => e.SequenceAnchor > parsed.SequenceAnchor)
+                    .Select(e => e.ObjectId)
+                    .ToList()
+            };
         }
 
         internal List<TrackedObject> GetObjectsFromParsedMessage(Parsed parsed, IQueryable<TrackedObject> entities)
