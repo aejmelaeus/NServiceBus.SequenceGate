@@ -6,7 +6,7 @@ NServiceBus is about messages. The Sequence Gate is about the objects in the mes
 
 We want to be sure that no state is messed up when we are retrying messages from the error queue.
 
-We fund ourselves to implement a custom Saga for message correlation in different Endpoints. This is a way to standardize handling messages that arrive in the wrong order.
+We found ourselves to implementing custom Sagas for message correlation in different Endpoints. This is a way to standardize handling messages that arrive in the wrong order.
 
 Messaging is unreliable by nature. Messages can arrive in the wrong order, or not arrive at all. The Sequence Gate can help when messages arrive in wrong order.
 
@@ -22,11 +22,11 @@ The Sequence Gate has performance impacts. When performance is key and you worki
 
 However, when the your Endpoint is working with some legacy component of your system or a third party system it can be a simple and efficient way to solve sequencing issues. 
 
-The Sequence Gate will only work in a single Endpoint single thread environment. This means that there can only be a single Endpoint with a single thread processing messages at a time. Otherwise consistency can not be guaranteed. This implies that the domain is not a fast data domain, where the Endpoints must be scaled out.
+The Sequence Gate will only work relyably in a single Endpoint - single thread environment. This means that there can only be a single Endpoint with a single thread processing messages at a time. Otherwise consistency can not be guaranteed. This implies that the domain is not a fast data domain, where the Endpoints must be scaled out.
 
 ## Consider to use the Sequence gate when:
 
-- It is important to store or process the latest state of a message.
+- It is important to store or process the latest state of a object.
 - Your are working in a "low frequency environment"
 
 ## This will not be usefull to you when:
@@ -36,7 +36,7 @@ The Sequence Gate will only work in a single Endpoint single thread environment.
 
 ## Sequence
 
-The messages are sequnce anchored using the `long` datatype. The DateTime class can be used in the publishing endpoint when the time is synchronized between the publishing nodes.
+The messages are sequence anchored using the `long` datatype. The DateTime class can be used in the publishing Endpoint. The time is expected to be reasonably synchronized between the publishing nodes.
 
 ## Persistence
 
@@ -44,7 +44,232 @@ The current implementation uses SQL Server as persistence. The Sequence Gate exp
 
 # Examples
 
-- Single
-- ValueCollection
-- ComplexCollection
-- Scope
+The Sequence Gate is implemented as a NServiceBus Pipeline component. The SequenceGate is registered with the bus and all messages that the Endpoint processes are passed through the gate.
+
+The basic flow is:
+- Is the message a Sequence Gate member? Yes - keep on processing it. No - pass it through the pipeline.
+- Parse the objects from the message
+- Find out if some objects needs to be discarded
+- Mark the newer or unseen ones ones with the timestamp
+- Mutate the message if needed
+
+### Message mutation
+
+Messages are mutated in the Sequence Gate.
+
+If it is a single object message the whole message is dropped by stopping pipeline execution.
+
+If it is a message containing multiple objects the objects that has newer seen versions are removed from the message before passed on in the pipeline.
+
+## Single object messages
+
+Often a message contains a single object to keep track of, for example ´UserEmailUpdated`: [Acceptance test]
+
+``` csharp
+
+public class UserEmailUpdated
+{
+    public Guid UserId { get; set; }
+	public string EmailAdress { get; set }
+	public DateTime TimeStamp { get; set }
+}
+
+```
+
+The ´UserEmailUpdated´ message becomes a member of the SequenceGate by adding it to the SequenceGateConfiguration:
+
+``` csharp
+
+var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
+{
+	member.Id = "UserEmailUpdated";
+	member.HasSingleObjectMessage<UserEmailUpdated>(metadata =>
+	{
+		metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
+		metadata.TimeStampPropertyName = nameof(UserEmailUpdated.TimeStamp);
+	});
+});
+
+busConfiguration.SequenceGate(configuration);
+
+```
+
+There can also be several messages modifying the same object: [Acceptance test]
+
+``` csharp
+
+public class UserAddedToRole
+{
+	public Guid UserId { get; set; }
+	public string Role { get; set; }
+	public DateTime { get; set; }
+}
+
+public class UserRemovedFromRole
+{
+	public Guid UserId { get; set; }
+	public string Role { get; set; }
+	public DateTime { get; set; }
+}
+
+```
+
+Then the SequenceGate member is configured with two messages:
+
+``` csharp
+
+var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
+{
+	member.Id = "UserRoleActions";
+	member.HasSingleObjectMessage<UserAddedToRole>(metadata =>
+	{
+		metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
+		metadata.TimeStampPropertyName = nameof(UserEmailUpdated.TimeStamp);
+	});
+	member.HasSingleObjectMessage<UserRemovedFromRole>(metadata =>
+	{
+		metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
+		metadata.TimeStampPropertyName = nameof(UserEmailUpdated.TimeStamp);
+	});
+});
+
+```
+
+The id for the member is given a descriptive id, in this case `UserRoleActions`.
+
+## Endpoint name
+
+The Sequence Gate Configuration takes in the Endpoint name:
+
+`var configuration = new SequenceGateConfiguration("EndpointName")`
+
+In this way several Endpoints may share the same database. [Acceptance test]
+
+## Multiple object messages
+
+Some messages contains several objects that the Sequence Gate needs to take into consideration: [Acceptance test]
+
+``` csharp
+
+public class UsersAddedToGroup
+{
+	public string Group { get; set; }
+	public List<User> Users { get; set; }
+	public Metadata Metadata { get; set; }
+}
+
+public class User 
+{
+	public Guid Id { get; set; }
+	public string Firstname { get; set; }
+	public string Lastname { get; set; }
+}
+
+public class Metadata
+{
+	public DateTime TimeStamp { get; set; }
+	public Guid LoggedInUserId { get; set; }
+}
+
+```
+
+Then the Sequence Gate is configured with a `CollectionPropertyName` and the `ObjectIdPropertyName` is expeced to be on the object in the collection.
+
+``` csharp
+
+var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
+{
+	member.Id = "UserGroupActions";
+	member.HasMultipleObjectsMessage<UsersAddedToGroup>(metadata =>
+	{
+		metadata.CollectionPropertyName = nameof(UsersAddedToGroup.Users);
+		metadata.ObjectIdPropertyName = nameof(User.Id);
+		metadata.TimeStampPropertyName = "Metadata.TimeStamp";
+	});
+});
+
+```
+
+The property names in the configuration can be set with the ´nameof´ operator when the property is directly on the root-object.
+
+When a property used in the Sequence Gate is a property of another object it can be configured as a string with a '.' separator of the properties:
+
+´metadata.TimeStampPropertyName = "Metadata.TimeStamp";´ [Acceptance test]
+
+### Value collections
+
+In some cases the message contains a collection of value type that are object ids: [Acceptance test]
+
+´´´ csharp
+
+public class DeactivatedUsers
+{
+	public List<Guid> UserIds { get; set; }
+	public DateTime TimeStamp { get; set; }
+}
+
+```
+
+In this case the `ObjectIdPropertyName` is omitted:
+
+``` csharp
+
+var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
+{
+	member.Id = "UserActivationActions";
+	member.HasMultipleObjectsMessage<DeactivatedUsers>(metadata =>
+	{
+		metadata.CollectionPropertyName = nameof(DeactivatedUsers.UserIds);
+		metadata.TimeStampPropertyName = "TimeStamp";
+	});
+});
+
+```
+
+A value typed collection can contain following types:
+
+- ´string´
+- ´int´
+- ´long´
+- ´Guid´
+
+## Scope
+
+Sometimes a scope is needed when using the Sequence Gate. For example a system can be modelled in such a way that a user may have different roles on different clients in the system. The client becomes the scope: [Acceptance test]
+
+``` csharp
+
+public class UserRoleUpdatedOnClient
+{
+	public Guid UserId { get; set; }
+	public string Role { get; set; }
+	public string ClientId { get; set; }
+	public DateTime TimeStamp { get; set; }
+}
+
+```
+
+The `ScopeIdPropertyName` is configured on the message metadata:
+
+``` csharp
+
+var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
+{
+	member.Id = "UserRoleUpdatedOnClient";
+	member.HasSingleObjectMessage<UserRoleUpdatedOnClient>(metadata =>
+	{
+		metadata.ObjectIdPropertyName = nameof(UserRoleUpdatedOnClient.UserId);
+		metadata.ScopeIdPropertyName = nameof(UserRoleUpdatedOnClient.ClientId);
+		metadata.TimeStampPropertyName = nameof(UserRoleUpdatedOnClient.TimeStamp);		
+	});
+});
+
+```
+
+## Validation
+
+The ´SequenceGateConfiguration´ is validated before the Endpoint is started. If the validation fails the Endpoint will fail to start [Acceptance test]. The validation verifies that all configured properties actually exists on the message types and that the types are correct.
+
+# TODO: Filter
+
+Implement a filter that can be configured.

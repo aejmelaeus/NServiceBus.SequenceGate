@@ -9,7 +9,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
         {
             using (var context = new SequenceGateContext())
             {
-                var query = GetQuery(parsed, context.TrackedObjects);
+                var query = GetObjectsFromParsedMessage(parsed, context.TrackedObjects);
                 var actions = GetActions(parsed, query);
 
                 var entitiesToAdd = GetEntitiesToAdd(parsed, actions.ObjectIdsToAdd);
@@ -33,15 +33,13 @@ namespace NServiceBus.SequenceGate.EntityFramework
         /// Returns the actions.
         /// </summary>
         /// <param name="parsed">The parsed data</param>
-        /// <param name="entities">The entities that matches EndpointName and ScopeId</param>
+        /// <param name="entitiesInMessage">The entities that matches EndpointName and ScopeId and ObjectIds</param>
         /// <returns></returns>
-        internal Actions GetActions(Parsed parsed, IQueryable<TrackedObject> entities)
+        internal Actions GetActions(Parsed parsed, List<TrackedObject> entitiesInMessage)
         {
             var result = new Actions();
 
-            var idsToAdd = parsed.ObjectIds.Except(entities.Select(e => e.ObjectId));
-
-            var entitiesInMessage = entities.Where(e => parsed.ObjectIds.Contains(e.ObjectId));
+            var idsToAdd = parsed.ObjectIds.Except(entitiesInMessage.Select(e => e.ObjectId));
 
             var idsToUpdate = entitiesInMessage.Where(e => e.SequenceAnchor < parsed.SequenceAnchor).Select(e => e.Id);
 
@@ -54,13 +52,14 @@ namespace NServiceBus.SequenceGate.EntityFramework
             return result;
         }
 
-        internal IQueryable<TrackedObject> GetQuery(Parsed parsed, IQueryable<TrackedObject> entities)
+        internal List<TrackedObject> GetObjectsFromParsedMessage(Parsed parsed, IQueryable<TrackedObject> entities)
         {
             return entities.Where(e => 
                 e.EndpointName.Equals(parsed.EndpointName) && 
                 e.ScopeId.Equals(parsed.ScopeId) &&
-                e.SequenceGateId.Equals(parsed.SequenceGateId)
-            );
+                e.SequenceGateId.Equals(parsed.SequenceGateId) &&
+                parsed.ObjectIds.Contains(e.ObjectId)
+            ).ToList();
         }
 
         public IEnumerable<TrackedObject> GetEntitiesToAdd(Parsed parsed, List<string> idsToAdd)

@@ -44,7 +44,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                 EndpointSetup<DefaultServer>(config =>
                 {
                     config.EnableInstallers();
-
+                        
                     var configuration = new SequenceGateConfiguration("Endpoint").WithMember(member =>
                     {
                         member.Id = "Message";
