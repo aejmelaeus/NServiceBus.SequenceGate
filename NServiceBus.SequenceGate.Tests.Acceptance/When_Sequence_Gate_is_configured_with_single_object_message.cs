@@ -1,24 +1,23 @@
 ﻿using System;
 using NUnit.Framework;
-using System.Collections.Generic;
 using NServiceBus.AcceptanceTesting;
 using NServiceBus.SequenceGate.Tests.Acceptance.Infrastructure;
 
 namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
     [TestFixture]
-    public class When_Sequence_Gate_is_configured
+    public class When_Sequence_Gate_is_configured_with_single_object_message
     {
         [Test]
         public void Then_an_older_message_for_the_same_object_is_discarded()
         {
-            var id = Guid.NewGuid();
+            var userId = Guid.NewGuid();
 
             var today = DateTime.UtcNow;
             var yesterday = today.AddDays(-1);
 
-            var newerMessage = new Message { Id = id, Value = "Newer", TimeStamp = today };
-            var olderMessage = new Message { Id = id, Value = "Older", TimeStamp = yesterday };
+            var newerMessage = new UserEmailUpdated { UserId = userId, EmailAdress = "new@email.com", TimeStamp = today };
+            var olderMessage = new UserEmailUpdated { UserId = userId, EmailAdress = "old@email.com", TimeStamp = yesterday };
 
             var context = Scenario.Define(() => new Context { })
                 .WithEndpoint<Endpoint>(producer => producer
@@ -29,7 +28,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                     }))
                 .Run();
 
-            Assert.That(context.LastValue, Is.EqualTo(newerMessage.Value));
+            Assert.That(context.LastValue, Is.EqualTo(newerMessage.EmailAdress));
         }
 
         public class Context : ScenarioContext
@@ -47,11 +46,11 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                         
                     var configuration = new SequenceGateConfiguration("Endpoint").WithMember(member =>
                     {
-                        member.Id = "Message";
-                        member.HasSingleObjectMessage<Message>(metadata =>
+                        member.Id = "UserEmailUpdated";
+                        member.HasSingleObjectMessage<UserEmailUpdated>(metadata =>
                         {
-                            metadata.ObjectIdPropertyName = nameof(Message.Id);
-                            metadata.TimeStampPropertyName = nameof(Message.TimeStamp);
+                            metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
+                            metadata.TimeStampPropertyName = nameof(UserEmailUpdated.TimeStamp);
                         });
                     });
                     
@@ -59,21 +58,21 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                 });
             }
 
-            public class Handler : IHandleMessages<Message>
+            public class Handler : IHandleMessages<UserEmailUpdated>
             {
                 public Context Context { get; set; }
 
-                public void Handle(Message message)
+                public void Handle(UserEmailUpdated message)
                 {
-                    Context.LastValue = message.Value;
+                    Context.LastValue = message.EmailAdress;
                 }
             }
         }
 
-        public class Message : IMessage
+        public class UserEmailUpdated : IMessage
         {
-            public Guid Id { get; set; }
-            public string Value { get; set; }
+            public Guid UserId { get; set; }
+            public string EmailAdress { get; set; }
             public DateTime TimeStamp { get; set; }
         }
     }

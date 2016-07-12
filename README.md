@@ -63,15 +63,15 @@ If it is a message containing multiple objects the objects that has newer seen v
 
 ## Single object messages
 
-Often a message contains a single object to keep track of, for example ´UserEmailUpdated`: [Acceptance test]
+Often a message contains a single object to keep track of, for example ´UserEmailUpdated`: [Acceptance test OK]
 
 ``` csharp
 
-public class UserEmailUpdated
+public class UserEmailUpdated : IMessage
 {
     public Guid UserId { get; set; }
-	public string EmailAdress { get; set }
-	public DateTime TimeStamp { get; set }
+	public string EmailAdress { get; set; }
+	public DateTime TimeStamp { get; set; }
 }
 
 ```
@@ -98,18 +98,18 @@ There can also be several messages modifying the same object: [Acceptance test]
 
 ``` csharp
 
-public class UserAddedToRole
+public class UserAddedToRole : IMessage
 {
 	public Guid UserId { get; set; }
 	public string Role { get; set; }
-	public DateTime { get; set; }
+	public DateTime TimeStamp { get; set; }
 }
 
-public class UserRemovedFromRole
+public class UserRemovedFromRole : IMessage
 {
 	public Guid UserId { get; set; }
 	public string Role { get; set; }
-	public DateTime { get; set; }
+	public DateTime TimeStamp { get; set; }
 }
 
 ```
@@ -123,13 +123,13 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 	member.Id = "UserRoleActions";
 	member.HasSingleObjectMessage<UserAddedToRole>(metadata =>
 	{
-		metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
-		metadata.TimeStampPropertyName = nameof(UserEmailUpdated.TimeStamp);
+		metadata.ObjectIdPropertyName = nameof(UserAddedToRole.UserId);
+		metadata.TimeStampPropertyName = nameof(UserAddedToRole.TimeStamp);
 	});
 	member.HasSingleObjectMessage<UserRemovedFromRole>(metadata =>
 	{
-		metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
-		metadata.TimeStampPropertyName = nameof(UserEmailUpdated.TimeStamp);
+		metadata.ObjectIdPropertyName = nameof(UserRemovedFromRole.UserId);
+		metadata.TimeStampPropertyName = nameof(UserRemovedFromRole.TimeStamp);
 	});
 });
 
