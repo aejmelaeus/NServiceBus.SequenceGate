@@ -94,7 +94,7 @@ busConfiguration.SequenceGate(configuration);
 
 ```
 
-There can also be several messages modifying the same object: [Acceptance test]
+There can also be several messages modifying the same object: [Acceptance test OK]
 
 ``` csharp
 
@@ -143,7 +143,7 @@ The Sequence Gate Configuration takes in the Endpoint name:
 
 `var configuration = new SequenceGateConfiguration("EndpointName")`
 
-In this way several Endpoints may share the same database. [Acceptance test]
+In this way several Endpoints may share the same database. [Acceptance test OK]
 
 ## Multiple object messages
 
