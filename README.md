@@ -147,7 +147,7 @@ In this way several Endpoints may share the same database. [Acceptance test OK]
 
 ## Multiple object messages
 
-Some messages contains several objects that the Sequence Gate needs to take into consideration: [Acceptance test]
+Some messages contains several objects that the Sequence Gate needs to take into consideration: [Acceptance test OK]
 
 ``` csharp
 
@@ -155,14 +155,14 @@ public class UsersAddedToGroup : IMessage
 {
 	public string Group { get; set; }
 	public List<User> Users { get; set; }
-	public Metadata Metadata { get; set; }
+	public DateTime TimeStamp { get; set; }
 }
 
 public class UsersRemovedFromGroup : IMessage
 {
 	public string Group { get; set; }
 	public List<User> Users { get; set; }
-	public Metadata Metadata { get; set; }
+	public DateTime TimeStamp { get; set; }
 }
 
 public class User 
@@ -170,12 +170,6 @@ public class User
 	public Guid Id { get; set; }
 	public string Firstname { get; set; }
 	public string Lastname { get; set; }
-}
-
-public class Metadata
-{
-	public DateTime TimeStamp { get; set; }
-	public Guid LoggedInUserId { get; set; }
 }
 
 ```
@@ -191,13 +185,13 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 	{
 		metadata.CollectionPropertyName = nameof(UsersAddedToGroup.Users);
 		metadata.ObjectIdPropertyName = nameof(User.Id);
-		metadata.TimeStampPropertyName = "Metadata.TimeStamp";
+		metadata.TimeStampPropertyName = nameof(TimeStamp);
 	});
 	member.HasMultipleObjectsMessage<UsersRemovedFromGroup>(metadata =>
 	{
 		metadata.CollectionPropertyName = nameof(UsersRemovedFromGroup.Users);
 		metadata.ObjectIdPropertyName = nameof(User.Id);
-		metadata.TimeStampPropertyName = "Metadata.TimeStamp";
+		metadata.TimeStampPropertyName = nameof(TimeStamp);
 	});
 });
 
@@ -205,9 +199,40 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 
 The property names in the configuration can be set with the ´nameof´ operator when the property is directly on the root-object.
 
-When a property used in the Sequence Gate is a property of another object it can be configured as a string with a '.' separator of the properties:
+But some messages might have the properties that are used in the gate as complex datastructures:
 
-´metadata.TimeStampPropertyName = "Metadata.TimeStamp";´ [Acceptance test]
+``` csharp
+
+public class UserEmailUpdated : IMessage
+{
+    public Guid UserId { get; set; }
+	public string EmailAdress { get; set; }
+	public Metadata Metadata { get; set; }
+}
+
+public class Metadata
+{
+	public DateTime TimeStamp { get; set; }
+	public Guid LoggedInUserId { get; set; }
+}
+
+```
+
+In the example the time stamp is a complex object on the message. Configuration is done using a string as separator of the properties:
+
+``` csharp
+
+var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
+{
+	member.Id = "UserEmailUpdated";
+	member.HasSingleObjectMessage<UserEmailUpdated>(metadata =>
+	{
+		metadata.ObjectIdPropertyName = nameof(UserEmailUpdated.UserId);
+		metadata.TimeStampPropertyName = "Metadata.TimeStamp";
+	});
+});
+
+```
 
 ### Value collections
 
