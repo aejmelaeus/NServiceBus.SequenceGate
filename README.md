@@ -151,7 +151,14 @@ Some messages contains several objects that the Sequence Gate needs to take into
 
 ``` csharp
 
-public class UsersAddedToGroup
+public class UsersAddedToGroup : IMessage
+{
+	public string Group { get; set; }
+	public List<User> Users { get; set; }
+	public Metadata Metadata { get; set; }
+}
+
+public class UsersRemovedFromGroup : IMessage
 {
 	public string Group { get; set; }
 	public List<User> Users { get; set; }
@@ -159,7 +166,7 @@ public class UsersAddedToGroup
 }
 
 public class User 
-{
+{	
 	public Guid Id { get; set; }
 	public string Firstname { get; set; }
 	public string Lastname { get; set; }
@@ -183,6 +190,12 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 	member.HasMultipleObjectsMessage<UsersAddedToGroup>(metadata =>
 	{
 		metadata.CollectionPropertyName = nameof(UsersAddedToGroup.Users);
+		metadata.ObjectIdPropertyName = nameof(User.Id);
+		metadata.TimeStampPropertyName = "Metadata.TimeStamp";
+	});
+	member.HasMultipleObjectsMessage<UsersRemovedFromGroup>(metadata =>
+	{
+		metadata.CollectionPropertyName = nameof(UsersRemovedFromGroup.Users);
 		metadata.ObjectIdPropertyName = nameof(User.Id);
 		metadata.TimeStampPropertyName = "Metadata.TimeStamp";
 	});
@@ -226,7 +239,7 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 
 ```
 
-A value typed collection can contain following types:
+A value typed collection can contain following types as Object Id:
 
 - ´string´
 - ´int´
