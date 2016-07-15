@@ -240,7 +240,7 @@ In some cases the message contains a collection of value type that are object id
 
 ´´´ csharp
 
-public class DeactivatedUsers
+public class UsersDeactivated : IMessage
 {
 	public List<Guid> UserIds { get; set; }
 	public DateTime TimeStamp { get; set; }
@@ -255,7 +255,7 @@ In this case the `ObjectIdPropertyName` is omitted:
 var configuration = new SequenceGateConfiguration("EndpointName").WithMember(member =>
 {
 	member.Id = "UserActivationActions";
-	member.HasMultipleObjectsMessage<DeactivatedUsers>(metadata =>
+	member.HasMultipleObjectsMessage<UsersDeactivated>(metadata =>
 	{
 		metadata.CollectionPropertyName = nameof(DeactivatedUsers.UserIds);
 		metadata.TimeStampPropertyName = "TimeStamp";
@@ -277,7 +277,7 @@ Sometimes a scope is needed when using the Sequence Gate. For example a system c
 
 ``` csharp
 
-public class UserRoleUpdatedOnClient
+public class UserRoleUpdatedOnClient : IMessage
 {
 	public Guid UserId { get; set; }
 	public string Role { get; set; }

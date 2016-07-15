@@ -64,10 +64,12 @@
   <ItemGroup>
     <Compile Include="Infrastructure\DefaultServer.cs" />
     <Compile Include="Infrastructure\SubscriptionBehaviour.cs" />
+    <Compile Include="When_Sequence_Gate_is_configured_with_message_that_has_a_scope.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_multiple_object_message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_messages_that_modifies_the_same_object.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_message_with_complex_property.cs" />
+    <Compile Include="When_Sequence_Gate_is_configured_with_multiple_object_message_that_is_value_type_collection.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_single_object_message.cs" />
     <Compile Include="When_Sequence_Gate_is_not_configured.cs" />
     <Compile Include="When_Sequence_Gate_is_used_by_two_Endpoints.cs" />
