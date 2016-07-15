@@ -14,18 +14,18 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
             var id = Guid.NewGuid();
 
             var newerMessage = new Message { Id = id, Value = "Newer", TimeStamp = DateTime.UtcNow.AddDays(-1) };
-            var olderMessage = new Message { Id = id, Value = "Older", TimeStamp = DateTime.UtcNow.AddDays(-2) };
+            var retriedMessage = new Message { Id = id, Value = "Older", TimeStamp = DateTime.UtcNow.AddDays(-2) };
 
             var context = Scenario.Define(() => new Context { })    
                 .WithEndpoint<Endpoint>(producer => producer
                     .Given((b, c) =>
                     {
                         b.SendLocal(newerMessage);
-                        b.SendLocal(olderMessage);
+                        b.SendLocal(retriedMessage);
                     }))
                 .Run();
 
-            Assert.That(context.LastValue, Is.EqualTo(olderMessage.Value));
+            Assert.That(context.LastValue, Is.EqualTo(retriedMessage.Value));
         }
 
         public class Context : ScenarioContext

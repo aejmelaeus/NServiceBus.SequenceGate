@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using NServiceBus.AcceptanceTesting;
+using NServiceBus.SequenceGate.Tests.Acceptance.Infrastructure;
 using NUnit.Framework;
 
-namespace NServiceBus.SequenceGate.Tests.Acceptance.Infrastructure
+namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
     [TestFixture]
     public class When_Sequence_Gate_is_configured_with_multiple_object_message
