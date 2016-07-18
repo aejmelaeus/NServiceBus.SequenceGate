@@ -1,4 +1,4 @@
-# NServiceBus.SequenceGate Pull Request Again!
+# NServiceBus.SequenceGate
 
 NServiceBus is about messages. The Sequence Gate is about the objects in the messages.
 
