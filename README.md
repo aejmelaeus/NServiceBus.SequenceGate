@@ -18,18 +18,18 @@ Some events in a system are imutable. For example `SendEmail` or `WriteToAuditLo
 
 ## Limitations
 
-The Sequence Gate has performance impacts. When performance is key and you working in a high frequence environment you should try to design your events to be immutable or your Endpoint's business logic should use an Event Store that by nature mitigates timing issues.
+The Sequence Gate has performance impacts since every message requires an extra roundtrip to the database. When performance is key and you working in a high frequence environment you should try to design your events to be immutable or your Endpoint's business logic should use an Event Store that by nature mitigates timing issues.
 
-However, when the your Endpoint is working with some legacy component of your system or a third party system it can be a simple and efficient way to solve sequencing issues. 
+However, when the your Endpoint is working with some legacy component or a third party system it can be a simple and efficient way to solve sequencing issues. 
 
 The Sequence Gate will only work relyably in a single Endpoint - single thread environment. This means that there can only be a single Endpoint with a single thread processing messages at a time. Otherwise consistency can not be guaranteed. This implies that the domain is not a fast data domain, where the Endpoints must be scaled out.
 
 ## Consider to use the Sequence gate when:
 
-- It is important to store or process the latest state of a object.
+- It is important to store or process the latest state of a object
 - Your are working in a "low frequency environment"
 
-## This will not be usefull to you when:
+## It will not be usefull to you when:
 
 - In a fast data environment
 - Your need to scale out the number of Endpoints or Endpoint threads
@@ -40,14 +40,14 @@ The messages are sequence anchored using the `long` datatype. The DateTime class
 
 ## Persistence
 
-The current implementation uses SQL Server as persistence. The Sequence Gate expects a connection string called `NServiceBus/SequenceGate`. The database used in the connections string is expected to have a table called `dbo.TrackedObjects`. The table can be created with the following [Script].
+The current implementation uses Entity Framework for persistence. The Sequence Gate expects a connection string called `NServiceBus/SequenceGate`. The database used in the connections string is expected to have a table called `dbo.TrackedObjects`. The table can be created with the following [Script].
 
 # Examples
 
 The Sequence Gate is implemented as a NServiceBus Pipeline component. The SequenceGate is registered with the bus and all messages that the Endpoint processes are passed through the gate.
 
 The basic flow is:
-- Is the message a Sequence Gate member? Yes - keep on processing it. No - pass it through the pipeline.
+- Is the message a Sequence Gate member? Yes - keep on processing it. No - pass it through the pipeline
 - Parse the objects from the message
 - Find out if some objects needs to be discarded
 - Mark the newer or unseen ones ones with the timestamp
@@ -63,7 +63,7 @@ If it is a message containing multiple objects the objects that has newer seen v
 
 ## Single object messages
 
-Often a message contains a single object to keep track of, for example ´UserEmailUpdated`: [Acceptance test OK]
+Often a message contains a single object to keep track of, for example `UserEmailUpdated`: [Acceptance test OK]
 
 ``` csharp
 
@@ -76,7 +76,7 @@ public class UserEmailUpdated : IMessage
 
 ```
 
-The ´UserEmailUpdated´ message becomes a member of the SequenceGate by adding it to the SequenceGateConfiguration:
+The `UserEmailUpdated` message becomes a member of the SequenceGate by adding it to the SequenceGateConfiguration:
 
 ``` csharp
 
@@ -197,7 +197,7 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 
 ```
 
-The property names in the configuration can be set with the ´nameof´ operator when the property is directly on the root-object.
+The property names in the configuration can be set with the `nameof` operator when the property is directly on the root-object.
 
 But some messages might have the properties that are used in the gate as complex datastructures:
 
@@ -238,7 +238,7 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 
 In some cases the message contains a collection of value type that are object ids: [Acceptance test]
 
-´´´ csharp
+``` csharp
 
 public class UsersDeactivated : IMessage
 {
@@ -266,10 +266,10 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 
 A value typed collection can contain following types as Object Id:
 
-- ´string´
-- ´int´
-- ´long´
-- ´Guid´
+- `string`
+- `int`
+- `long`
+- `Guid`
 
 ## Scope
 
@@ -306,7 +306,7 @@ var configuration = new SequenceGateConfiguration("EndpointName").WithMember(mem
 
 ## Validation
 
-The ´SequenceGateConfiguration´ is validated before the Endpoint is started. If the validation fails the Endpoint will fail to start [Acceptance test]. The validation verifies that all configured properties actually exists on the message types and that the types are correct.
+The `SequenceGateConfiguration` is validated before the Endpoint is started. If the validation fails the Endpoint will fail to start [Acceptance test]. The validation verifies that all configured properties actually exists on the message types and that the types are correct.
 
 # TODO: Filter
 
