@@ -8,6 +8,12 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
     public class SequenceGateMemberTests
     {
         [Test]
+        public void Big_Fat_Fail()
+        {
+            Assert.Fail("This should fail!");
+        }
+
+        [Test]
         public void Validate_AllMetadatasHasConsistentScopeIdSet_PassesValiation()
         {
             // Arrange
