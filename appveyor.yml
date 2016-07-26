@@ -5,3 +5,6 @@ build:
   verbosity: minimal
 test:
   assemblies: 'NServiceBus.SequenceGate.Tests.Unit.dll'
+services:
+  - mssql2014
+  - msmq
