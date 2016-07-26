@@ -5,11 +5,11 @@ before_build:
 build:
   verbosity: minimal
 before_test:
-- cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE NServiceBus.SequenceGate.Acceptance" -d "master"  
+- cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE Acceptance" -d "master"  
 test:
   assemblies:
   - 'NServiceBus.SequenceGate.Tests.Unit.dll'
-  - 'NServiceBus.SequenceGate.Tests.Unit.dll'
+  - 'NServiceBus.SequenceGate.Tests.Acceptance.dll'
 services:
   - mssql2014
   - msmq
