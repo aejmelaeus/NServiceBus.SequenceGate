@@ -4,4 +4,4 @@ before_build:
 build:
   verbosity: minimal
 test:
-  assemblies: '*.Tests.Unit.*'
+  assemblies: 'NServiceBus.SequenceGate.Tests.Unit.dll'
