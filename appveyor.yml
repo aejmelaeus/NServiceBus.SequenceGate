@@ -1,8 +1,11 @@
 version: 1.0.{build}
+configuration: Release
 before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
+before_test:
+- cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE NServiceBus.SequenceGate.Acceptance" -d "master"  
 test:
   assemblies: 'NServiceBus.SequenceGate.Tests.Unit.dll'
 services:
