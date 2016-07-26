@@ -7,7 +7,9 @@ build:
 before_test:
 - cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE NServiceBus.SequenceGate.Acceptance" -d "master"  
 test:
-  assemblies: 'NServiceBus.SequenceGate.Tests.Unit.dll'
+  assemblies:
+  - 'NServiceBus.SequenceGate.Tests.Unit.dll'
+  - 'NServiceBus.SequenceGate.Tests.Unit.dll'
 services:
   - mssql2014
   - msmq
