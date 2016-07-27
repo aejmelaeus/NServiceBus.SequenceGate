@@ -1,10 +1,16 @@
 ﻿using System.Linq;
+using System.Data.Entity;
 using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
     internal class Persistence : IPersistence
     {
+        public Persistence()
+        {
+            Database.SetInitializer(new NullDatabaseInitializer<SequenceGateContext>());
+        }
+
         public List<string> Register(Parsed parsed)
         {
             using (var context = new SequenceGateContext())
