@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
+    [Ignore("Work in progress...")]
     [TestFixture]
     public class When_Sequence_Gate_is_configured_with_invalid_configuration
     {

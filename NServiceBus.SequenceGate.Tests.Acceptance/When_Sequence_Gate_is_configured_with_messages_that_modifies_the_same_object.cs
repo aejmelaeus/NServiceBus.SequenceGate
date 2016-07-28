@@ -6,12 +6,14 @@ using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
+    [Ignore("TODO!")]
     [TestFixture]
     public class When_Sequence_Gate_is_configured_with_messages_that_modifies_the_same_object
     {
         [Test]
         public void Then_both_of_the_messages_are_gating_the_same_object()
         {
+            Assert.Fail("This thest should fail with wrong connection string... :)");
             var userId = Guid.NewGuid();
 
             var today = DateTime.UtcNow;
