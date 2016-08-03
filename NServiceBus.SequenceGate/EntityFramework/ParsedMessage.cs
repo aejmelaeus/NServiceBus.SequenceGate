@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace NServiceBus.SequenceGate.EntityFramework
 {
-    internal class Parsed
+    internal class ParsedMessage
     {
         private readonly List<string> _objectIds = new List<string>();
 
-        internal Parsed(string endpointName, string sequenceGateId, string scopeId, long sequenceAnchor)
+        internal ParsedMessage(string endpointName, string sequenceGateId, string scopeId, long sequenceAnchor)
         {
             EndpointName = endpointName;
             SequenceGateId = sequenceGateId;

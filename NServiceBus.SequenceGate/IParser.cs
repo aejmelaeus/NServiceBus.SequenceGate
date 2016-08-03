@@ -14,6 +14,6 @@ namespace NServiceBus.SequenceGate
         /// </summary>
         /// <param name="message">Parsed data</param>
         /// <returns></returns>
-        Parsed Parse(object message);
+        ParsedMessage Parse(object message);
     }
 }

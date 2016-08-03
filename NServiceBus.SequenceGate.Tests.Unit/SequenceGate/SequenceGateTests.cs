@@ -32,9 +32,9 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             // Arrange
             const string sequenceGateId = "UserEmailUpdated";
             var message = new SimpleMessage();
-            var gateData = new Parsed("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
+            var gateData = new ParsedMessage("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
 
-            _persistence.Register(Arg.Any<Parsed>()).Returns(new List<string>());
+            _persistence.Register(Arg.Any<ParsedMessage>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
@@ -63,9 +63,9 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
         {
             const string sequenceGateId = "UserEmailUpdated";
             var message = new SimpleMessage();
-            var gateData = new Parsed("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
+            var gateData = new ParsedMessage("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
 
-            _persistence.Register(Arg.Any<Parsed>()).Returns(new List<string>());
+            _persistence.Register(Arg.Any<ParsedMessage>()).Returns(new List<string>());
 
             var configuration = new SequenceGateConfiguration("SomeEndpointName").WithMember(member =>
             {
@@ -95,7 +95,7 @@ namespace NServiceBus.SequenceGate.Tests.Unit.SequenceGate
             var originalObject = new SimpleMessage();
             var seenObjects = new List<string> { "ASeenId" };
 
-            _persistence.Register(Arg.Any<Parsed>()).Returns(seenObjects);
+            _persistence.Register(Arg.Any<ParsedMessage>()).Returns(seenObjects);
 
             var mutatedObject = new SimpleMessage();
             _mutator.Mutate(originalObject, seenObjects).Returns(mutatedObject);

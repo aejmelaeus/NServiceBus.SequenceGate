@@ -6,14 +6,12 @@ using NUnit.Framework;
 
 namespace NServiceBus.SequenceGate.Tests.Acceptance
 {
-    [Ignore("TODO!")]
     [TestFixture]
     public class When_Sequence_Gate_is_configured_with_messages_that_modifies_the_same_object
     {
         [Test]
         public void Then_both_of_the_messages_are_gating_the_same_object()
         {
-            Assert.Fail("This thest should fail with wrong connection string... :)");
             var userId = Guid.NewGuid();
 
             var today = DateTime.UtcNow;
@@ -31,12 +29,14 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
                     }))
                 .Run();
 
-            Assert.That(context.Roles, Is.Empty);
+            Assert.That(context.RemovedRoles.Count, Is.EqualTo(1));
+            Assert.That(context.AddedRoles.Count, Is.EqualTo(0));
         }
 
         public class Context : ScenarioContext
         {
-            public List<string> Roles { get; set; } = new List<string>();
+            public List<string> RemovedRoles { get; set; } = new List<string>();
+            public List<string> AddedRoles { get; set; } = new List<string>(); 
         }
 
         public class Endpoint : EndpointConfigurationBuilder
@@ -72,12 +72,12 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
 
                 public void Handle(UserAddedToRole message)
                 {
-                    Context.Roles.Add(message.Role);
+                    Context.AddedRoles.Add(message.Role);
                 }
 
                 public void Handle(UserRemovedFromRole message)
                 {
-                    Context.Roles.Remove(message.Role);
+                    Context.RemovedRoles.Add(message.Role);
                 }
             }
         }

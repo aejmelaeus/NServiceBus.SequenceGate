@@ -13,17 +13,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
         public void Register_WithNewObject_Added()
         {
             // Arrange
-            var entities = new List<EntityFramework.TrackedObject>();
+            var objects = new List<SequenceObject>();
 
             var objectId = Guid.NewGuid().ToString();
 
-            var parsed = new Parsed("SomeEndpoint", "SequenceGateId", "TheScopeId", DateTime.UtcNow.Ticks);
+            var parsed = new ParsedMessage("SomeEndpoint", "SequenceGateId", "TheScopeId", DateTime.UtcNow.Ticks);
             parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
             // Act
-            var result = persistence.GetActions(parsed, entities);
+            var result = persistence.GetActions(parsed, objects);
 
             // Assert
             Assert.That(result.ObjectIdsToAdd.Count, Is.EqualTo(1));
@@ -36,17 +36,17 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             // Arrange
             var objectId = Guid.NewGuid().ToString();
 
-            var entities = new List<EntityFramework.TrackedObject>();
-            
-            entities.Add(new EntityFramework.TrackedObject { ObjectId = objectId });
+            var objects = new List<SequenceObject>();
+           
+            objects.Add(new SequenceObject { Id = objectId });
 
-            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
+            var parsed = new ParsedMessage("EndpointName", "SequenceGateId", "ScopeId", DateTime.UtcNow.Ticks);
             parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
             // Act
-            var result = persistence.GetActions(parsed, entities);
+            var result = persistence.GetActions(parsed, objects);
 
             // Assert
             Assert.That(result.ObjectIdsToAdd.Count, Is.EqualTo(0));
@@ -60,23 +60,21 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             var newerAnchor = 456;
 
             var objectId = Guid.NewGuid().ToString();
-            var id = 789;
 
-            var entities = new List<EntityFramework.TrackedObject>();
+            var objects = new List<SequenceObject>();
+            objects.Add(new SequenceObject { Id = objectId, SequenceAnchor = olderAnchor });
 
-            entities.Add(new EntityFramework.TrackedObject { Id = id, ObjectId = objectId, SequenceAnchor = olderAnchor });
-
-            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", newerAnchor);
+            var parsed = new ParsedMessage("EndpointName", "SequenceGateId", "ScopeId", newerAnchor);
             parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
             // Act
-            var result = persistence.GetActions(parsed, entities);
+            var result = persistence.GetActions(parsed, objects);
 
             // Assert
-            Assert.That(result.IdsToUpdate.Count, Is.EqualTo(1));
-            Assert.That(result.IdsToUpdate.Contains(id));
+            Assert.That(result.ObjectIdsToUpdate.Count, Is.EqualTo(1));
+            Assert.That(result.ObjectIdsToUpdate.Contains(objectId));
         }
         
         [Test]
@@ -88,85 +86,22 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
 
             var objectId = Guid.NewGuid().ToString();
 
-            var entities = new List<EntityFramework.TrackedObject>();
+            var objects = new List<SequenceObject>();
+            objects.Add(new SequenceObject { Id = objectId, SequenceAnchor = newerAnchor });
 
-            entities.Add(new EntityFramework.TrackedObject { ObjectId = objectId, SequenceAnchor = newerAnchor });
-
-            var parsed = new Parsed("EndpointName", "SequenceGateId", "ScopeId", olderAnchor);
+            var parsed = new ParsedMessage("EndpointName", "SequenceGateId", "ScopeId", olderAnchor);
             parsed.AddObjectId(objectId);
 
             var persistence = new EntityFramework.Persistence();
 
             // Act
-            var result = persistence.GetActions(parsed, entities);
+            var result = persistence.GetActions(parsed, objects);
 
             // Assert
             Assert.That(result.ObjectIdsToDismiss.Count, Is.EqualTo(1));
             Assert.That(result.ObjectIdsToDismiss.Contains(objectId));
         }
         
-        [Test]
-        public void GetScopedQuery_WithSpecificEndpointNameAndScopeId_ReturnsCorrectEntities()
-        {
-            // Arrange
-            const string scopeId = "TheScope";
-            const string endpointName = "TheEndpoint";
-            const string sequenceGateId = "TheSequenceGateId";
-            const string objectId = "123";
-
-            var parsed = new Parsed(endpointName, sequenceGateId, scopeId, DateTime.UtcNow.Ticks);
-            parsed.AddObjectId(objectId);
-
-            var entities = new List<EntityFramework.TrackedObject>
-            {
-                new EntityFramework.TrackedObject
-                {
-                    Id = 1,
-                    ScopeId = "SomeRandomScopeId",
-                    EndpointName = "SomeRandomEndpointName",
-                    SequenceGateId = "SomeRandomSequenceGateId"
-                },
-                new EntityFramework.TrackedObject
-                {
-                    Id = 2,
-                    ScopeId = scopeId,
-                    EndpointName = "SomeRandomEndpointName",
-                    SequenceGateId = "SomeRandomSequenceGateId"
-                },
-                new EntityFramework.TrackedObject
-                {
-                    Id = 3,
-                    ScopeId = "SomeRandomScopeId",
-                    EndpointName = endpointName,
-                    SequenceGateId = "SomeRandomSequenceGateId"
-                },
-                new EntityFramework.TrackedObject
-                {
-                    Id = 4,
-                    ScopeId = scopeId,
-                    EndpointName = endpointName,
-                    SequenceGateId = sequenceGateId,
-                    ObjectId = objectId
-                },
-                new EntityFramework.TrackedObject
-                {
-                    Id = 5,
-                    ScopeId = scopeId,
-                    EndpointName = endpointName,
-                    SequenceGateId = "SomeRandomSequenceGateId"
-                }
-            };
-
-            var persistence = new EntityFramework.Persistence();
-
-            // Act
-            var query = persistence.GetObjectsFromParsedMessage(parsed, entities.AsQueryable());
-
-            // Assert
-            Assert.That(query.Count(), Is.EqualTo(1));
-            Assert.That(query.Any(e => e.Id.Equals(4)));
-        }
-
         [Test]
         public void GetEntitiesToAdd_WhenInvoked_ParsedCorrectly()
         {
@@ -179,25 +114,21 @@ namespace NServiceBus.SequenceGate.Tests.Unit.Persistence
             const string thirdId = "789";
             const long sequenceAnchor = 123;
             
-            var parsed = new Parsed(endpointName, sequenceGateId, scopeId, sequenceAnchor);
+            var parsed = new ParsedMessage(endpointName, sequenceGateId, scopeId, sequenceAnchor);
             
             var idsToAdd = new List<string> { firstId, secondId, thirdId };
 
             var persistence = new EntityFramework.Persistence();
 
             // Act
-            var entities = persistence.GetEntitiesToAdd(parsed, idsToAdd).ToList();
+            var objects = persistence.GetObjectsToAdd(parsed, idsToAdd).ToList();
 
             // Assert
-            Assert.That(entities.All(e => e.EndpointName.Equals(endpointName)));
-            Assert.That(entities.All(e => e.ScopeId.Equals(scopeId)));
-            Assert.That(entities.All(e => e.SequenceAnchor.Equals(sequenceAnchor)));
-            Assert.That(entities.All(e => e.SequenceGateId.Equals(sequenceGateId)));
-            
-            Assert.That(entities.Count, Is.EqualTo(3));
-            Assert.That(entities.Any(e => e.ObjectId.Equals(firstId)));
-            Assert.That(entities.Any(e => e.ObjectId.Equals(secondId)));
-            Assert.That(entities.Any(e => e.ObjectId.Equals(thirdId)));
+            Assert.That(objects.Count, Is.EqualTo(3));
+            Assert.That(objects.All(o => o.SequenceAnchor.Equals(sequenceAnchor)));
+            Assert.That(objects.Any(e => e.Id.Equals(firstId)));
+            Assert.That(objects.Any(e => e.Id.Equals(secondId)));
+            Assert.That(objects.Any(e => e.Id.Equals(thirdId)));
         }
     }
 }

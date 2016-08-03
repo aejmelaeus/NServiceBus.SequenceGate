@@ -17,7 +17,7 @@ namespace NServiceBus.SequenceGate
             _configuration = configuration;
         }
         
-        public Parsed Parse(object message)
+        public ParsedMessage Parse(object message)
         {
             var messageMetadata = _configuration.GetMessageMetadata(message);
 
@@ -26,7 +26,7 @@ namespace NServiceBus.SequenceGate
             string sequenceGateId = _configuration.GetSequenceGateIdForMessage(message);
             string scopeId = GetScopeId(message, messageMetadata);
 
-            var result = new Parsed(endpointName, sequenceGateId, scopeId, sequenceAnchor);
+            var result = new ParsedMessage(endpointName, sequenceGateId, scopeId, sequenceAnchor);
 
             if (messageMetadata is SingleObjectMessageMetadata)
             {

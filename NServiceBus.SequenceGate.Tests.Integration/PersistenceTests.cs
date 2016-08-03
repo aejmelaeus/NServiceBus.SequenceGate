@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NServiceBus.SequenceGate.EntityFramework;
 using NUnit.Framework;
@@ -9,28 +10,81 @@ namespace NServiceBus.SequenceGate.Tests.Integration
     public class PersistenceTests
     {
         [Test]
-        public void Register_WithUnseenObjects_PeristedCorrectly()
+        public void AddEntities_WithUnseenMember_MemberAdded()
         {
             // Arrange
-            var objectId = Guid.NewGuid().ToString();
-            var sequenceGateId = Guid.NewGuid().ToString();
+            string endpointName = Guid.NewGuid().ToString();
+            string sequenceGateId = Guid.NewGuid().ToString();
+            string scopeId = Guid.NewGuid().ToString();
+            string objectId1 = Guid.NewGuid().ToString();
+            string objectId2 = Guid.NewGuid().ToString();
 
-            var parsed = new Parsed("EndpointName", sequenceGateId, "NotApplicable", DateTime.UtcNow.Ticks);
-            parsed.AddObjectId(objectId);
+            long sequenceAnchor = 123;
 
+            var parsedMessage = new ParsedMessage(endpointName, sequenceGateId, scopeId, sequenceAnchor);
+
+            var persistence = new Persistence();
+            
+            // Assert
+            using (var context = new SequenceGateContext())
+            {
+                persistence.AddEntities(context, parsedMessage, new List<string> { objectId1, objectId2 });
+                context.SaveChanges();
+            }
+
+            // Act
+            using (var context = new SequenceGateContext())
+            {
+                var sequenceObject = context.SequenceObjects.SingleOrDefault(so => so.Id.Equals(objectId1));
+
+                var memberSequenceGateId = sequenceObject.SequenceMember.SequenceGateId;
+
+                Assert.That(memberSequenceGateId, Is.EqualTo(sequenceGateId));
+            }
+        }
+
+        [Test]
+        public void AddEntities_WithAlreadySeenMember_MemberAttachedFromDb()
+        {
+            // Arrange
+            string endpointName = Guid.NewGuid().ToString();
+            string sequenceGateId = Guid.NewGuid().ToString();
+            string scopeId = Guid.NewGuid().ToString();
+
+            long sequenceAnchor = 123;
+
+            var seqenceMember = new SequenceMember
+            {
+                EndpointName = endpointName,
+                ScopeId = scopeId,
+                SequenceGateId = sequenceGateId
+            };
+
+            using (var context = new SequenceGateContext())
+            {
+                context.SequenceMembers.Add(seqenceMember);
+                context.SaveChanges();
+            }
+
+            string objectId = Guid.NewGuid().ToString();
+            var parsedMessage = new ParsedMessage(endpointName, sequenceGateId, scopeId, sequenceAnchor);
             var persistence = new Persistence();
 
             // Act
-            persistence.Register(parsed);
+            using (var context = new SequenceGateContext())
+            {
+                persistence.AddEntities(context, parsedMessage, new List<string> { objectId });
+                context.SaveChanges();
+            }
 
             // Assert
             using (var context = new SequenceGateContext())
             {
-                var trackedObject = context.TrackedObjects.Single(t =>
-                    t.ObjectId.Equals(objectId) && t.SequenceGateId.Equals(sequenceGateId)
-                );  
+                var sequenceObject = context.SequenceObjects.SingleOrDefault(so => so.Id.Equals(objectId));
 
-                Assert.That(trackedObject, Is.Not.Null);
+                var memberSequenceGateId = sequenceObject.SequenceMember.SequenceGateId;
+
+                Assert.That(memberSequenceGateId, Is.EqualTo(sequenceGateId));
             }
         }
     }

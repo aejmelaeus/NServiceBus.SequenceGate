@@ -9,6 +9,7 @@ namespace NServiceBus.SequenceGate.EntityFramework
             // Nothing here...
         }
         
-        public DbSet<TrackedObject> TrackedObjects { get; set; }
+        public DbSet<SequenceMember> SequenceMembers { get; set; }
+        public DbSet<SequenceObject> SequenceObjects { get; set; } 
     }
 }

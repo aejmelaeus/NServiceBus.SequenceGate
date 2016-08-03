@@ -10,7 +10,7 @@ namespace NServiceBus.SequenceGate.Tests.Acceptance
     public class When_Sequence_Gate_is_configured_with_multiple_object_message
     {
         [Test]
-        public void Then_each_object_in_the_message_is_expected_to_be_sequences_separetely()
+        public void Then_each_object_in_the_message_is_expected_to_be_sequenced_separetely()
         {
             var today = DateTime.UtcNow;
             var yesterday = today.AddDays(-1);

@@ -61,19 +61,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntityFramework\Actions.cs" />
-    <Compile Include="EntityFramework\Parsed.cs" />
-    <Compile Include="EntityFramework\TrackedObject.cs" />
+    <Compile Include="EntityFramework\MessageActions.cs" />
+    <Compile Include="EntityFramework\SequenceObject.cs" />
+    <Compile Include="EntityFramework\ParsedMessage.cs" />
+    <Compile Include="EntityFramework\SequenceMember.cs" />
     <Compile Include="EntityFramework\SequenceGateContext.cs" />
     <Compile Include="IMutator.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="IPersistence.cs" />
+    <Compile Include="Migrations\201608021856522_Initial.cs" />
+    <Compile Include="Migrations\201608021856522_Initial.Designer.cs">
+      <DependentUpon>201608021856522_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MultipleObjectMessageMetadata.cs" />
     <Compile Include="Mutator.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="EntityFramework\Persistence.cs" />
     <Compile Include="SingleObjectMessageMetadata.cs" />
-    <Compile Include="TrackedObject.cs" />
     <Compile Include="SequenceGate.cs" />
     <Compile Include="SequenceGateMember.cs" />
     <Compile Include="SequenceGateBusConfiguration.cs" />
@@ -90,6 +95,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="create.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201608021856522_Initial.resx">
+      <DependentUpon>201608021856522_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

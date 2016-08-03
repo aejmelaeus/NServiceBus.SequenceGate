@@ -10,8 +10,8 @@ namespace NServiceBus.SequenceGate
         /// Updates existing objects that are newer
         /// Returns the object ids to dismiss, the ones that already has newer ones seen in the Db.
         /// </summary>
-        /// <param name="parsed">The parsing result</param>
+        /// <param name="parsedMessage">The parsing result</param>
         /// <returns>The object ids to dismiss</returns>
-        List<string> Register(Parsed parsed);
+        List<string> Register(ParsedMessage parsedMessage);
     }
 }
