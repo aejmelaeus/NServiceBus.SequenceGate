@@ -1,12 +1,17 @@
 version: 1.0.{build}
+assembly_info:
+  patch: false
 configuration: Release
+install:
+  - choco install gitversion.portable -pre -y
 before_build:
-- cmd: nuget restore
+  - cmd: nuget restore
+  - ps: gitversion /l console /output buildserver /updateassemblyinfo 
 build:
   verbosity: minimal
 before_test:
 - cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE Acceptance" -d "master"
-- cmd: sqlcmd -S ".\SQL2012SP1" -U sa -P Password12! -i "%APPVEYOR_BUILD_FOLDER%\NServiceBus.SequenceGate\create.sql" 
+- cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -i "%APPVEYOR_BUILD_FOLDER%\NServiceBus.SequenceGate\create.sql" 
 test:
   assemblies:
   - 'NServiceBus.SequenceGate.Tests.Unit.dll'
