@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\DefaultServer.cs" />
     <Compile Include="Infrastructure\SubscriptionBehaviour.cs" />
+    <Compile Include="When_same_message_is_sent_twice.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_invalid_configuration.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_message_that_has_a_scope.cs" />
     <Compile Include="When_Sequence_Gate_is_configured_with_multiple_object_message.cs" />

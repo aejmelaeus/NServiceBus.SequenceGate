@@ -25,6 +25,6 @@ namespace NServiceBus.SequenceGate.EntityFramework
         [MaxLength(128)]
         public string EndpointName { get; set; }
 
-        public virtual List<SequenceObject> Objects { get; set; }
+        public virtual List<SequenceObject> Objects { get; set; } = new List<SequenceObject>();
     }
 }

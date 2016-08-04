@@ -7,7 +7,7 @@ namespace NServiceBus.SequenceGate.Tests.Integration
     [TestFixture]
     public class Loader
     {
-        [Ignore("Should only be used manually...")]
+        //[Ignore("Should only be used manually...")]
         [Test]
         public void Load()
         {
