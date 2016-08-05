@@ -11,7 +11,7 @@ build:
   verbosity: minimal
 before_test:
   - cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE Acceptance" -d "master"
-  - cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -i "%APPVEYOR_BUILD_FOLDER%\NServiceBus.SequenceGate\create.sql"
+  - cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -i "%APPVEYOR_BUILD_FOLDER%\NServiceBus.SequenceGate\create.sql" -d "Acceptance"
   - cmd: echo %APPVEYOR_BUILD_FOLDER%
   - cmd: type %APPVEYOR_BUILD_FOLDER%\NServiceBus.SequenceGate\create.sql
 test:
