@@ -11,7 +11,7 @@ build:
   verbosity: minimal
 after_build:
   - cmd: ECHO nuget pack NServiceBus.SequenceGate\NServiceBus.SeqeuenceGate.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
-  - cmd: nuget pack NServiceBus.SequenceGate\NServiceBus.SeqeuenceGate.nuspec.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
+  - cmd: nuget pack NServiceBus.SequenceGate\NServiceBus.SeqeuenceGate.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "NServiceBus.SequenceGate.%GitVersion_NuGetVersion%.nupkg"
 before_test:
   - cmd: sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE Acceptance" -d "master"
