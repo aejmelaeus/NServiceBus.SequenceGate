@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>NServiceBus.SequenceGate</id>
+    <version>$version</version>
+    <authors>Weikko Aejmelaeus</authors>
+    <description>NServiceBus Sequence Gate library</description>
+    <language>en-US</language>
+  </metadata>
+</package>
